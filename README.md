@@ -3,28 +3,29 @@
 Una plantilla base para proyectos de Ingeniería de Software (ISW) desarrollados durante el año 2024-2. Esta plantilla está diseñada para ayudar a los estudiantes a estructurar y organizar sus proyectos de software, incluyendo tanto la parte de Backend como de Frontend.
 
 ## Tabla de contenidos
-* [Descripción General](#descripción-general)
-* [Backend](#backend)
-* [Frontend](#frontend)
-* [Arquitectura del Proyecto](#arquitectura-del-proyecto)
-  * [Estructura del Backend](#estructura-del-backend)
-  * [Estructura del Frontend](#estructura-del-frontend)
-* [Instalación y Configuración](#instalación-y-configuración)
-  * [Prerrequisitos](#prerrequisitos)
-  * [Clonación del Repositorio](#clonación-del-repositorio)
-  * [Configuración del Backend](#configuración-del-backend)
-  * [Configuración del Frontend](#configuración-del-frontend)
-  * [Configuración de DBeaver y PostgreSQL](#configuración-de-dbeaver-y-postgresql)
-* [Tecnologías](#tecnologías)
-  * [PostgreSQL](#postgresql)
-  * [Express.js](#expressjs)
-  * [React](#react)
-  * [Node.js](#nodejs)
-  * [Otros Recursos y Librerías](#otros-recursos-y-librerías)
+
+- [Descripción General](#descripción-general)
+- [Backend](#backend)
+- [Frontend](#frontend)
+- [Arquitectura del Proyecto](#arquitectura-del-proyecto)
+  - [Estructura del Backend](#estructura-del-backend)
+  - [Estructura del Frontend](#estructura-del-frontend)
+- [Instalación y Configuración](#instalación-y-configuración)
+  - [Prerrequisitos](#prerrequisitos)
+  - [Clonación del Repositorio](#clonación-del-repositorio)
+  - [Configuración del Backend](#configuración-del-backend)
+  - [Configuración del Frontend](#configuración-del-frontend)
+  - [Configuración de DBeaver y PostgreSQL](#configuración-de-dbeaver-y-postgresql)
+- [Tecnologías](#tecnologías)
+  - [PostgreSQL](#postgresql)
+  - [Express.js](#expressjs)
+  - [React](#react)
+  - [Node.js](#nodejs)
+  - [Otros Recursos y Librerías](#otros-recursos-y-librerías)
 
 ## Descripción General
 
-La `Plantilla-ISW-Proyecto-2024` es una base preconfigurada para proyectos de Ingeniería de Software que incluye tanto la parte del Backend como la del Frontend. Está diseñada para que los estudiantes puedan enfocarse en desarrollar sus funcionalidades específicas sin tener que preocuparse por la configuración inicial del proyecto. 
+La `Plantilla-ISW-Proyecto-2024` es una base preconfigurada para proyectos de Ingeniería de Software que incluye tanto la parte del Backend como la del Frontend. Está diseñada para que los estudiantes puedan enfocarse en desarrollar sus funcionalidades específicas sin tener que preocuparse por la configuración inicial del proyecto.
 
 ### Backend
 
@@ -42,7 +43,7 @@ El Frontend proporciona una interfaz de usuario simple y funcional para interact
 - **Página de Registro de Usuarios**: Los nuevos usuarios pueden registrarse mediante un formulario.
 - **Página de Error**: Muestra un mensaje de error cuando algo sale mal.
 - **Página Principal**: Página de inicio tras la autenticación exitosa.
-- **Página de Gestión de Usuarios**: 
+- **Página de Gestión de Usuarios**:
   - Muestra una tabla con todos los usuarios registrados.
   - Permite modificar y eliminar usuarios directamente desde la tabla.
   - Incluye una funcionalidad de búsqueda para encontrar usuarios específicos.
@@ -204,12 +205,23 @@ cookieKey= Llave de la cookie
 4. Configura PostgreSQL:
 
 - Crea una base de datos en PostgreSQL con el nombre especificado en el archivo `.env`.
+- Para desarrollo usaremos un contenedor docker de PostgreSQL
+- Debes tener Docker Desktop Instalado e Iniciado
+- Ejecuta el comando para levantar el contenedor de PostgreSQL desde la ruta de BackEnd
+
+```
+docker compose up -d
+```
+
+- Puedes verificar que el contenedor funciona correctamente usando un visor de BDD como TablePlus
 
 5. Inicia el servidor:
 
 ```bash
 npm run dev
 ```
+
+- Si el contenedor de la base de datos esta bien configurado, el backend deberia iniciar correctamente
 
 ### Configuración del Frontend
 
