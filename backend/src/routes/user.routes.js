@@ -11,6 +11,8 @@ import {
 
 const router = Router();
 
+//TODO: MIDDLEWARES para proteger las rutas
+
 router
   .use(authenticateJwt)
   .use(isAdmin);
@@ -18,7 +20,8 @@ router
 router
   .get("/", getUsers)
   .get("/detail/", getUser)
-  .patch("/detail/", updateUser)
+  // TODO: Implementar updateUser
+  // .patch("/detail/", updateUser)
   .delete("/detail/", deleteUser);
 
 export default router;

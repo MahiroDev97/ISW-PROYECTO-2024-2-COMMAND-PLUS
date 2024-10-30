@@ -21,7 +21,7 @@ const TurnoSchema = new EntitySchema({
             type: "timestamp",
             nullable: true,
         },
-        user: {
+        id_user: {
             type: "int",
             nullable: false,
             references: {
