@@ -27,16 +27,16 @@ async function createUsers() {
           email: "usuario1.2024@gmail.cl",
           password: await encryptPassword("user1234"),
           rol: "usuario",
-        })
+        }),
       ),
-        userRepository.save(
-          userRepository.create({
-            nombreCompleto: "Alexander Benjamín Marcelo Carrasco Fuentes",
-            rut: "20.630.735-8",
-            email: "usuario2.2024@gmail.cl",
-            password: await encryptPassword("user1234"),
-            rol: "usuario",
-          }),
+      userRepository.save(
+        userRepository.create({
+          nombreCompleto: "Alexander Benjamín Marcelo Carrasco Fuentes",
+          rut: "20.630.735-8",
+          email: "usuario2.2024@gmail.cl",
+          password: await encryptPassword("user1234"),
+          rol: "usuario",
+        }),
       ),
       userRepository.save(
         userRepository.create({

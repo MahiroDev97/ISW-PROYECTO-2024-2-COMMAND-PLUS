@@ -27,9 +27,11 @@ const ProductSchema = new EntitySchema({
       type: "int",
       nullable: false,
     },
-    diponibilidad: {
+    disponibilidad: {
       type: "boolean",
       default: true,
     },
   },
 });
+
+export default ProductSchema;
