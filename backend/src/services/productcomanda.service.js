@@ -4,7 +4,8 @@ import { AppDataSource } from "../config/configDb.js";
 
 export async function createProductComandaService(body) {
   try {
-    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository =
+      AppDataSource.getRepository(ProductComanda);
 
     const newProductComanda = productComandaRepository.create(body);
 
@@ -21,13 +22,15 @@ export async function getProductComandaService(query) {
   try {
     const { id, productId } = query;
 
-    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository =
+      AppDataSource.getRepository(ProductComanda);
 
     const productComandaFound = await productComandaRepository.findOne({
       where: [{ id: id }, { productId: productId }],
     });
 
-    if (!productComandaFound) return [null, "Producto de la comanda no encontrado"];
+    if (!productComandaFound)
+      return [null, "Producto de la comanda no encontrado"];
 
     return [productComandaFound, null];
   } catch (error) {
@@ -38,11 +41,13 @@ export async function getProductComandaService(query) {
 
 export async function getProductComandasService() {
   try {
-    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository =
+      AppDataSource.getRepository(ProductComanda);
 
     const productComandas = await productComandaRepository.find();
 
-    if (!productComandas || productComandas.length === 0) return [null, "No hay productos de la comanda"];
+    if (!productComandas || productComandas.length === 0)
+      return [null, "No hay productos de la comanda"];
 
     return [productComandas, null];
   } catch (error) {
@@ -51,16 +56,19 @@ export async function getProductComandasService() {
   }
 }
 
-
 export async function updateProductComandaService(query, body) {
   try {
     const { id } = query;
 
-    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository =
+      AppDataSource.getRepository(ProductComanda);
 
-    const productComandaFound = await productComandaRepository.findOne({ where: { id } });
+    const productComandaFound = await productComandaRepository.findOne({
+      where: { id },
+    });
 
-    if (!productComandaFound) return [null, "Producto de la comanda no encontrado"];
+    if (!productComandaFound)
+      return [null, "Producto de la comanda no encontrado"];
 
     productComandaRepository.merge(productComandaFound, body);
 
@@ -77,11 +85,15 @@ export async function deleteProductComandaService(query) {
   try {
     const { id } = query;
 
-    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository =
+      AppDataSource.getRepository(ProductComanda);
 
-    const productComandaFound = await productComandaRepository.findOne({ where: { id } });
+    const productComandaFound = await productComandaRepository.findOne({
+      where: { id },
+    });
 
-    if (!productComandaFound) return [null, "Producto de la comanda no encontrado"];
+    if (!productComandaFound)
+      return [null, "Producto de la comanda no encontrado"];
 
     await productComandaRepository.delete(productComandaFound);
 
@@ -94,11 +106,13 @@ export async function deleteProductComandaService(query) {
 
 export async function deleteProductComandasService() {
   try {
-    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository =
+      AppDataSource.getRepository(ProductComanda);
 
     const productComandas = await productComandaRepository.find();
 
-    if (!productComandas || productComandas.length === 0) return [null, "No hay productos de la comanda"];
+    if (!productComandas || productComandas.length === 0)
+      return [null, "No hay productos de la comanda"];
 
     await productComandaRepository.delete(productComandas);
 
@@ -113,11 +127,15 @@ export async function getProductComandaByComandaService(query) {
   try {
     const { comandaId } = query;
 
-    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository =
+      AppDataSource.getRepository(ProductComanda);
 
-    const productComandas = await productComandaRepository.find({ where: { comandaId } });
+    const productComandas = await productComandaRepository.find({
+      where: { comandaId },
+    });
 
-    if (!productComandas || productComandas.length === 0) return [null, "No hay productos de la comanda"];
+    if (!productComandas || productComandas.length === 0)
+      return [null, "No hay productos de la comanda"];
 
     return [productComandas, null];
   } catch (error) {
@@ -130,11 +148,15 @@ export async function deleteProductComandaByComandaService(query) {
   try {
     const { comandaId } = query;
 
-    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository =
+      AppDataSource.getRepository(ProductComanda);
 
-    const productComandas = await productComandaRepository.find({ where: { comandaId } });
+    const productComandas = await productComandaRepository.find({
+      where: { comandaId },
+    });
 
-    if (!productComandas || productComandas.length === 0) return [null, "No hay productos de la comanda"];
+    if (!productComandas || productComandas.length === 0)
+      return [null, "No hay productos de la comanda"];
 
     await productComandaRepository.delete(productComandas);
 
@@ -144,4 +166,3 @@ export async function deleteProductComandaByComandaService(query) {
     return [null, "Error interno del servidor"];
   }
 }
-

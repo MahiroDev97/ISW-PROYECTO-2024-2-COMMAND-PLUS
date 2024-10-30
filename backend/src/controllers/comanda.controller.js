@@ -66,36 +66,43 @@ export async function getComandas(req, res) {
 
 export async function updateComanda(req, res) {
   try {
-    const { id } = req.params;
+    const { id } = req.query;
     const { body } = req;
 
-    const { error } = comandaBodyValidation.validate(body);
+    const { error: queryError } = comandaQueryValidation.validate({ id });
 
-    if (error) return handleErrorClient(res, 400, error.message);
+    if (queryError) return handleErrorClient(res, 400, error.message);
 
-    const [comanda, errorComanda] = await updateComandaService(id, body);
+    const { error: bodyError } = comandaBodyValidation.validate(body);
 
-    if (errorComanda) return handleErrorClient(res, 404, errorComanda);
+    if (bodyError) return handleErrorClient(res, 400, error.message);
 
-    handleSuccess(res, 200, "Comanda actualizada", comanda);
+    const [updateComanda, errorUpdate] = await updateComandaService(
+      { id },
+      body,
+    );
+
+    if (errorUpdate) return handleErrorClient(res, 404, errorUpdate);
+
+    handleSuccess(res, 200, "Comanda actualizada", updateComanda);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }
 }
 
 export async function deleteComanda(req, res) {
-    try{
-        const { id } = req.params;
-        const { error } = comandaQueryValidation.validate({ id });
+  try {
+    const { id } = req.params;
+    const { error } = comandaQueryValidation.validate({ id });
 
-        if(error) return handleErrorClient(res, 400, error.message);
+    if (error) return handleErrorClient(res, 400, error.message);
 
-        const [comanda, errorComanda] = await deleteComandaService(id);
+    const [comanda, errorComanda] = await deleteComandaService(id);
 
-        if(errorComanda) return handleErrorClient(res, 404, errorComanda);
+    if (errorComanda) return handleErrorClient(res, 404, errorComanda);
 
-        handleSuccess(res, 200, "Comanda eliminada", comanda);
-    }catch(error){
-        handleErrorServer(res, 500, error.message);
-    }
+    handleSuccess(res, 200, "Comanda eliminada", comanda);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
 }

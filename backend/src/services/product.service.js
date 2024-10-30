@@ -61,7 +61,9 @@ export async function updateProductService(query, body) {
 
     if (!productFound) return [null, "Producto no encontrado"];
 
-    await productRepository.update(productFound.id, body);
+    const updatedData = { ...productFound, ...body };
+
+    await productRepository.update(productFound.id, updatedData);
 
     const updatedProduct = await productRepository.findOne({
       where: { id: productFound.id },
