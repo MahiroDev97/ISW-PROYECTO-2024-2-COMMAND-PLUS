@@ -1,14 +1,14 @@
 "use strict";
 import {
-  productQueryValidation,
   productBodyValidation,
+  productQueryValidation,
 } from "../validations/product.validation.js";
 import {
   createProductService,
+  deleteProductService,
   getProductService,
   getProductsService,
   updateProductService,
-  deleteProductService,
 } from "../services/product.service.js";
 import {
   handleErrorClient,
