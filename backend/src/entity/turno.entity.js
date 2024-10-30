@@ -22,8 +22,16 @@ const TurnoSchema = new EntitySchema({
             nullable: true,
         },
         user: {
-            type: UserSchema,
+            type: "int",
             nullable: false,
+            references: {
+                name: "user_id",
+                referencedTableName: "users",
+                referencedColumnNames: ["id"],
+            },
         },
     },
 });
+
+
+export default TurnoSchema;
