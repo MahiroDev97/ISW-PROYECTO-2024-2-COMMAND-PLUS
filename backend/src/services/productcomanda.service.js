@@ -18,15 +18,16 @@ export async function createProductComandaService(body) {
   }
 }
 
+// funcion 
 export async function getProductComandaService(query) {
   try {
-    const { id, productId } = query;
+    const { id } = query;
 
     const productComandaRepository =
       AppDataSource.getRepository(ProductComanda);
 
     const productComandaFound = await productComandaRepository.findOne({
-      where: [{ id: id }, { productId: productId }],
+      where: [{ id: id }],
     });
 
     if (!productComandaFound)
@@ -55,7 +56,7 @@ export async function getProductComandasService() {
     return [null, "Error interno del servidor"];
   }
 }
-
+// funcion que actualiza un productcomanda
 export async function updateProductComandaService(query, body) {
   try {
     const { id } = query;
@@ -122,7 +123,7 @@ export async function deleteProductComandasService() {
     return [null, "Error interno del servidor"];
   }
 }
-
+// Funcion para obtener todos los productos de una comanda
 export async function getProductComandaByComandaService(query) {
   try {
     const { comandaId } = query;
@@ -143,7 +144,7 @@ export async function getProductComandaByComandaService(query) {
     return [null, "Error interno del servidor"];
   }
 }
-
+// Funcion para eliminar todos los productos de una comanda
 export async function deleteProductComandaByComandaService(query) {
   try {
     const { comandaId } = query;

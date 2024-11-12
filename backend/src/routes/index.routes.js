@@ -6,6 +6,7 @@ import productRoutes from "./product.routes.js";
 import comandaRoutes from "./comanda.routes.js";
 import turnoRoutes from "./turno.routes.js";
 import productcomanda from "./productcomanda.routes.js";
+import cocineroRoutes from "./cocinero.routes.js";
 const router = Router();
 
 router
@@ -14,6 +15,7 @@ router
   .use("/product", productRoutes)
   .use("/comanda", comandaRoutes)
   .use("/turno", turnoRoutes)
-  .use("/productcomanda", productcomanda);
+  .use("/productcomanda", productcomanda)
+  .use("/cocinero", cocineroRoutes);
 
 export default router;

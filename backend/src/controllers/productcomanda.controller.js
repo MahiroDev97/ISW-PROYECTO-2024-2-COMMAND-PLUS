@@ -4,6 +4,7 @@ import {
   createProductComandaService,
   getProductComandaService,
   getProductComandasService,
+  getProductComandaByComandaService,
   updateProductComandaService,
   deleteProductComandaService,
 } from "../services/productcomanda.service.js";
@@ -51,19 +52,19 @@ export async function createProductComanda(req, res) {
   }
 }
 
+// funcion que busca un productcomanda
 export async function getProductComanda(req, res) {
   try {
-    const { id, id_product } = req.query;
+    const { id } = req.query;
 
     const { error } = productComandaQueryValidation.validate({
       id,
-      id_product,
     });
 
     if (error) return handleErrorClient(res, 400, error.message);
 
     const [productComanda, errorProductComanda] =
-      await getProductComandaService({ id, id_product });
+      await getProductComandaService({ id });
 
     if (errorProductComanda)
       return handleErrorClient(res, 404, errorProductComanda);
@@ -90,6 +91,56 @@ export async function getProductComandas(req, res) {
   }
 }
 
+// busca los productos de una comanda
+export async function getProductComandaByComanda(req, res) {
+
+  try { 
+
+    const { idComanda } = req.query;
+
+    const { error } = productComandaQueryValidation.validate({
+      idComanda,
+    });
+
+    if (error) return handleErrorClient(res, 400, error.message);
+
+    const [productComanda, errorProductComanda] =
+
+      await getProductComandaByComandaService({ idComanda });
+
+    if (errorProductComanda)
+      return handleErrorClient(res, 404, errorProductComanda);
+
+    handleSuccess(res, 200, "ProductComanda found", productComanda);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// funcion que actualiza el estado de un producto de una comanda
 export async function updateProductComanda(req, res) {
   try {
     const { id } = req.query;

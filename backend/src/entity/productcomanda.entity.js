@@ -10,6 +10,10 @@ const ProductComandaSchema = new EntitySchema({
       primary: true,
       generated: true,
     },
+    comandaId: {
+      type: "int",
+      nullable: false,
+    },
     id_product: {
       type: "int",
       nullable: false,
