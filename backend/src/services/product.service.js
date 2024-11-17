@@ -94,3 +94,4 @@ export async function deleteProductService(query) {
     return [null, "Error interno del servidor"];
   }
 }
+

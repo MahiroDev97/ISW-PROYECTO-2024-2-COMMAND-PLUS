@@ -34,3 +34,29 @@ export const productComandaBodyValidation = Joi.object({
     "date.base": "La fecha y hora de entrega debe ser de tipo date.",
   }),
 });
+
+export const productosPorMesQueryValidation = Joi.object({
+  mes: Joi.number().integer().min(1).max(12).required().messages({
+    "number.base": "El mes debe ser un número.",
+    "number.integer": "El mes debe ser un número entero.",
+    "number.min": "El mes debe ser mayor o igual a 1.",
+    "number.max": "El mes debe ser menor o igual a 12.",
+    "any.required": "El mes es requerido.",
+  }),
+  ano: Joi.number()
+    .integer()
+    .min(2023)
+    .max(new Date().getFullYear())
+    .required()
+    .messages({
+      "number.base": "El año debe ser un número.",
+      "number.integer": "El año debe ser un número entero.",
+      "number.min": "El año debe ser mayor o igual a 2000.",
+      "number.max": "El año debe ser menor o igual al año actual.",
+      "any.required": "El año es requerido.",
+    }),
+});
+
+
+
+

@@ -90,3 +90,20 @@ export async function deleteComandaService(query) {
     return [null, "Error interno del servidor"];
   }
 }
+
+export async function getComandasPorMesService(query) {
+  try {
+    const { mes } = query;
+
+    const comandaRepository = AppDataSource.getRepository(Comanda);
+    // Buscar las comandas por el mes 
+    const comandas = await comandaRepository.find({ where: { fecha: mes } });
+
+    if (!comandas || comandas.length === 0) return [null, "No hay comandas en el mes seleccionado"];
+
+    return [comandas, null];
+  } catch (error) {
+    console.error("Error al obtener las comandas por mes:", error);
+    return [null, "Error interno del servidor"];
+  }
+}

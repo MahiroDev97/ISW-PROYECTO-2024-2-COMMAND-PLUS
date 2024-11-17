@@ -1,6 +1,8 @@
+/* eslint-disable quotes */
 "use strict";
 import ProductComanda from "../entity/productcomanda.entity.js";
 import { AppDataSource } from "../config/configDb.js";
+import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 
 export async function createProductComandaService(body) {
   try {
@@ -164,6 +166,60 @@ export async function deleteProductComandaByComandaService(query) {
     return [productComandas, null];
   } catch (error) {
     console.error("Error al eliminar los productos de la comanda:", error);
+    return [null, "Error interno del servidor"];
+  }
+}
+
+export async function getProductosPorMesService(query) {
+  try {
+    const { mes, ano } = query;
+    const mesFormateado = mes.toString().padStart(2, '0');
+    const ultimoDia = new Date(ano, mes, 0).getDate();
+
+    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+
+    const productos = await productComandaRepository
+      .createQueryBuilder("productComanda")
+      .leftJoinAndSelect("productComanda.product", "product")
+      .where({
+        fechahorarecepcion: Between(
+          new Date(`${ano}-${mesFormateado}-01T00:00:00.000Z`),
+          new Date(`${ano}-${mesFormateado}-${ultimoDia}T23:59:59.999Z`)
+        )
+      })
+      .orderBy("productComanda.fechahorarecepcion", "ASC")
+      .getMany();
+
+    if (!productos || productos.length === 0) {
+      return [null, "No se encontraron productos para el período especificado"];
+    }
+
+    // Opcional: Agregar conteo de productos más vendidos
+    const productosContados = productos.reduce((acc, curr) => {
+      const producto = curr.product;
+      if (!acc[producto.id]) {
+        acc[producto.id] = {
+          id: producto.id,
+          nombre: producto.nombre,
+          categoria: producto.categoria,
+          precio: producto.precio,
+          cantidad: 1
+        };
+      } else {
+        acc[producto.id].cantidad += 1;
+      }
+      return acc;
+    }, {});
+
+    const resumenProductos = {
+      productos: productos,
+      resumenVentas: Object.values(productosContados)
+        .sort((a, b) => b.cantidad - a.cantidad)
+    };
+
+    return [resumenProductos, null];
+  } catch (error) {
+    console.error("Error al obtener los productos más vendidos por mes:", error);
     return [null, "Error interno del servidor"];
   }
 }

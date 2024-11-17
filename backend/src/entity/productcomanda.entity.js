@@ -17,6 +17,11 @@ const ProductComandaSchema = new EntitySchema({
     id_product: {
       type: "int",
       nullable: false,
+      references: {
+        name: "product_id",
+        referencedTableName: "products",
+        referencedColumnNames: ["id"],
+      },
     },
     estadoproductocomanda: {
       type: "text",
@@ -32,6 +37,16 @@ const ProductComandaSchema = new EntitySchema({
       nullable: true,
     },
   },
+  relations: {
+    product: {
+      target: "Product",
+      type: "many-to-one",
+      joinColumn: {
+        name: "id_product"
+      },
+      eager: false
+    }
+  }
 });
 
 export default ProductComandaSchema;

@@ -2,11 +2,12 @@
 
 import {
   createProductComandaService,
+  deleteProductComandaService,
+  getProductComandaByComandaService,
   getProductComandaService,
   getProductComandasService,
-  getProductComandaByComandaService,
+  getProductosPorMesService,
   updateProductComandaService,
-  deleteProductComandaService,
 } from "../services/productcomanda.service.js";
 import {
   handleErrorClient,
@@ -17,6 +18,7 @@ import {
 import {
   productComandaBodyValidation,
   productComandaQueryValidation,
+  productosPorMesQueryValidation
 } from "../validations/productcomanda.validation.js";
 
 const validStatuses = [
@@ -94,7 +96,7 @@ export async function getProductComandas(req, res) {
 // busca los productos de una comanda
 export async function getProductComandaByComanda(req, res) {
 
-  try { 
+  try {
 
     const { idComanda } = req.query;
 
@@ -192,6 +194,25 @@ export async function deleteProductComanda(req, res) {
       return handleErrorClient(res, 404, errorProductComanda);
 
     handleSuccess(res, 200, "ProductComanda deleted");
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+
+export async function getProductosPorMes(req, res) {
+  try {
+    const { mes, ano } = req.query;
+
+    const { error } = productosPorMesQueryValidation.validate({ mes, ano });
+
+    if (error) return handleErrorClient(res, 400, error.message);
+
+    const [productos, errorProductos] = await getProductosPorMesService({ mes, ano });
+
+    if (errorProductos) return handleErrorClient(res, 404, errorProductos);
+
+    handleSuccess(res, 200, "Productos por mes", productos);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }
