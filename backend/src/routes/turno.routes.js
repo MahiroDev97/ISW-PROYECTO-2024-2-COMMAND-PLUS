@@ -3,19 +3,21 @@
 import { Router } from "express";
 import {
     createTurno,
-    getTurnos,
+    deleteTurno,
+    finishTurno,
     getTurno,
+    getTurnos,
     updateTurno,
-    deleteTurno
 } from "../controllers/turno.controller.js";
 
 const router = Router();
 
 router
-    .post("/create", createTurno)     // Ruta específica para crear
-    .get("/", getTurnos)
-    .get("/:id", getTurno)
-    .patch("/:id", updateTurno)
-    .delete("/:id", deleteTurno);
+    .post("/create", createTurno)
+    .get("/getTurnos", getTurnos)
+    .get("/getTurno/:id", getTurno)
+    .patch("/updateTurno/:id", updateTurno)
+    .delete("/deleteTurno/:id", deleteTurno)
+    .patch("/finishTurno/:id", finishTurno);
 
 export default router;

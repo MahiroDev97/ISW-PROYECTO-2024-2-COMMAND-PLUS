@@ -1,5 +1,6 @@
 "use strict";
 import Turno from "../entity/turno.entity.js";
+import User from "../entity/user.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 
 export async function createTurnoService(body) {
@@ -117,7 +118,7 @@ export async function getTurnoService(id) {
     }
 }
 
-export async function updateDatetimeFinTurnoService(body) {
+export async function updateTurnoService(body) {
     try {
         const turnoRepository = AppDataSource.getRepository(Turno);
 
@@ -127,11 +128,16 @@ export async function updateDatetimeFinTurnoService(body) {
             return [null, "No se encontró un turno con el id proporcionado"];
         }
 
-        if (turno.datetimeFin) {
-            return [null, "El turno ya ha sido finalizado"];
+        if (body.datetimeFin) {
+            turno.datetimeFin = new Date(body.datetimeFin);
         }
 
-        turno.datetimeFin = new Date();
+        if (body.datetimeInicio) {
+            turno.datetimeInicio = new Date(body.datetimeInicio);
+        }
+
+
+
         await turnoRepository.save(turno);
 
         return [turno, null];
@@ -143,19 +149,61 @@ export async function updateDatetimeFinTurnoService(body) {
 
 export async function deleteTurnoService(id) {
     try {
+        console.log("Service - ID recibido:", id); // Debug
         const turnoRepository = AppDataSource.getRepository(Turno);
 
-        const turno = await turnoRepository.findOne({ where: { id } });
+        // Verificar si el turno existe primero
+        const turno = await turnoRepository.findOne({
+            where: { id: id }
+        });
+
+        console.log("Service - Turno encontrado:", turno); // Debug
 
         if (!turno) {
+            console.log("Service - Turno no encontrado"); // Debug
             return [null, "No se encontró un turno con el id proporcionado"];
         }
 
-        await turnoRepository.delete(id);
+        // Si existe, lo eliminamos
+        await turnoRepository.remove(turno);
+        console.log("Service - Turno eliminado exitosamente"); // Debug
 
         return [turno, null];
     } catch (error) {
-        console.error("Error al eliminar el turno:", error);
+        console.error("Service - Error:", error); // Debug
+        return [null, "Error interno del servidor"];
+    }
+}
+
+export async function finishTurnoService(id_user) {
+    try {
+        const turnoRepository = AppDataSource.getRepository(Turno);
+        const userRepository = AppDataSource.getRepository(User);
+
+        const turnoActivo = await turnoRepository.findOne({
+            where: {
+                id_user: id_user,
+                datetimeFin: null
+            }
+        });
+
+        if (!turnoActivo) {
+            return [null, "No se encontró un turno activo para este usuario"];
+        }
+
+        turnoActivo.datetimeFin = new Date();
+        await turnoRepository.save(turnoActivo);
+
+        // Actualizar estado active del usuario
+        const user = await userRepository.findOne({ where: { id: id_user } });
+        if (user) {
+            user.active = false;
+            await userRepository.save(user);
+        }
+
+        return [turnoActivo, null];
+    } catch (error) {
+        console.error("Error al finalizar el turno:", error);
         return [null, "Error interno del servidor"];
     }
 }

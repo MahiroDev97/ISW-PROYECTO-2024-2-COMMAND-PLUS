@@ -64,7 +64,7 @@ export async function registerService(user) {
         email,
       },
     });
-    
+
     if (existingEmailUser) return [null, createErrorMessage("email", "Correo electrónico en uso")];
 
     const existingRutUser = await userRepository.findOne({

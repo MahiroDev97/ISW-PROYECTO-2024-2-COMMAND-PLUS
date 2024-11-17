@@ -1,6 +1,13 @@
 "use strict";
-import { createTurnoService, getTurnoService, getTurnosUsuarioService, deleteTurnoService, updateDatetimeFinTurnoService, } from "../services/turno.service.js";
-import { turnoBodyValidation, turnoQueryValidation } from "../validations/turno.validation.js";
+import {
+    createTurnoService,
+    deleteTurnoService,
+    finishTurnoService,
+    getTurnoService,
+    getTurnosUsuarioService,
+    updateTurnoService,
+} from "../services/turno.service.js";
+import { turnoBodyValidation, turnoDeleteValidation, turnoQueryValidation } from "../validations/turno.validation.js";
 import { handleErrorClient, handleErrorServer, handleSuccess } from "../handlers/responseHandlers.js";
 
 
@@ -84,7 +91,7 @@ export async function updateTurno(req, res) {
         if (error) return handleErrorClient(res, 400, error.message);
 
 
-        const [updatedTurno, errorUpdatedTurno] = await updateDatetimeFinTurnoService(body);
+        const [updatedTurno, errorUpdatedTurno] = await updateTurnoService(body);
 
         if (errorUpdatedTurno) return handleErrorClient(res, 400, errorUpdatedTurno);
 
@@ -100,16 +107,40 @@ export async function deleteTurno(req, res) {
     try {
         const { id } = req.params;
 
-        const { error } = turnoQueryValidation.validate({ id });
+        const { error } = turnoDeleteValidation.validate({ id: parseInt(id) });
+        if (error) {
+            return handleErrorClient(res, 400, error.message);
+        }
 
-        if (error) return handleErrorClient(res, 400, error.message);
+        const [turno, errorTurno] = await deleteTurnoService(parseInt(id));
 
-        const [turno, errorTurno] = await deleteTurnoService(id);
-
-        if (errorTurno) return handleErrorClient(res, 404, errorTurno);
+        if (errorTurno) {
+            return handleErrorClient(res, 404, errorTurno);
+        }
 
         handleSuccess(res, 200, "Turno eliminado", turno);
     } catch (error) {
         handleErrorServer(res, 500, error.message);
+    }
+}
+
+export async function finishTurno(req, res) {
+    try {
+        const { id } = req.params;
+
+        const { error } = turnoQueryValidation.validate({ id });
+
+        if (error) return handleErrorClient(res, 400, error.message);
+
+        const [turno, errorTurno] = await finishTurnoService(id);
+
+        if (errorTurno) return handleErrorClient(res, 400, errorTurno);
+
+        handleSuccess(res, 200, "Turno finalizado", turno);
+
+
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+
     }
 }

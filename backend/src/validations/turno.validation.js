@@ -17,9 +17,9 @@ export const turnoQueryValidation = Joi.object({
         "date.base": "La fecha de inicio debe ser una fecha válida.",
         "date.format": "La fecha de inicio debe tener el formato ISO 8601.",
     }),
-    datetimeFin: Joi.date().iso().when('datetimeInicio', {
+    datetimeFin: Joi.date().iso().when("datetimeInicio", {
         is: Joi.date().required(),
-        then: Joi.date().greater(Joi.ref('datetimeInicio')),
+        then: Joi.date().greater(Joi.ref("datetimeInicio")),
     }).messages({
         "date.base": "La fecha de fin debe ser una fecha válida.",
         "date.greater": "La fecha de fin debe ser una fecha posterior a la fecha de inicio.",
@@ -37,12 +37,20 @@ export const turnoBodyValidation = Joi.object({
         "date.base": "La fecha de inicio debe ser una fecha válida.",
         "date.format": "La fecha de inicio debe tener el formato ISO 8601.",
     }),
-    datetimeFin: Joi.date().iso().when('datetimeInicio', {
+    datetimeFin: Joi.date().iso().when("datetimeInicio", {
         is: Joi.date().required(),
-        then: Joi.date().greater(Joi.ref('datetimeInicio')),
+        then: Joi.date().greater(Joi.ref("datetimeInicio")),
     }).messages({
         "date.base": "La fecha de fin debe ser una fecha válida.",
         "date.greater": "La fecha de fin debe ser una fecha posterior a la fecha de inicio.",
         "date.format": "La fecha de fin debe tener el formato ISO 8601.",
     }),
 });
+
+export const turnoDeleteValidation = Joi.object({
+    id: Joi.number().integer().min(1).positive().messages({
+        "number.base": "El id debe ser un número.",
+        "number.integer": "El id debe ser un número entero.",
+        "number.positive": "El id debe ser un número positivo.",
+    }),
+}); 
