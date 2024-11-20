@@ -147,6 +147,13 @@ export const isGarzonOrAdmin = async (req, res, next) => {
         "Acceso denegado. Solo usuarios garzones o administradores pueden acceder.",
       );
     }
+
+    // Verificar horario laboral y de cocina
+    const currentHour = new Date().getHours();
+    if (currentHour < 9 || currentHour > 22) {
+      return handleErrorClient(res, 403, "Acceso denegado. Solo disponible en horario laboral y de cocina.");
+    }
+
     next();
   } catch (error) {
     handleErrorServer(res, 500, error.message);

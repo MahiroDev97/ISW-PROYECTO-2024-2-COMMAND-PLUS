@@ -207,3 +207,19 @@ export async function finishTurnoService(id_user) {
         return [null, "Error interno del servidor"];
     }
 }
+
+export async function isUserInTurno(id_user) {
+    try {
+        const turnoRepository = AppDataSource.getRepository(Turno);
+        const turnoActivo = await turnoRepository.findOne({
+            where: {
+                id_user: id_user,
+                datetimeFin: null
+            }
+        });
+        return turnoActivo !== null;
+    } catch (error) {
+        console.error("Error al verificar el turno del usuario:", error);
+        return false;
+    }
+}
