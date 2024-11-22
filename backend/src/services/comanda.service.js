@@ -114,3 +114,24 @@ export async function getComandasPorMesService(query) {
     return [null, "Error interno del servidor"];
   }
 }
+
+export async function confirmComandaService(query) {
+  try {
+    const { id } = query;
+
+    const comandaRepository = AppDataSource.getRepository(Comanda);
+
+    const comandaFound = await comandaRepository.findOne({ where: { id } });
+
+    if (!comandaFound) return [null, "Comanda no encontrada"];
+
+    comandaFound.estado = "confirmada"; // Actualizar el estado de la comanda
+
+    await comandaRepository.save(comandaFound);
+
+    return [comandaFound, null];
+  } catch (error) {
+    console.error("Error al confirmar la comanda:", error);
+    return [null, "Error interno del servidor"];
+  }
+}

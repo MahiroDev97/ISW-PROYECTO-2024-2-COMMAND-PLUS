@@ -4,11 +4,13 @@ import {
   comandaQueryValidation,
 } from "../validations/comanda.validation.js";
 import {
+  confirmComandaService, 
   createComandaService,
   deleteComandaService,
   getComandaService,
   getComandasService,
   updateComandaService,
+  
 } from "../services/comanda.service.js";
 import {
   handleErrorClient,
@@ -102,6 +104,23 @@ export async function deleteComanda(req, res) {
     if (errorComanda) return handleErrorClient(res, 404, errorComanda);
 
     handleSuccess(res, 200, "Comanda eliminada", comanda);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function confirmComanda(req, res) {
+  try {
+    const { id } = req.query;
+    const { error } = comandaQueryValidation.validate({ id });
+
+    if (error) return handleErrorClient(res, 400, error.message);
+
+    const [comanda, errorComanda] = await confirmComandaService({ id });
+
+    if (errorComanda) return handleErrorClient(res, 404, errorComanda);
+
+    handleSuccess(res, 200, "Comanda confirmada", comanda);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }

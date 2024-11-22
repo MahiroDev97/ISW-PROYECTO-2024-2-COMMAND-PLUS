@@ -7,11 +7,12 @@ import {
   isGarzonOrAdmin,
 } from "../middlewares/authorization.middleware.js";
 import {
+  confirmComanda,
   createComanda,
   deleteComanda,
   getComanda,
   getComandas,
-  updateComanda,
+  updateComanda
 } from "../controllers/comanda.controller.js";
 
 const router = Router();
@@ -23,6 +24,7 @@ router
   .get("/", getComandas)
   .get("/detail/", getComanda)
   .patch("/detail/", updateComanda)
+  .patch("/confirm/", confirmComanda) // Nueva ruta para confirmar la comanda
   .delete("/detail/", deleteComanda);
 
 export default router;
