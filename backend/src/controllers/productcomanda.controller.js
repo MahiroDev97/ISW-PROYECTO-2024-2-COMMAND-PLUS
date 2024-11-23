@@ -3,6 +3,7 @@
 import {
   createProductComandaService,
   deleteProductComandaService,
+  getAvailableProductsService,
   getProductComandaByComandaService,
   getProductComandaService,
   getProductComandasService,
@@ -16,9 +17,10 @@ import {
 } from "../handlers/responseHandlers.js";
 
 import {
+  availableProductsQueryValidation,
   productComandaBodyValidation,
   productComandaQueryValidation,
-  productosPorMesQueryValidation
+  productosPorMesQueryValidation,  
 } from "../validations/productcomanda.validation.js";
 
 const validStatuses = [
@@ -119,29 +121,6 @@ export async function getProductComandaByComanda(req, res) {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // funcion que actualiza el estado de un producto de una comanda
 export async function updateProductComanda(req, res) {
   try {
@@ -199,7 +178,6 @@ export async function deleteProductComanda(req, res) {
   }
 }
 
-
 export async function getProductosPorMes(req, res) {
   try {
     const { mes, ano } = req.query;
@@ -213,6 +191,26 @@ export async function getProductosPorMes(req, res) {
     if (errorProductos) return handleErrorClient(res, 404, errorProductos);
 
     handleSuccess(res, 200, "Productos por mes", productos);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function getAvailableProducts(req, res) {
+  try {
+    const { available } = req.query;
+
+    const { error } = availableProductsQueryValidation.validate({ available });
+
+    if (error) return handleErrorClient(res, 400, error.message);
+
+    const [availableProducts, errorAvailableProducts] =
+      await getAvailableProductsService();
+
+    if (errorAvailableProducts)
+      return handleErrorClient(res, 404, errorAvailableProducts);
+
+    handleSuccess(res, 200, "Productos disponibles encontrados", availableProducts);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }

@@ -223,3 +223,21 @@ export async function getProductosPorMesService(query) {
     return [null, "Error interno del servidor"];
   }
 }
+
+export async function getAvailableProductsService() {
+  try {
+    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+
+    const availableProducts = await productComandaRepository.find({
+      where: { estadoproductocomanda: "disponible" },
+    });
+
+    if (!availableProducts || availableProducts.length === 0)
+      return [null, "No hay productos disponibles"];
+
+    return [availableProducts, null];
+  } catch (error) {
+    console.error("Error al obtener los productos disponibles:", error);
+    return [null, "Error interno del servidor"];
+  }
+}

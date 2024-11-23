@@ -154,6 +154,12 @@ export const isGarzonOrAdmin = async (req, res, next) => {
       return handleErrorClient(res, 403, "Acceso denegado. Solo disponible en horario laboral y de cocina.");
     }
 
+    // Verificar si el usuario está en turno
+    const inTurno = await isUserInTurno(req.user.id);
+    if (!inTurno) {
+      return handleErrorClient(res, 403, "El usuario no está en turno");
+    }
+
     next();
   } catch (error) {
     handleErrorServer(res, 500, error.message);

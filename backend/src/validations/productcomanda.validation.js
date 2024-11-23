@@ -57,6 +57,12 @@ export const productosPorMesQueryValidation = Joi.object({
     }),
 });
 
+export const availableProductsQueryValidation = Joi.object({
+  available: Joi.boolean().required().messages({
+    "any.required": "El campo de disponibilidad es requerido.",
+  }),
+});
+
 
 
 

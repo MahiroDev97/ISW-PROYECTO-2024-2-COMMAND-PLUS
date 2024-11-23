@@ -5,10 +5,11 @@ import { authenticateJwt } from "../middlewares/authentication.middleware.js";
 import {
   createProductComanda,
   deleteProductComanda,
+  getAvailableProducts,
   getProductComanda,
   getProductComandas,
   getProductosPorMes,
-  updateProductComanda,
+  updateProductComanda
 } from "../controllers/productcomanda.controller.js";
 
 const router = Router();
@@ -20,6 +21,7 @@ router
   .get("/", getProductComandas)
   .get("/detail/", getProductComanda)
   .get("/history/mes", getProductosPorMes)
+  .get("/available", getAvailableProducts)
   .patch("/detail/", updateProductComanda)
   .delete("/detail/", deleteProductComanda);
 
