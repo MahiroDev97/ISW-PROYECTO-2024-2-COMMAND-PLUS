@@ -7,8 +7,10 @@ import Register from '@pages/Register';
 import Error404 from '@pages/Error404';
 import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
+import Orders from '@pages/Orders';
 import '@styles/styles.css';
 
+//funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
 const router = createBrowserRouter([
   {
     path: '/',
@@ -26,7 +28,19 @@ const router = createBrowserRouter([
           <Users />
         </ProtectedRoute>
         ),
-    }
+    },
+  {
+    path: '/orders',
+    element: (
+    <ProtectedRoute allowedRoles={['administrador', 'cocinero']}>
+      <Orders />
+    </ProtectedRoute>
+    ),
+  }
+    
+
+
+
     ]
   },
   {
@@ -38,7 +52,7 @@ const router = createBrowserRouter([
     element: <Register/>
   }
 ])
-
+//renderiza el router en el root del html 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <RouterProvider router={router}/>
 )
