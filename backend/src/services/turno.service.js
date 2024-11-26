@@ -2,16 +2,20 @@
 import Turno from "../entity/turno.entity.js";
 import User from "../entity/user.entity.js";
 import { AppDataSource } from "../config/configDb.js";
+import { IsNull, Not } from "typeorm"; // Asegúrate de importar IsNull
 
 export async function createTurnoService(body) {
     try {
         const turnoRepository = AppDataSource.getRepository(Turno);
+        const userRepository = AppDataSource.getRepository(User);
 
-        // Verificar si el usuario ya tiene un turno activo (sin datetimeFin)
+        // Verificar si el usuario ya tiene un turno activo, el ultimo turno creado no debe tener fecha de inicio
         const turnoActivo = await turnoRepository.findOne({
             where: {
                 id_user: body.id_user,
-                datetimeFin: null
+                datetimeInicio: Not(IsNull()),
+                datetimeFin: IsNull()
+
             }
         });
 
@@ -19,13 +23,22 @@ export async function createTurnoService(body) {
             return [null, "El usuario ya tiene un turno activo"];
         }
 
+        // Asegurarse de que datetimeInicio sea una fecha válida
+        const datetimeInicio = new Date();
         const newTurno = turnoRepository.create({
             id_user: body.id_user,
-            datetimeInicio: new Date(),
+            datetimeInicio: datetimeInicio,
             datetimeFin: null
         });
 
         await turnoRepository.save(newTurno);
+
+        // Actualizar estado active del usuario
+        const user = await userRepository.findOne({ where: { id: body.id_user } });
+        if (user) {
+            user.active = true;
+            await userRepository.save(user);
+        }
 
         return [newTurno, null];
     } catch (error) {
@@ -38,10 +51,13 @@ export async function finalizarTurnoService(id_user) {
     try {
         const turnoRepository = AppDataSource.getRepository(Turno);
 
+        // Verificar si el usuario ya tiene un turno activo (con datetimeInicio y sin datetimeFin)
+        // si tienen ambas el ultimo turno creado ya esta finalizado por lo que no se puede crear uno nuevo
         const turnoActivo = await turnoRepository.findOne({
             where: {
                 id_user: id_user,
-                datetimeFin: null
+                datetimeInicio: Not(IsNull()),
+                datetimeFin: IsNull()
             }
         });
 
@@ -49,7 +65,7 @@ export async function finalizarTurnoService(id_user) {
             return [null, "No se encontró un turno activo para este usuario"];
         }
 
-        turnoActivo.datetimeFin = new Date();
+        turnoActivo.datetimeFin = new Date().toISOString();
         await turnoRepository.save(turnoActivo);
 
         return [turnoActivo, null];
@@ -183,13 +199,16 @@ export async function finishTurnoService(id_user) {
         const turnoActivo = await turnoRepository.findOne({
             where: {
                 id_user: id_user,
-                datetimeFin: null
+                datetimeInicio: Not(IsNull()),
+                datetimeFin: IsNull()
             }
         });
 
+        // Verificar si no se encontró un turno activo
         if (!turnoActivo) {
             return [null, "No se encontró un turno activo para este usuario"];
         }
+
 
         turnoActivo.datetimeFin = new Date();
         await turnoRepository.save(turnoActivo);

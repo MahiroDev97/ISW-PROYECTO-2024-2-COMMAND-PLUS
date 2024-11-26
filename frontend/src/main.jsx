@@ -9,48 +9,53 @@ import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
 import Productcomandas from './pages/Productcomandas';
 import '@styles/styles.css';
+import ActiveTurno from './pages/ActiveTurno';
 
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Root/>,
-    errorElement: <Error404/>,
+    element: <Root />,
+    errorElement: <Error404 />,
     children: [
       {
         path: '/home',
-        element: <Home/>
+        element: <Home />
       },
       {
         path: '/users',
         element: (
-        <ProtectedRoute allowedRoles={['administrador']}>
-          <Users />
-        </ProtectedRoute>
+          <ProtectedRoute allowedRoles={['administrador']}>
+            <Users />
+          </ProtectedRoute>
         ),
-    },
-  {
-    path: '/productcomandas', 
-    element: (
-      <ProtectedRoute allowedRoles={['administrador','cocinero']}>
-        <Productcomandas />
-      </ProtectedRoute>
-      
-    ),
-  },
-  ]
+      },
+      {
+        path: '/productcomandas',
+        element: (
+          <ProtectedRoute allowedRoles={['administrador', 'cocinero']}>
+            <Productcomandas />
+          </ProtectedRoute>
+
+        ),
+      },
+      {
+        path: '/activeturno',
+        element: <ActiveTurno />
+      }
+    ]
 
   },
   {
     path: '/auth',
-    element: <Login/>
+    element: <Login />
   },
   {
     path: '/register',
-    element: <Register/>
+    element: <Register />
   }
 ])
 //renderiza el router en el root del html 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <RouterProvider router={router}/>
+  <RouterProvider router={router} />
 )
