@@ -7,7 +7,7 @@ import Register from '@pages/Register';
 import Error404 from '@pages/Error404';
 import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
-import Orders from '@pages/Orders';
+import Productcomandas from './pages/Productcomandas';
 import '@styles/styles.css';
 
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
@@ -30,18 +30,16 @@ const router = createBrowserRouter([
         ),
     },
   {
-    path: '/orders',
+    path: '/productcomandas', 
     element: (
-    <ProtectedRoute allowedRoles={['administrador', 'cocinero']}>
-      <Orders />
-    </ProtectedRoute>
+      <ProtectedRoute allowedRoles={['administrador','cocinero']}>
+        <Productcomandas />
+      </ProtectedRoute>
+      
     ),
-  }
-    
+  },
+  ]
 
-
-
-    ]
   },
   {
     path: '/auth',

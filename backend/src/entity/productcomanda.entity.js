@@ -33,7 +33,7 @@ const ProductComandaSchema = new EntitySchema({
       default: () => "CURRENT_TIMESTAMP",
     },
     fechahoraentrega: {
-      type: "date",
+      type: "timestamp",
       nullable: true,
     },
   },
