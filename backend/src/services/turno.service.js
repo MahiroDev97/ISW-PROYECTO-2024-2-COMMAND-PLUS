@@ -211,13 +211,16 @@ export async function finishTurnoService(id_user) {
 export async function isUserInTurno(id_user) {
     try {
         const turnoRepository = AppDataSource.getRepository(Turno);
+        console.log(`Verificando turno para el usuario con ID ${id_user}`);
         const turnoActivo = await turnoRepository.findOne({
             where: {
                 id_user: id_user,
                 datetimeFin: null
             }
         });
-        return turnoActivo !== null;
+        const inTurno = turnoActivo !== null;
+        console.log(`Resultado de la verificación de turno para el usuario con ID ${id_user}: ${inTurno}`);
+        return inTurno;
     } catch (error) {
         console.error("Error al verificar el turno del usuario:", error);
         return false;
