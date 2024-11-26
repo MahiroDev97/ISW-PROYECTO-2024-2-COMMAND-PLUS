@@ -6,16 +6,16 @@ import { convertirMinusculas } from '@helpers/formatData.js';
 export async function login(dataUser) {
     try {
         const response = await axios.post('/auth/login', {
-            email: dataUser.email, 
+            email: dataUser.email,
             password: dataUser.password
         });
         const { status, data } = response;
         if (status === 200) {
-            const { nombreCompleto, email, rut, rol } = jwtDecode(data.data.token);
-            const userData = { nombreCompleto, email, rut, rol };
+            const { id, nombreCompleto, email, rut, rol, active } = jwtDecode(data.data.token);
+            const userData = { id, nombreCompleto, email, rut, rol, active };
             sessionStorage.setItem('usuario', JSON.stringify(userData));
             axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
-            cookies.set('jwt-auth', data.data.token, {path:'/'});
+            cookies.set('jwt-auth', data.data.token, { path: '/' });
             return response.data
         }
     } catch (error) {

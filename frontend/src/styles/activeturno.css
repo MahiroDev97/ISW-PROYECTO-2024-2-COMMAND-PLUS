@@ -1,28 +1,60 @@
+/* frontend/src/styles/activeturno.css */
 .turno-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    background-color: #f0f0f0;
+    background-color: #f0f8ff;
+    /* Color de fondo suave */
+}
+
+.logo {
+    font-size: 48px;
+    /* Tamaño del texto del logo */
+    color: #4CAF50;
+    /* Color verde */
+    margin-bottom: 20px;
+    text-align: center;
+    /* Centrar el texto */
+    font-weight: bold;
+    /* Hacer el texto más grueso */
 }
 
 .iniciar-turno {
-    padding: 10px 20px;
-    font-size: 16px;
-    background-color: #007bff;
+    background-color: #4CAF50;
+    /* Color verde */
     color: white;
+    padding: 10px 20px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px;
 }
 
 .iniciar-turno:hover {
-    background-color: #0056b3;
+    background-color: #45a049;
+    /* Color verde más oscuro al pasar el mouse */
 }
 
-.logo-command {
+.error-message {
+    color: red;
+    margin-bottom: 20px;
+}
+
+.turno-description {
+    text-align: center;
     margin-top: 20px;
+}
+
+.turno-description h1 {
     font-size: 24px;
-    font-weight: bold;
+    color: #333;
+    /* Color del texto */
+}
+
+.turno-description p {
+    font-size: 16px;
+    color: #666;
+    /* Color del texto */
 }

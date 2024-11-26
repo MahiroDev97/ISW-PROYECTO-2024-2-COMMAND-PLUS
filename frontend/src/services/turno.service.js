@@ -10,7 +10,8 @@ export async function createTurno() {
         }
         console.log('user', user);
         console.log('new Date().toISOString()', new Date().toISOString());
-        console.log('User ID', user.id);
+        console.log('user Id:', user.id);
+        console.log('user rol:', user.rol);
         const response = await axios.post(`${API_URL}/turno/create`, {
             "id_user": user.id,
             "datetimeInicio": new Date().toISOString()
@@ -27,10 +28,7 @@ export async function finishTurno() {
         if (!user) {
             return [null, "Usuario no autenticado"];
         }
-
-        const response = await axios.post('/turno/finish', {
-            id_user: user.id
-        });
+        const response = await axios.patch(`${API_URL}/turno/finishTurno/${user.id}`);
         return response.data;
     } catch (error) {
         return error.response.data;

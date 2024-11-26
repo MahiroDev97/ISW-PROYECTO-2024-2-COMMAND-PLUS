@@ -1,17 +1,17 @@
-import '../styles/activeturno.css';
+import '../styles/finishturno.css';
 import { useNavigate } from 'react-router-dom';
 import useTurnoError from '../hooks/turno/useTurnoError.jsx';
-import { createTurno } from '../services/turno.service.js';
+import { finishTurno } from '../services/turno.service.js';
 
-const ActiveTurno = () => {
+const FinishTurno = () => {
     const navigate = useNavigate();
     const { error, handleError, clearError } = useTurnoError();
 
-    const activeTurno = async () => {
+    const handleFinishTurno = async () => {
         try {
             clearError();
-            console.log('activeTurno del button activado');
-            const response = await createTurno();
+            console.log('handleFinishTurno del button activado');
+            const response = await finishTurno();
             console.log('response', response);
             if (response.status === 'Success') {
                 console.log('response.status === Success');
@@ -21,7 +21,7 @@ const ActiveTurno = () => {
                 handleError(response.details);
             }
         } catch (error) {
-            console.log('error en activeTurno');
+            console.log('error en handleFinishTurno');
             handleError(error);
         }
     }
@@ -30,13 +30,13 @@ const ActiveTurno = () => {
         <div className="turno-container">
             {error && <div className="error-message">{error.message || 'Error desconocido'}</div>}
             <h1 className="logo">Command+</h1>
-            <button className="iniciar-turno" onClick={activeTurno}>Iniciar turno</button>
+            <button className="terminar-turno" onClick={handleFinishTurno}>Terminar turno</button>
             <div className="turno-description">
-                <h1>Bienvenido a Command+</h1>
-                <p>Inicia tu turno y disfruta de la mejor experiencia en la gestión de pedidos.</p>
+                <h1>Gracias por usar Command+</h1>
+                <p>Termina tu turno y asegúrate de que todo esté en orden.</p>
             </div>
         </div>
     );
 };
 
-export default ActiveTurno;
+export default FinishTurno;
