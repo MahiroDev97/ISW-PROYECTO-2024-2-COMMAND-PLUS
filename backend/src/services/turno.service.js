@@ -234,7 +234,7 @@ export async function isUserInTurno(id_user) {
         const turnoActivo = await turnoRepository.findOne({
             where: {
                 id_user: id_user,
-                datetimeFin: null
+                active: true
             }
         });
         const inTurno = turnoActivo !== null;
