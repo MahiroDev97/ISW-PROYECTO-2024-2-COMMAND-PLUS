@@ -9,36 +9,36 @@ export async function createTurnoService(body) {
         const turnoRepository = AppDataSource.getRepository(Turno);
         const userRepository = AppDataSource.getRepository(User);
 
-        // Verificar si el usuario ya tiene un turno activo, el ultimo turno creado no debe tener fecha de inicio
+        // Verificar turno activo con la nueva estructura
         const turnoActivo = await turnoRepository.findOne({
             where: {
-                id_user: body.id_user,
+                user: { id: body.id_user },
                 datetimeInicio: Not(IsNull()),
                 datetimeFin: IsNull()
-
-            }
+            },
+            relations: ["user"]
         });
 
         if (turnoActivo) {
             return [null, "El usuario ya tiene un turno activo"];
         }
 
-        // Asegurarse de que datetimeInicio sea una fecha válida
-        const datetimeInicio = new Date();
+        const user = await userRepository.findOne({ where: { id: body.id_user } });
+        if (!user) {
+            return [null, "Usuario no encontrado"];
+        }
+
         const newTurno = turnoRepository.create({
-            id_user: body.id_user,
-            datetimeInicio: datetimeInicio,
+            user: user,
+            datetimeInicio: new Date(),
             datetimeFin: null
         });
 
         await turnoRepository.save(newTurno);
 
-        // Actualizar estado active del usuario
-        const user = await userRepository.findOne({ where: { id: body.id_user } });
-        if (user) {
-            user.active = true;
-            await userRepository.save(user);
-        }
+        // Actualizar estado del usuario
+        user.active = true;
+        await userRepository.save(user);
 
         return [newTurno, null];
     } catch (error) {
@@ -51,14 +51,13 @@ export async function finalizarTurnoService(id_user) {
     try {
         const turnoRepository = AppDataSource.getRepository(Turno);
 
-        // Verificar si el usuario ya tiene un turno activo (con datetimeInicio y sin datetimeFin)
-        // si tienen ambas el ultimo turno creado ya esta finalizado por lo que no se puede crear uno nuevo
         const turnoActivo = await turnoRepository.findOne({
             where: {
-                id_user: id_user,
+                user: { id: id_user },
                 datetimeInicio: Not(IsNull()),
                 datetimeFin: IsNull()
-            }
+            },
+            relations: ["user"]
         });
 
         if (!turnoActivo) {
@@ -81,9 +80,10 @@ export async function getTurnoActivoService(id_user) {
 
         const turnoActivo = await turnoRepository.findOne({
             where: {
-                id_user: id_user,
-                datetimeFin: null
-            }
+                user: { id: id_user },
+                datetimeFin: IsNull()
+            },
+            relations: ["user"]
         });
 
         if (!turnoActivo) {
@@ -102,7 +102,10 @@ export async function getTurnosUsuarioService(id_user) {
         const turnoRepository = AppDataSource.getRepository(Turno);
 
         const turnos = await turnoRepository.find({
-            where: { id_user: id_user },
+            where: {
+                user: { id: id_user }
+            },
+            relations: ["user"],
             order: { datetimeInicio: "DESC" }
         });
 
@@ -198,10 +201,11 @@ export async function finishTurnoService(id_user) {
 
         const turnoActivo = await turnoRepository.findOne({
             where: {
-                id_user: id_user,
+                user: { id: id_user },
                 datetimeInicio: Not(IsNull()),
                 datetimeFin: IsNull()
-            }
+            },
+            relations: ["user"]
         });
 
         // Verificar si no se encontró un turno activo
@@ -231,15 +235,15 @@ export async function isUserInTurno(id_user) {
     try {
         const turnoRepository = AppDataSource.getRepository(Turno);
         console.log(`Verificando turno para el usuario con ID ${id_user}`);
+
         const turnoActivo = await turnoRepository.findOne({
             where: {
-
-                user: {id: id_user },
-                active: true
+                user: { id: id_user },
+                datetimeFin: IsNull()
             },
             relations: ["user"]
-
         });
+
         const inTurno = turnoActivo !== null;
         console.log(`Resultado de la verificación de turno para el usuario con ID ${id_user}: ${inTurno}`);
         return inTurno;
