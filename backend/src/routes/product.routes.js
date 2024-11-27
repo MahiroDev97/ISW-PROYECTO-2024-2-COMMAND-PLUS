@@ -12,7 +12,7 @@ import {
 
 const router = Router();
 
-router.use(authenticateJwt).use(isAdmin);
+router.use(authenticateJwt);
 
 router
   .post("/", createProduct)

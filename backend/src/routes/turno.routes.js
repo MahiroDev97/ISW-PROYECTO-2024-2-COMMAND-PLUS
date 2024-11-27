@@ -1,4 +1,5 @@
 "use strict";
+import { authenticateJwt } from "../middlewares/authentication.middleware.js";
 
 import { Router } from "express";
 import {
@@ -10,7 +11,9 @@ import {
     updateTurno,
 } from "../controllers/turno.controller.js";
 
-const router = Router();
+const router = Router(authenticateJwt);
+
+router.use();
 
 router
     .post("/create", createTurno)

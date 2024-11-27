@@ -15,7 +15,7 @@ import {
 
 const router = Router();
 
-//router.use(authenticateJwt).use(isAdmin);
+router.use(authenticateJwt).use(isAdmin);
 
 router
   .post("/", createProductComanda)
