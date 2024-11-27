@@ -1,46 +1,62 @@
-
-
-export const TopProductsTable = ({ products }) => {
-    return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Producto
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Precio
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Unidades Vendidas
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Total
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {products.map((product) => (
-                            <tr key={product.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {product.nombre}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${product.precio.toFixed(0)}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {product.cantidad}
-                                </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    €{(product.precio * product.cantidad).toFixed(0)}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+const TopProductosTable = ({ products, loading }) => {
+    if (loading) {
+        return (
+            <div className="bg-white rounded-xl shadow-lg p-6 text-center">
+                <p className="text-gray-500">Cargando productos...</p>
             </div>
+        );
+    }
+
+    if (!products || products.length === 0) {
+        return (
+            <div className="w-full text-center py-12">
+                <div className="text-gray-400 text-lg">
+                    No hay productos para mostrar
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm">
+            <table className="w-full text-sm">
+                <thead className="bg-gray-100/50 border-b">
+                    <tr>
+                        {['Producto', 'Precio', 'Unidades Vendidas', 'Total'].map((header) => (
+                            <th
+                                key={header}
+                                className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider"
+                            >
+                                {header}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                    {products?.map((product) => (
+                        <tr
+                            key={product.id}
+                            className="hover:bg-gray-50/50 transition-colors duration-200"
+                        >
+                            <td className="px-4 py-4 font-medium text-gray-900">
+                                {product.nombre}
+                            </td>
+                            <td className="px-4 py-4 text-gray-600">
+                                ${product.precio.toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            </td>
+                            <td className="px-4 py-4 text-center text-gray-600">
+                                {product.cantidad}
+                            </td>
+                            <td className="px-4 py-4 font-semibold text-gray-800">
+                                ${(product.precio * product.cantidad).toLocaleString('es-CL', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                            </td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
-}
+};
+
+export default TopProductosTable;
+

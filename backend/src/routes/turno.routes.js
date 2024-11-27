@@ -13,7 +13,7 @@ import {
 const router = Router();
 
 router
-    .post("/", createTurno)
+    .post("/create", createTurno)
     .get("/", getTurnos)
     .get("/:id", getTurno)
     .patch("/:id", updateTurno)
