@@ -2,10 +2,16 @@ import '../styles/activeturno.css';
 import { useNavigate } from 'react-router-dom';
 import useTurnoError from '../hooks/turno/useTurnoError.jsx';
 import { createTurno } from '../services/turno.service.js';
+import useUser from '../hooks/auth/useUser';
 
 const ActiveTurno = () => {
     const navigate = useNavigate();
     const { error, handleError, clearError } = useTurnoError();
+    const user = useUser();
+
+    if (user.active) {
+        navigate('/home');
+    }
 
     const activeTurno = async () => {
         try {
@@ -15,7 +21,7 @@ const ActiveTurno = () => {
             console.log('response', response);
             if (response.status === 'Success') {
                 console.log('response.status === Success');
-                navigate('/auth');
+                navigate('/home');
             } else if (response.status === 'Client error') {
                 console.log('response.status === Client error');
                 handleError(response.details);

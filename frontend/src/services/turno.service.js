@@ -4,6 +4,7 @@ const API_URL = 'http://127.0.0.1:3000/api';
 
 export async function createTurno() {
     try {
+
         const user = JSON.parse(sessionStorage.getItem('usuario'));
         if (!user) {
             return [null, "Usuario no autenticado"];
@@ -16,6 +17,7 @@ export async function createTurno() {
             "id_user": user.id,
             "datetimeInicio": new Date().toISOString()
         });
+
         return response.data;
     } catch (error) {
         return error.response.data;

@@ -4,13 +4,14 @@ import {
   comandaQueryValidation,
 } from "../validations/comanda.validation.js";
 import {
-  confirmComandaService, 
+  confirmComandaService,
   createComandaService,
   deleteComandaService,
   getComandaService,
   getComandasService,
+  getMesAnoDisponiblesService,
   updateComandaService,
-  
+
 } from "../services/comanda.service.js";
 import {
   handleErrorClient,
@@ -125,3 +126,14 @@ export async function confirmComanda(req, res) {
     handleErrorServer(res, 500, error.message);
   }
 }
+export async function getMesAnoDisponibles(req, res) {
+  try {
+    const [mesAnoDisponibles, errorMesAnoDisponibles] = await getMesAnoDisponiblesService();
+
+    if (errorMesAnoDisponibles) return handleErrorClient(res, 404, errorMesAnoDisponibles);
+
+    handleSuccess(res, 200, "Meses y años disponibles", mesAnoDisponibles);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+} 

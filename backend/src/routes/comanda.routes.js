@@ -12,19 +12,21 @@ import {
   deleteComanda,
   getComanda,
   getComandas,
+  getMesAnoDisponibles,
   updateComanda
 } from "../controllers/comanda.controller.js";
 
 const router = Router();
 
-router.use(authenticateJwt).use(isGarzonOrAdmin);
+//router.use(authenticateJwt).use(isGarzonOrAdmin);
 
 router
   .post("/", createComanda)
   .get("/", getComandas)
   .get("/detail/", getComanda)
+  .get("/getMesAnoDisponibles", getMesAnoDisponibles)
   .patch("/detail/", updateComanda)
-  .patch("/confirm/", confirmComanda) // Nueva ruta para confirmar la comanda
+  .patch("/confirm/", confirmComanda)
   .delete("/detail/", deleteComanda);
 
 export default router;
