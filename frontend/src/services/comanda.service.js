@@ -1,23 +1,22 @@
 import axios from './root.service.js';
-import { formatUserData } from '@helpers/formatData.js';
+
 
 export async function getComanda(id) {
     try {
-        const { data } = await axios.get(`/comanda/detail/?id=${id}`);
-        return data.data;
+        const response = await axios.get(`/comanda/detail/?id=${id}`);
+        return response.data.data;
     } catch (error) {
-        return error.response.data;
+        console.error('Error', error);
     }
 
 }
 
 export async function getComandas() {
     try {
-        const { data } = await axios.get('/comanda/');
-        const formattedData = data.data.map(formatUserData);
-        return formattedData;
+        const response = await axios.get('/comanda/');
+        return response.data.data;
     } catch (error) {
-        return error.response.data;
+        console.error('Error', error);
     }
 }
 
@@ -28,7 +27,7 @@ export async function updateComanda(data, id) {
         return response.data.data;
     } catch (error) {
         console.log(error);
-        return error.response.data;
+        console.error('Error', error);
 }
 }
 

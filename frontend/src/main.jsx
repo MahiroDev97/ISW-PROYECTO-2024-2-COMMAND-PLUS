@@ -43,6 +43,15 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: '/comandas',
+        element: (
+          <ProtectedRoute allowedRoles={['administrador', 'garzon']}>
+            <Productcomandas />
+          </ProtectedRoute>
+
+        ),
+      },
+      {
         path: '/activeturno',
         element: <ActiveTurno />
       },
