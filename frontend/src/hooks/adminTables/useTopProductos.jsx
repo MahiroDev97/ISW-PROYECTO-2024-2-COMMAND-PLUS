@@ -1,57 +1,106 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-
-const API_URL = 'http://127.0.0.1:3000/api';
-//create hook to deal with state of AdminTable.jsx
-// useEffect to fetch data from backend
-// must to control mes, anio for the query
-// must to control the state of the hook
-// must to return the data to the component
-// must to handle errors
-
+import { useState, useEffect, useCallback } from 'react';
+import { getProductComandaHistory } from '../../services/productcomanda.service';
+import { getMesAnoDisponibles } from '../../services/comanda.service';
 
 const useTopProductos = () => {
-    const [topProductos, setTopProductos] = useState([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [mes, setMes] = useState(new Date().getMonth() + 1);
-    const [ano, setAno] = useState(new Date().getFullYear());
+    const [state, setState] = useState({
+        topProductos: [],
+        loading: false,
+        error: null,
+        mesAnoDisponibles: [],
+        mesSeleccionado: new Date().getMonth() + 1,
+        anoSeleccionado: new Date().getFullYear()
+    });
 
+    const handleError = (errorMessage) => {
+        console.error(errorMessage);
+        setState(prev => ({ ...prev, error: errorMessage }));
+    };
 
+    const fetchMesAnoDisponibles = async () => {
+        try {
+            const response = await getMesAnoDisponibles();
+            if (response.status === "Success") {
+                const data = response.data.map(({ mes, ano }) => ({
+                    mes,
+                    ano,
+                    label: `${mes}/${ano}`
+                }));
 
-    // fetch data from backend
-    const fetchTopProductos = async () => {
-        setLoading(true);
-        const response = await axios.get(`${API_URL}/productcomanda/history/mes?mes=${mes}&ano=${ano}`);
-        if (response.status === 200) {
-            console.log('response.data', response.data);
-            setTopProductos(response.data);
-            // map data to get the month and year available
-            //const monthsAvailable = response.data.map(item => item.month);
-            //console.log('monthsAvailable', monthsAvailable);
-            //setMes(monthsAvailable);
-        } else {
-            handleError(response.data.message);
+                setState(prev => ({
+                    ...prev,
+                    mesAnoDisponibles: data,
+                    mesSeleccionado: data[0]?.mes || prev.mesSeleccionado,
+                    anoSeleccionado: data[0]?.ano || prev.anoSeleccionado
+                }));
+            } else {
+                handleError('Error al obtener meses y años disponibles');
+            }
+        } catch (error) {
+            handleError(`Error al obtener meses y años disponibles: ${error}`);
         }
-        setLoading(false);
-    }
+    };
 
+    const fetchTopProductos = useCallback(async () => {
+        const { mesSeleccionado, anoSeleccionado } = state;
+        if (!mesSeleccionado || !anoSeleccionado) return;
 
+        setState(prev => ({ ...prev, loading: true }));
+        try {
+            const response = await getProductComandaHistory(mesSeleccionado, anoSeleccionado);
 
-    // useEffect para llamar a la API cuando cambian mes o año
+            if (response.status === "Success") {
+                const topProductosFormateados = response.data.resumenVentas.map(({
+                    id, nombre, categoria, precio, cantidad
+                }) => ({
+                    id, nombre, categoria, precio, cantidad
+                }));
+
+                console.log("Top productos formateados", topProductosFormateados);
+
+                setState(prev => {
+                    const newState = {
+                        ...prev,
+                        topProductos: topProductosFormateados,
+                        loading: false
+                    };
+                    console.log("Nuevo estado a establecer:", newState);
+                    return newState;
+                });
+            } else {
+                handleError('Error al obtener los productos top');
+            }
+        } catch (error) {
+            handleError(`Error al obtener los productos top: ${error}`);
+        }
+    }, [state.mesSeleccionado, state.anoSeleccionado]);
+
+    // Efecto para monitorear cambios en topProductos
+    useEffect(() => {
+        console.log("Estado actualizado - topProductos:", state.topProductos);
+    }, [state.topProductos]);
+
+    const cambiarMesAno = (mes, ano) => {
+        setState(prev => ({
+            ...prev,
+            mesSeleccionado: mes,
+            anoSeleccionado: ano,
+            loading: true
+        }));
+    };
+
+    useEffect(() => {
+        fetchMesAnoDisponibles();
+    }, []);
+
     useEffect(() => {
         fetchTopProductos();
-    }, [mes, ano]);
+    }, [fetchTopProductos]);
 
-    // Función para manejar errores
-    const handleError = (error) => {
-        console.error('Error fetching top productos:', error);
-        setError('Error al cargar los productos.');
-    }
-
-
-    // Retornar los datos y el estado
-    return { topProductos, loading, error, setMes, setAno };
-}
+    return {
+        ...state,
+        cambiarMesAno
+    };
+};
 
 export default useTopProductos;

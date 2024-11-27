@@ -28,13 +28,23 @@ export async function updateComanda(data, id) {
     } catch (error) {
         console.log(error);
         console.error('Error', error);
-}
+    }
 }
 
 
 export async function deleteComanda(id) {
     try {
         const response = await axios.delete(`/comanda/detail/?id=${id}`);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export async function getMesAnoDisponibles() {
+    try {
+        const response = await axios.get('/comanda/getMesAnoDisponibles');
+        console.log('response.data', response.data);
         return response.data;
     } catch (error) {
         return error.response.data;

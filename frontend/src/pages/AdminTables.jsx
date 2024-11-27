@@ -1,79 +1,69 @@
-import { MonthSelector } from '../components/MonthSelector';
-import { TopProductsTable } from '../components/TopProductosTable';
-import { ComandasTable } from '../components/OrderTable';
+import TopProductosTable from '../components/TopProductosTable';
 import useTopProductos from '../hooks/adminTables/useTopProductos';
+import ProtectedRoute from '../components/ProtectedRoute';
+import Navbar from '../components/Navbar';
+import MonthSelector from '../components/MonthSelector';
 
 const AdminTables = () => {
-    const { topProductos, loading, error, setMes, setAno } = useTopProductos();
-
-    if (loading) return <div>Cargando...</div>;
-    if (error) return <div>Error: {error}</div>;
-
-    const resumenVentas = topProductos?.data?.resumenVentas || [];
-    const productos = topProductos?.data?.productos || [];
+    const {
+        topProductos,
+        loading,
+        error,
+        mesAnoDisponibles,
+        mesSeleccionado,
+        anoSeleccionado,
+        cambiarMesAno
+    } = useTopProductos();
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="mb-8">
-                <MonthSelector
-                    selectedMonth={`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`}
-                    availableMonths={[`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}`]}
-                    onMonthChange={(value) => {
-                        const [year, month] = value.split('-');
-                        setAno(parseInt(year));
-                        setMes(parseInt(month));
-                    }}
-                />
-            </div>
+        <ProtectedRoute allowedRoles={['administrador']}>
+            <Navbar />
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div>
+                            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+                                Dashboard del Restaurante
+                            </h1>
+                            <p className="text-sm text-gray-600">
+                                Visualiza las estadísticas de ventas de productos
+                            </p>
+                        </div>
+                        <div className="flex justify-end items-center">
+                            <MonthSelector
+                                mesesDisponibles={mesAnoDisponibles}
+                                mesSeleccionado={mesSeleccionado}
+                                anoSeleccionado={anoSeleccionado}
+                                onMesAnoChange={cambiarMesAno}
+                            />
+                        </div>
+                    </div>
 
-            <div className="grid gap-8">
-                <div>
-                    <h2 className="text-2xl font-bold mb-4">Productos Más Vendidos</h2>
-                    <TopProductsTable products={resumenVentas} />
-                </div>
+                    <div className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden">
+                        <div className="px-6 py-5 border-b border-gray-200 bg-gray-50/50 flex items-center space-x-3">
 
-                <div>
-                    <h2 className="text-2xl font-bold mb-4">Comandas del Mes</h2>
-                    <ComandasTable
-                        comandas={transformProductosToComandas(productos)}
-                        onStatusUpdate={async (id, status) => {
-                            console.log(id, status);
-                        }}
-                    />
+                            <h2 className="text-xl font-bold text-gray-900">
+                                Productos Más Vendidos
+                            </h2>
+                        </div>
+
+                        <div className="p-6">
+                            {error && (
+                                <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg mb-6">
+                                    {error}
+                                </div>
+                            )}
+
+                            <TopProductosTable
+                                products={topProductos}
+                                loading={loading}
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </ProtectedRoute>
     );
-};
-
-const transformProductosToComandas = (productos) => {
-    if (!Array.isArray(productos)) {
-        console.warn('productos no es un array:', productos);
-        return [];
-    }
-
-    const comandasByID = productos.reduce((acc, producto) => {
-        if (!acc[producto.comandaId]) {
-            acc[producto.comandaId] = {
-                id: producto.comandaId,
-                mesa: `Mesa ${producto.comandaId}`,
-                fechahorarecepcion: producto.fechahorarecepcion,
-                fechahoraentrega: producto.fechahoraentrega,
-                estado: producto.estadoproductocomanda,
-                items: []
-            };
-        }
-
-        acc[producto.comandaId].items.push({
-            quantity: 1,
-            productName: producto.product.nombre,
-            price: producto.product.precio
-        });
-
-        return acc;
-    }, {});
-
-    return Object.values(comandasByID);
 };
 
 export default AdminTables;

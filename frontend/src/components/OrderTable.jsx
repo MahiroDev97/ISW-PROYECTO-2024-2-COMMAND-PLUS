@@ -1,5 +1,5 @@
-
 export const ComandasTable = ({ comandas, onStatusUpdate, isUpdating }) => {
+
     const getStatusColor = (status) => {
         switch (status) {
             case 'completed':
@@ -81,12 +81,12 @@ export const ComandasTable = ({ comandas, onStatusUpdate, isUpdating }) => {
                                         value={comanda.estado}
                                         onChange={(e) => handleStatusChange(comanda.id, e.target.value)}
                                         disabled={isUpdating}
-                                        className={`px-2 text-xs leading-5 font-semibold rounded-full ${getStatusColor(comanda.status)} border-0 cursor-pointer disabled:opacity-50`}
+                                        className={`px-2 text-xs leading-5 font-semibold rounded-full ${getStatusColor(comanda.estado)} border-0 cursor-pointer disabled:opacity-50`}
                                     >
-                                        <option value="pendiente">pendiente</option>
-                                        <option value="en-preparacion">en preparación</option>
-                                        <option value="completado">completado</option>
-                                        <option value="cancelado">cancelado</option>
+                                        <option value="pendiente">Pendiente</option>
+                                        <option value="en-preparacion">En preparación</option>
+                                        <option value="completado">Completado</option>
+                                        <option value="cancelado">Cancelado</option>
                                     </select>
                                 </td>
                                 <td className="px-6 py-4 text-sm text-gray-500">

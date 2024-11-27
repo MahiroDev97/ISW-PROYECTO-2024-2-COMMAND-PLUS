@@ -1,7 +1,6 @@
 import axios from './root.service.js';
 
-export async function getProductComandaByComanda(req, res) 
-{
+export async function getProductComandaByComanda(req, res) {
   try {
     const { id } = req.params;
 
@@ -14,8 +13,7 @@ export async function getProductComandaByComanda(req, res)
   }
 }
 
-export async function updateProductComanda(req, res) 
-{
+export async function updateProductComanda(req, res) {
   try {
     const { id } = req.params;
     const { body } = req;
@@ -29,8 +27,7 @@ export async function updateProductComanda(req, res)
   }
 }
 
-export async function getProductComanda(req, res)   
-{
+export async function getProductComanda(req, res) {
   try {
     const { id } = req.params;
 
@@ -40,5 +37,23 @@ export async function getProductComanda(req, res)
   } catch (error) {
     console.error("Error al obtener el producto de la comanda:", error);
     return res.status(500).json("Error interno del servidor");
+  }
+}
+
+
+export async function getProductComandaHistory(mes, ano) {
+  if (!mes || !ano) {
+    return { status: 400, data: { message: 'Mes y año son requeridos' } };
+  }
+  console.log("mes", mes);
+  console.log("ano", ano);
+
+  try {
+    const response = await axios.get(`/productcomanda/history/mes?mes=${mes}&ano=${ano}`);
+    return response.data;
+  } catch (error) {
+
+    console.error("Error al obtener el historial de productos de la comanda:", error);
+    return { status: error.response?.status || 500, data: error.response?.data || {} };
   }
 }
