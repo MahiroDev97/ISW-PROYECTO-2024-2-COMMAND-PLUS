@@ -24,6 +24,13 @@ const ComandaSchema = new EntitySchema({
       nullable: false,
     },
   },
+  relations: {
+    productcomandas: {
+      type: "one-to-many",
+      target: "ProductComanda",
+      inverseSide: "comanda",
+    },
+  }
 });
 
 export default ComandaSchema;

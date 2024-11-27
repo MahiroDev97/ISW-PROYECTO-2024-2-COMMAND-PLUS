@@ -233,9 +233,10 @@ export async function isUserInTurno(id_user) {
         console.log(`Verificando turno para el usuario con ID ${id_user}`);
         const turnoActivo = await turnoRepository.findOne({
             where: {
-                id_user: id_user,
+                user: {id: id_user },
                 datetimeFin: null
-            }
+            },
+            relations: ["user"]
         });
         const inTurno = turnoActivo !== null;
         console.log(`Resultado de la verificación de turno para el usuario con ID ${id_user}: ${inTurno}`);

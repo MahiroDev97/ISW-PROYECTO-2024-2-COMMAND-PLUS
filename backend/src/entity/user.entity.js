@@ -53,6 +53,14 @@ const UserSchema = new EntitySchema({
       nullable: false,
     },
   },
+  relations: {
+    turnos: {
+      type: "one-to-many",
+      target: "Turno",
+      inverseSide: "user",
+    },
+  },
+
   indices: [
     {
       name: "IDX_USER",

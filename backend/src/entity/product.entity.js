@@ -32,6 +32,13 @@ const ProductSchema = new EntitySchema({
       default: true,
     },
   },
+  relations: {
+    productcomandas: {
+      type: "one-to-many",
+      target: "ProductComanda",
+      inverseSide: "product",
+    },
+  }
 });
 
 export default ProductSchema;

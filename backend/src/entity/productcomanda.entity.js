@@ -1,6 +1,5 @@
 "use strict";
 import { EntitySchema } from "typeorm";
-
 const ProductComandaSchema = new EntitySchema({
   name: "ProductComanda",
   tableName: "productcomanda",
@@ -9,19 +8,6 @@ const ProductComandaSchema = new EntitySchema({
       type: "int",
       primary: true,
       generated: true,
-    },
-    comandaId: {
-      type: "int",
-      nullable: false,
-    },
-    id_product: {
-      type: "int",
-      nullable: false,
-      references: {
-        name: "product_id",
-        referencedTableName: "products",
-        referencedColumnNames: ["id"],
-      },
     },
     estadoproductocomanda: {
       type: "text",
@@ -39,13 +25,24 @@ const ProductComandaSchema = new EntitySchema({
   },
   relations: {
     product: {
-      target: "Product",
       type: "many-to-one",
+      target: "Product",
       joinColumn: {
-        name: "id_product"
+        name: "productId",
+        referencedColumnName: "id",
       },
-      eager: false
-    }
+      nullable: false,
+      eager: true,
+    },
+    comanda: {
+      type: "many-to-one",
+      target: "Comanda",
+      joinColumn: {
+        name: "comandaId",
+        referencedColumnName: "id",
+      },
+      nullable: false,
+    },
   }
 });
 
