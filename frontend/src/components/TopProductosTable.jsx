@@ -1,5 +1,4 @@
 
-const unitsSold = 10;
 
 export const TopProductsTable = ({ products }) => {
     return (
@@ -26,16 +25,16 @@ export const TopProductsTable = ({ products }) => {
                         {products.map((product) => (
                             <tr key={product.id} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    {product.name}
+                                    {product.nombre}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    ${product.price.toFixed(0)}
+                                    ${product.precio.toFixed(0)}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {unitsSold}
+                                    {product.cantidad}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    €{(product.price * unitsSold).toFixed(0)}
+                                    €{(product.precio * product.cantidad).toFixed(0)}
                                 </td>
                             </tr>
                         ))}

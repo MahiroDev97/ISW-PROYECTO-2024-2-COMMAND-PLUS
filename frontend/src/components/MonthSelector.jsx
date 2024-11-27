@@ -1,5 +1,3 @@
-import { ChevronDown } from 'lucide-react';
-
 export const MonthSelector = ({ selectedMonth, availableMonths, onMonthChange }) => {
     return (
         <div className="relative">
@@ -14,7 +12,12 @@ export const MonthSelector = ({ selectedMonth, availableMonths, onMonthChange })
                     </option>
                 ))}
             </select>
-            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none" size={20} />
+            <div
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 pointer-events-none"
+                style={{ fontSize: '0.8rem' }}
+            >
+                ▼
+            </div>
         </div>
     );
 }

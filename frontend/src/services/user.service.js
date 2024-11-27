@@ -30,3 +30,15 @@ export async function deleteUser(rut) {
         return error.response.data;
     }
 }
+
+export async function getUser(id) {
+    try {
+        const response = await axios.get(`/user/detail/?id=${id}`);
+        console.log('response', response);
+        const formattedData = formatUserData(response.data);
+        console.log('formattedData', formattedData);
+        return formattedData;
+    } catch (error) {
+        return error.response.data;
+    }
+}

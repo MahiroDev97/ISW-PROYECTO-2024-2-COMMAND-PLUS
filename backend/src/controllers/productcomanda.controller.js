@@ -20,8 +20,10 @@ import {
   availableProductsQueryValidation,
   productComandaBodyValidation,
   productComandaQueryValidation,
-  productosPorMesQueryValidation,  
+  productosPorMesQueryValidation,
 } from "../validations/productcomanda.validation.js";
+
+import { getComandasConProductosPorMesService } from "../services/comanda.service.js";
 
 const validStatuses = [
   "recibido",
@@ -215,3 +217,4 @@ export async function getAvailableProducts(req, res) {
     handleErrorServer(res, 500, error.message);
   }
 }
+
