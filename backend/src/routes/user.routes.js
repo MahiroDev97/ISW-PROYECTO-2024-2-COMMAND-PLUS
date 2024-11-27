@@ -14,8 +14,7 @@ const router = Router();
 //TODO: MIDDLEWARES para proteger las rutas
 
 router
-  .use(authenticateJwt)
-  .use(isAdmin);
+  .use(authenticateJwt);
 
 router
   .get("/", getUsers)
