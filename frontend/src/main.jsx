@@ -5,6 +5,7 @@ import Home from '@pages/Home';
 import Users from '@pages/Users';
 import Register from '@pages/Register';
 import Error404 from '@pages/Error404';
+import Products from '@pages/Products';
 import Root from '@pages/Root';
 import ProtectedRoute from '@components/ProtectedRoute';
 import Productcomandas from './pages/Productcomandas';
@@ -23,13 +24,21 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/home',
-        element: user.active ? <Home /> : <Navigate to="/activeturno" />
+        
       },
       {
         path: '/users',
         element: (
           <ProtectedRoute allowedRoles={['administrador']}>
             <Users />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: '/products',
+        element: (
+          <ProtectedRoute allowedRoles={['administrador']}>
+            <Products />
           </ProtectedRoute>
         ),
       },
