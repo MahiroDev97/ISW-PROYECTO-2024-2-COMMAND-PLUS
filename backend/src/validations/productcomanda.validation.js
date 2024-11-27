@@ -7,17 +7,27 @@ export const productComandaQueryValidation = Joi.object({
     "number.integer": "El id debe ser un número entero.",
     "number.positive": "El id debe ser un número positivo.",
   }),
-  id_product: Joi.number().integer().min(1).positive().messages({
+  productId: Joi.number().integer().min(1).positive().messages({
     "number.base": "El id del producto debe ser un número.",
     "number.integer": "El id del producto debe ser un número entero.",
     "number.positive": "El id del producto debe ser un número positivo.",
   }),
+  comandaId: Joi.number().integer().min(1).positive().messages({
+    "number.base": "El id de la comanda debe ser un número.",
+    "number.integer": "El id de la comanda debe ser un número entero.",
+    "number.positive": "El id de la comanda debe ser un número positivo.",
+  }),
 });
 export const productComandaBodyValidation = Joi.object({
-  id_product: Joi.number().integer().min(1).positive().messages({
+  productId: Joi.number().integer().min(1).positive().messages({
     "number.base": "El id del producto debe ser un número.",
     "number.integer": "El id del producto debe ser un número entero.",
     "number.positive": "El id del producto debe ser un número positivo.",
+  }),
+  comandaId: Joi.number().integer().min(1).positive().messages({
+    "number.base": "El id de la comanda debe ser un número.",
+    "number.integer": "El id de la comanda debe ser un número entero.",
+    "number.positive": "El id de la comanda debe ser un número positivo.",
   }),
   estadoproductocomanda: Joi.string().min(3).max(50).messages({
     "string.empty": "El estado de la comanda no puede estar vacío.",

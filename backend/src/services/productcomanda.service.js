@@ -4,12 +4,31 @@ import ProductComanda from "../entity/productcomanda.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 
+import Product from "../entity/product.entity.js";
+import Comanda from "../entity/comanda.entity.js";
+
 export async function createProductComandaService(body) {
   try {
-    const productComandaRepository =
-      AppDataSource.getRepository(ProductComanda);
+    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+    const productRepository = AppDataSource.getRepository(Product);
+    const comandaRepository = AppDataSource.getRepository(Comanda);
 
-    const newProductComanda = productComandaRepository.create(body);
+    // Buscar las entidades relacionadas
+    const product = await productRepository.findOne({ where: { id: body.productId } });
+    const comanda = await comandaRepository.findOne({ where: { id: body.comandaId } });
+
+    if (!product || !comanda) {
+      return [null, "Producto o Comanda no encontrados"];
+    }
+
+    // Crear la nueva instancia de ProductComanda
+    const newProductComanda = productComandaRepository.create({
+      product: product,
+      comanda: comanda,
+      estadoproductocomanda: body.estadoproductocomanda,
+      fechahorarecepcion: body.fechahorarecepcion,
+      fechahoraentrega: body.fechahoraentrega,
+    });
 
     await productComandaRepository.save(newProductComanda);
 

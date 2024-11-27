@@ -34,6 +34,7 @@ export async function getComandaService(query) {
 
     const comandaFound = await comandaRepository.findOne({
       where: { id },
+      relations: ["productcomandas"],
     });
 
     if (!comandaFound) return [null, "Comanda no encontrada"];
@@ -49,7 +50,9 @@ export async function getComandasService() {
   try {
     const comandaRepository = AppDataSource.getRepository(Comanda);
 
-    const comandas = await comandaRepository.find();
+    const comandas = await comandaRepository.find(
+      { relations: ["productcomandas"] }
+    );
 
     if (!comandas || comandas.length === 0) return [null, "No hay comandas"];
 
