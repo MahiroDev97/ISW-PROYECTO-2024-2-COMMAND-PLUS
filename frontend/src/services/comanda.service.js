@@ -1,6 +1,15 @@
 import axios from './root.service.js';
 
 
+export async function createComanda(data) {
+    try {
+        const response = await axios.post('/comanda', data);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
 export async function getComanda(id) {
     try {
         const response = await axios.get(`/comanda/detail/?id=${id}`);

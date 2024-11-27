@@ -4,7 +4,7 @@ import Search from "../components/Search";
 import PopupProducts from "../components/PopupProducts";
 import PopupCreateProduct from "../components/PopupCreateProduct";
 import UpdateIcon from "../assets/updateIcon.svg";
-import AddIcon from "../assets/addIcon.svg";
+import AddIcon from "../assets/AddIcon.svg";
 import UpdateIconDisable from "../assets/updateIconDisabled.svg";
 import { useCallback, useState } from "react";
 import useEditProduct from "@hooks/products/useEditProduct";
