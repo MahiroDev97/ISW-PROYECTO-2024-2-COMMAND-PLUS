@@ -12,6 +12,7 @@ import "@styles/styles.css";
 import ActiveTurno from "./pages/ActiveTurno";
 import FinishTurno from "./pages/FinishTurno";
 import AdminTables from "./pages/AdminTables";
+import Products from "./pages/Products";
 const user = JSON.parse(sessionStorage.getItem("usuario"));
 console.log("user", user);
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
