@@ -44,7 +44,7 @@ export default function Popup({ show, setShow, data, action }) {
                 },
               ]}
               onSubmit={handleSubmit}
-              buttonText="Crear Producto"
+              buttonText="Crear Comanda"
               backgroundColor="fff"
             />
           </div>
