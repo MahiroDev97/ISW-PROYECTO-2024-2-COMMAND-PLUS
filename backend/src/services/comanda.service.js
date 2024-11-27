@@ -168,3 +168,44 @@ export async function getComandasConProductosPorMesService(query) {
     return [null, "Error interno del servidor"];
   }
 }
+
+export async function getMesAnoDisponiblesService() {
+  try {
+    const comandaRepository = AppDataSource.getRepository(Comanda);
+
+    // Obtener todas las comandas que tengan fechahorarecepcion no nula
+    const comandas = await comandaRepository
+      .createQueryBuilder("comanda")
+      .where("comanda.fecha IS NOT NULL")
+      .select("comanda.fecha")
+      .getMany();
+
+    if (!comandas || comandas.length === 0) {
+      return [null, "No hay comandas registradas"];
+    }
+
+    // Extraer meses y años únicos, filtrando valores nulos
+    const mesAnoUnicos = [...new Set(comandas
+      .filter(comanda => comanda.fecha) // Filtrar fechas nulas
+      .map(comanda => {
+        const fecha = new Date(comanda.fecha);
+        return {
+          mes: fecha.getMonth() + 1,
+          ano: fecha.getFullYear()
+        };
+      })
+      .map(fecha => JSON.stringify(fecha)))]
+      .map(str => JSON.parse(str));
+
+    // Ordenar por año y mes
+    mesAnoUnicos.sort((a, b) => {
+      if (a.ano !== b.ano) return b.ano - a.ano;
+      return b.mes - a.mes;
+    });
+
+    return [mesAnoUnicos, null];
+  } catch (error) {
+    console.error("Error al obtener los meses y años disponibles:", error);
+    return [null, "Error interno del servidor"];
+  }
+}

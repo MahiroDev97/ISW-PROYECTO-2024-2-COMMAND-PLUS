@@ -218,18 +218,3 @@ export async function getAvailableProducts(req, res) {
   }
 }
 
-export async function getComandasConProductosPorMesAnio(req, res) {
-  try {
-    const { mes, ano } = req.query;
-
-    const [comandas, error] = await getComandasConProductosPorMesService({ mes, ano });
-
-    if (error) {
-      return handleErrorClient(res, 500, error);
-    }
-
-    handleSuccess(res, 200, "Comandas con productos por mes y año", comandas);
-  } catch (error) {
-    handleErrorServer(res, 500, error.message);
-  }
-}

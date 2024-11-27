@@ -17,6 +17,8 @@ const useTopProductos = () => {
     const [mes, setMes] = useState(new Date().getMonth() + 1);
     const [ano, setAno] = useState(new Date().getFullYear());
 
+
+
     // fetch data from backend
     const fetchTopProductos = async () => {
         setLoading(true);
@@ -24,11 +26,17 @@ const useTopProductos = () => {
         if (response.status === 200) {
             console.log('response.data', response.data);
             setTopProductos(response.data);
+            // map data to get the month and year available
+            //const monthsAvailable = response.data.map(item => item.month);
+            //console.log('monthsAvailable', monthsAvailable);
+            //setMes(monthsAvailable);
         } else {
             handleError(response.data.message);
         }
         setLoading(false);
     }
+
+
 
     // useEffect para llamar a la API cuando cambian mes o año
     useEffect(() => {

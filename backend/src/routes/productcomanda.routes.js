@@ -6,7 +6,7 @@ import {
   createProductComanda,
   deleteProductComanda,
   getAvailableProducts,
-  getComandasConProductosPorMesAnio,
+
   getProductComanda,
   getProductComandas,
   getProductosPorMes,
@@ -23,7 +23,6 @@ router
   .get("/detail/", getProductComanda)
   .get("/history/mes", getProductosPorMes)
   .get("/available", getAvailableProducts)
-  .get("/comandaspormesano", getComandasConProductosPorMesAnio)
   .patch("/detail/", updateProductComanda)
   .delete("/detail/", deleteProductComanda);
 
