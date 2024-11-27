@@ -151,13 +151,13 @@ export const isGarzonOrAdmin = async (req, res, next) => {
 
     // Verificar horario laboral y de cocina
     const currentHour = new Date().getHours();
-    if (currentHour < 9 || currentHour > 23) {
+    if (rolUser === "garzón" && currentHour < 9 || currentHour > 23) {
       return handleErrorClient(res, 403, "Acceso denegado. Solo disponible en horario laboral y de cocina.");
     }
 
     // Verificar si el usuario está en turno
     const inTurno = await isUserInTurno(req.user.id);
-    if (!inTurno) {
+    if (!inTurno && rolUser === "garzón") {
       console.log(`Usuario con ID ${req.user.id} no está en turno`);
       return handleErrorClient(res, 403, "El usuario no está en turno");
     }

@@ -1,9 +1,8 @@
-
-
 "use strict";
 
 import { EntitySchema } from "typeorm";
-import UserSchema from "./user.entity.js";
+
+
 const TurnoSchema = new EntitySchema({
     name: "Turno",
     tableName: "turnos",
@@ -21,16 +20,19 @@ const TurnoSchema = new EntitySchema({
             type: "timestamp",
             nullable: true,
         },
-        id_user: {
-            type: "int",
-            nullable: false,
-            references: {
-                name: "user_id",
-                referencedTableName: "users",
-                referencedColumnNames: ["id"],
-            },
-        },
     },
+    relations: {
+        user: {
+            type: "many-to-one",
+            target: "User",
+            joinColumn: {
+                name: "userId",
+                referencedColumnName: "id",
+            },
+            nullable: false,
+            eager: true,
+        }
+    }
 });
 
 

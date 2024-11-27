@@ -13,11 +13,11 @@ import {
 const router = Router();
 
 router
-    .post("/create", createTurno)
-    .get("/getTurnos", getTurnos)
-    .get("/getTurno/:id", getTurno)
-    .patch("/updateTurno/:id", updateTurno)
-    .delete("/deleteTurno/:id", deleteTurno)
+    .post("/", createTurno)
+    .get("/", getTurnos)
+    .get("/:id", getTurno)
+    .patch("/:id", updateTurno)
+    .delete("/:id", deleteTurno)
     .patch("/finishTurno/:id", finishTurno);
 
 export default router;
