@@ -18,7 +18,7 @@ import {
 
 const router = Router();
 
-//router.use(authenticateJwt).use(isGarzonOrAdmin);
+router.use(authenticateJwt);
 
 router
   .post("/", createComanda)

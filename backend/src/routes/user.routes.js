@@ -11,7 +11,6 @@ import {
 
 const router = Router();
 
-//TODO: MIDDLEWARES para proteger las rutas
 
 router
   .use(authenticateJwt);
