@@ -2,7 +2,7 @@ import Swal from 'sweetalert2';
 
 export async function deleteDataAlert() {
   return Swal.fire({
-    title: "¿Estás seguro?",
+    title: "¿Estás seguro de continuar con esta accion?",
     text: "¡No podrás revertir esto!",
     icon: "warning",
     showCancelButton: true,

@@ -1,5 +1,7 @@
 import { useEffect,useState } from "react";
 import { getComandas, deleteComanda } from "@services/comanda.service.js";
+import { deleteDataAlert, showSuccessAlert } from "../helpers/sweetAlert";
+
 
 export default function Comandas() {
     const [comandas, setComandas] = useState([]);
@@ -15,9 +17,13 @@ export default function Comandas() {
 
     const handleDelete = async (id) => {
         try{
-            const response = await deleteComanda(id);
-            console.log("Comanda eliminada", response);
-
+           const result = await deleteDataAlert();
+           if(result.isConfirmed){
+               const response=await deleteComanda(id);
+               console.log(response);
+               showSuccessAlert('Comanda eliminada', 'La comanda fue eliminada correctamente');
+               await fetchComandas();
+        }
         }catch(error){
             console.error('Error', error);
         }
