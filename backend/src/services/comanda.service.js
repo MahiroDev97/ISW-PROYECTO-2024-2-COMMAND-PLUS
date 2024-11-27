@@ -1,7 +1,9 @@
 "use strict";
 import Comanda from "../entity/comanda.entity.js";
+import ProductComanda from "../entity/productcomanda.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 import { isUserInTurno } from "./turno.service.js";
+import { Between } from "typeorm";
 
 export async function createComandaService(body) {
   try {
@@ -132,6 +134,37 @@ export async function confirmComandaService(query) {
     return [comandaFound, null];
   } catch (error) {
     console.error("Error al confirmar la comanda:", error);
+    return [null, "Error interno del servidor"];
+  }
+}
+
+export async function getComandasConProductosPorMesService(query) {
+  try {
+    const { mes, ano } = query;
+    const mesFormateado = mes.toString().padStart(2, "0");
+    const ultimoDia = new Date(ano, mes, 0).getDate();
+
+    const comandaRepository = AppDataSource.getRepository(Comanda);
+    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+
+    const comandas = await comandaRepository
+      .createQueryBuilder("comanda")
+      .leftJoinAndSelect("comanda.productComandas", "productComanda")
+      .where({
+        fechahorarecepcion: Between(
+          new Date(`${ano}-${mesFormateado}-01T00:00:00.000Z`),
+          new Date(`${ano}-${mesFormateado}-${ultimoDia}T23:59:59.999Z`)
+        )
+      })
+      .getMany();
+
+    if (!comandas || comandas.length === 0) {
+      return [null, "No se encontraron comandas para el período especificado"];
+    }
+
+    return [comandas, null];
+  } catch (error) {
+    console.error("Error al obtener las comandas con productos por mes:", error);
     return [null, "Error interno del servidor"];
   }
 }

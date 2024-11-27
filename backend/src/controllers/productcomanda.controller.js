@@ -20,8 +20,10 @@ import {
   availableProductsQueryValidation,
   productComandaBodyValidation,
   productComandaQueryValidation,
-  productosPorMesQueryValidation,  
+  productosPorMesQueryValidation,
 } from "../validations/productcomanda.validation.js";
+
+import { getComandasConProductosPorMesService } from "../services/comanda.service.js";
 
 const validStatuses = [
   "recibido",
@@ -211,6 +213,22 @@ export async function getAvailableProducts(req, res) {
       return handleErrorClient(res, 404, errorAvailableProducts);
 
     handleSuccess(res, 200, "Productos disponibles encontrados", availableProducts);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function getComandasConProductosPorMesAnio(req, res) {
+  try {
+    const { mes, ano } = req.query;
+
+    const [comandas, error] = await getComandasConProductosPorMesService({ mes, ano });
+
+    if (error) {
+      return handleErrorClient(res, 500, error);
+    }
+
+    handleSuccess(res, 200, "Comandas con productos por mes y año", comandas);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }

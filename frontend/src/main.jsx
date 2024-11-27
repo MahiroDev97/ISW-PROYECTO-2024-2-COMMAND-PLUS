@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from '@pages/Login';
 import Home from '@pages/Home';
 import Users from '@pages/Users';
@@ -11,19 +11,20 @@ import Productcomandas from './pages/Productcomandas';
 import '@styles/styles.css';
 import ActiveTurno from './pages/ActiveTurno';
 import FinishTurno from './pages/FinishTurno';
-
+import AdminTables from './pages/AdminTables';
 const user = JSON.parse(sessionStorage.getItem('usuario'));
-
+console.log('user', user);
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
 const router = createBrowserRouter([
   {
+
     path: '/',
     element: <Root />,
     errorElement: <Error404 />,
     children: [
       {
         path: '/home',
-        element: user.active ? <Home /> : <Navigate to="/activeturno" />
+        element: <Home />
       },
       {
         path: '/users',
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: '/finishturno',
         element: <FinishTurno />
+      },
+      {
+        path: '/adminTables',
+        element: <AdminTables />
       }
     ]
 

@@ -1,4 +1,3 @@
-import { Clock } from 'lucide-react';
 
 export const ComandasTable = ({ comandas, onStatusUpdate, isUpdating }) => {
     const getStatusColor = (status) => {
@@ -70,7 +69,7 @@ export const ComandasTable = ({ comandas, onStatusUpdate, isUpdating }) => {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {comanda.fechahoraentrega ? (
                                         <span className="flex items-center gap-1">
-                                            <Clock size={16} />
+
                                             {comanda.fechahoraentrega - comanda.fechahorarecepcion} min
                                         </span>
                                     ) : (
