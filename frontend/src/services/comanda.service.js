@@ -10,20 +10,20 @@ export async function createComanda(data) {
     }
 }
 
-export async function getComanda(id) {
-    try {
-        const response = await axios.get(`/comanda/detail/?id=${id}`);
-        return response.data.data;
-    } catch (error) {
-        console.error('Error', error);
-    }
+//export async function getComanda(id) {
+//    try {
+//        const response = await axios.get(`/comanda/detail/?id=${id}`);
+//        return response.data.data;
+//    } catch (error) {
+//        console.error('Error', error);
+//    }
 
-}
+//}
 
 export async function getComandas() {
     try {
         const response = await axios.get('/comanda/');
-        return response.data.data;
+        return response.data.data; // Asegúrate de que los datos incluyen el campo id
     } catch (error) {
         console.error('Error', error);
     }

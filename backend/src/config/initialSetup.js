@@ -145,52 +145,52 @@ async function createComandas() {
       {
         fecha: new Date("2023-06-15 12:00:00"), // 15 de junio de 2023
         mesa: 1,
-        estado: "completada",
+        estado: "abierta",
       },
       {
         fecha: new Date("2023-09-22 14:30:00"), // 22 de septiembre de 2023
         mesa: 2,
-        estado: "completada",
+        estado: "cerrada",
       },
       {
         fecha: new Date("2023-12-05 13:15:00"), // 5 de diciembre de 2023
         mesa: 3,
-        estado: "completada",
+        estado: "cerrada",
       },
       {
         fecha: new Date("2024-01-10 15:45:00"), // 10 de enero de 2024
         mesa: 4,
-        estado: "completada",
+        estado: "cerrada",
       },
       {
         fecha: new Date("2024-03-18 18:20:00"), // 18 de marzo de 2024
         mesa: 5,
-        estado: "completada",
+        estado: "cerrada",
       },
       {
         fecha: new Date("2024-05-07 19:00:00"), // 7 de mayo de 2024
         mesa: 1,
-        estado: "completada",
+        estado: "cerrada",
       },
       {
         fecha: new Date("2024-07-20 20:30:00"), // 20 de julio de 2024
         mesa: 2,
-        estado: "completada",
+        estado: "cerrada",
       },
       {
         fecha: new Date("2024-08-03 17:45:00"), // 3 de agosto de 2024
         mesa: 3,
-        estado: "completada",
+        estado: "cerrada",
       },
       {
         fecha: new Date("2024-09-12 16:15:00"), // 12 de septiembre de 2024
         mesa: 4,
-        estado: "completada",
+        estado: "cerrada",
       },
       {
         fecha: new Date("2024-10-28 21:00:00"), // 28 de octubre de 2024
         mesa: 5,
-        estado: "en proceso",
+        estado: "abierta",
       }
     ];
 

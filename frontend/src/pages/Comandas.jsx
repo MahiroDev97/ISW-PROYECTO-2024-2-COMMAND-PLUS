@@ -1,7 +1,7 @@
 import Table from "@components/Table";
-import useComandas from "@hooks/Comandas/useGetComandas.jsx";
+import useComandas from "../hooks/comandas/UseGetComandas.jsx";
 import Search from "../components/Search";
-import PopupComandas from "../components/popupComandas.jsx/index.js";
+import PopupComandas from "../components/popupComandas.jsx";
 import PopupCreateComanda from "../components/popupCreateComanda.jsx";
 import UpdateIcon from "../assets/updateIcon.svg";
 import AddIcon from "../assets/addIcon.svg";
@@ -42,7 +42,7 @@ const Comandas = () => {
   );
 
   const columns = [
-    { title: "id", field: "Numero", width: 150, responsive: 0 },
+    { title: "id", field: "id", width: 150, responsive: 0 },
     { title: "fecha", field: "fecha", width: 300, responsive: 3 },
     { title: "mesa", field: "mesa", width: 350, responsive: 2 },
     { title: "estado", field: "estado", width: 200, responsive: 2 },
@@ -82,13 +82,13 @@ const Comandas = () => {
           onSelectionChange={handleSelectionChange}
           filterBy={filterID}
         />
-      </div>
       <PopupComandas
         show={isPopupOpen}
         setShow={setIsPopupOpen}
         data={dataComanda}
         action={handleUpdate}
       />
+      </div>
       <PopupCreateComanda
         show={isPopupCreateOpen}
         setShow={setIsPopupCreateOpen}

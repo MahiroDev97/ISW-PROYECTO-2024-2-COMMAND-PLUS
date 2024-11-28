@@ -1,16 +1,15 @@
 import { useState, useEffect } from "react";
-import { getComanda } from "@services/comanda.service.js";
+import { getComandas } from "@services/comanda.service.js";
 
 const useComandas = () => {
   const [comandas, setComandas] = useState([]);
 
   const fetchComandas = async () => {
     try {
-      const response = await getComanda();
-      const formattedData = response.data.map((comanda) => ({
+      const response = await getComandas();
+      const formattedData = response.map((comanda) => ({
         id: comanda.id,
         mesa: comanda.mesa,
-        total: comanda.total,
         estado: comanda.estado,
         fecha: comanda.fecha,
       }));

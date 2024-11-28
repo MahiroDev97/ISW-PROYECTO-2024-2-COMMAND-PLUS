@@ -28,7 +28,7 @@ export default function Popup({ show, setShow, data, action }) {
                   fieldType: "input",
                   type: "text",
                   required: true,
-                  minLength: 3,
+                  minLength: 1,
                   maxLength: 50,
                 },
                 {
@@ -39,7 +39,7 @@ export default function Popup({ show, setShow, data, action }) {
                   fieldType: "input",
                   type: "text",
                   required: true,
-                  minLength: 3,
+                  minLength: 5,
                   maxLength: 50,
                 },
               ]}
