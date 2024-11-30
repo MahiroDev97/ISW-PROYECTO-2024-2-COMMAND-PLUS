@@ -1,0 +1,47 @@
+.order-card {
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .order-card-header {
+    background-color: #4f46e5; /* indigo-600 */
+    padding: 1.5rem;
+  }
+  
+  .order-card-header .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .order-card-header .header-content .title {
+    display: flex;
+    align-items: center;
+  }
+  
+  .order-card-header .header-content .title h2 {
+    color: white;
+    font-weight: 600;
+  }
+  
+  .order-card-header .header-content .date {
+    display: flex;
+    align-items: center;
+    color: #c7d2fe; /* indigo-100 */
+  }
+  
+  .order-card-header .header-content .date span {
+    font-size: 0.875rem; /* text-sm */
+  }
+  
+  .order-card-body {
+    padding: 1.5rem;
+  }
+  
+  .order-card-body .products {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }

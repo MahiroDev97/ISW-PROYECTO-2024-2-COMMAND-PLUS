@@ -7,13 +7,13 @@ import Register from "@pages/Register";
 import Error404 from "@pages/Error404";
 import Root from "@pages/Root";
 import ProtectedRoute from "@components/ProtectedRoute";
-import Productcomandas from "./pages/Productcomandas";
 import "@styles/styles.css";
 import ActiveTurno from "./pages/ActiveTurno";
 import FinishTurno from "./pages/FinishTurno";
 import AdminTables from "./pages/AdminTables";
 import Products from "./pages/Products";
 import Comandas from "./pages/Comandas";
+import VistaCocina from "./pages/VistaCocina";
 const user = JSON.parse(sessionStorage.getItem("usuario"));
 console.log("user", user);
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
@@ -44,10 +44,10 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/productcomandas",
+        path: "/cocina",
         element: (
           <ProtectedRoute allowedRoles={["administrador", "cocinero"]}>
-            <Productcomandas />
+            <VistaCocina />
           </ProtectedRoute>
         ),
       },

@@ -1,0 +1,63 @@
+:root {
+    --primary-color: #4f46e5;
+    --background-color: #f9fafb;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .container {
+    min-height: 100vh;
+    background-color: var(--background-color);
+  }
+  
+  .header {
+    background-color: white;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .headerContent {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .headerIcon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--primary-color);
+    margin-right: 1rem;
+  }
+  
+  .headerTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-primary);
+  }
+  
+  .main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+  
+  .orderGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .orderGrid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .orderGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
