@@ -2,18 +2,11 @@
 import Comanda from "../entity/comanda.entity.js";
 import ProductComanda from "../entity/productcomanda.entity.js";
 import { AppDataSource } from "../config/configDb.js";
-import { isUserInTurno } from "./turno.service.js";
 import { Between } from "typeorm";
 
 export async function createComandaService(body) {
   try {
     const comandaRepository = AppDataSource.getRepository(Comanda);
-
-    // Verificar si el usuario está en turno
-    const inTurno = await isUserInTurno(body.id_user);
-    if (!inTurno) {
-      return [null, "El usuario no está en turno"];
-    }
 
     const newComanda = comandaRepository.create(body);
 
