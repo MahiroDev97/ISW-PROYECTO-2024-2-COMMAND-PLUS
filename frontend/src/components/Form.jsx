@@ -40,6 +40,7 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                                 maxLength: field.maxLength ? { value: field.maxLength, message: `Debe tener máximo ${field.maxLength} caracteres` } : false,
                                 pattern: field.pattern ? { value: field.pattern, message: field.patternMessage || 'Formato no válido' } : false,
                                 validate: field.validate || {},
+                                min: field.min,
                             })}
                             name={field.name}
                             placeholder={field.placeholder}

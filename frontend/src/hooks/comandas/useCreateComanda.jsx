@@ -13,17 +13,14 @@ const useCreateComanda = (setComandas) => {
     if (newComandaData) {
       try {
         const newComanda = await createComanda(newComandaData);
-        showSuccessAlert(
-          "¡ComandaCreada!",
-          "La Comanda ha sido creada correctamente."
-        );
+        showSuccessAlert("¡Creado!", "La Comanda ha sido creada correctamente.");
         setIsPopupOpen(false);
         setComandas((prevComandas) => [...prevComandas, newComanda]);
       } catch (error) {
-        console.error("Error al crear la comanda:", error);
+        console.error("Error al intentar crear la Comanda:", error);
         showErrorAlert(
           "Cancelado",
-          "Ha Ocurrido un error al crear la comanda."
+          "Ha ocurrido un error al crear la comanda."
         );
       }
     }

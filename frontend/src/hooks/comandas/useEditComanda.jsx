@@ -16,23 +16,23 @@ const useEditComanda = (setComandas) => {
     const handleUpdate = async (updatedComandaData) => {
         if (updatedComandaData) {
             try {
-                const {id, ...dataComanda} = updatedComandaData;
+                const { id, ...dataComanda } = updatedComandaData;
                 const updatedComanda = await updateComanda(id, dataComanda);
-                showSuccessAlert('¡Actualizado!','La Comanda ha sido actualizado correctamente.');
+                showSuccessAlert('¡Actualizado!', 'La Comanda ha sido actualizada correctamente.');
                 setIsPopupOpen(false);
                 const formattedComanda = formatPostUpdate(updatedComanda);
 
-                setComandas(prevComandas => prevComandas.map(Comanda => {
-                    if (Comanda.id === formattedComanda.id) {
+                setComandas(prevComandas => prevComandas.map(comanda => {
+                    if (comanda.id === formattedComanda.id) {
                         return formattedComanda;
                     }
-                    return Comanda;
+                    return comanda;
                 }));
 
                 setDataComanda([]);
             } catch (error) {
                 console.error('Error al intentar actualizar la Comanda:', error);
-                showErrorAlert('Cancelado','Ha ocurrido un error al actualizar la comanda.');
+                showErrorAlert('Cancelado', 'Ha ocurrido un error al actualizar la comanda.');
             }
         }
     };

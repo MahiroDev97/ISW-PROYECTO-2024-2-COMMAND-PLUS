@@ -1,7 +1,7 @@
 import "@styles/popup.css";
 import CloseIcon from "@assets/XIcon.svg";
-
 import Form from "./Form";
+
 export default function Popup({ show, setShow, data, action }) {
   const ComandaData = data && data.length > 0 ? data[0] : {};
 
@@ -26,21 +26,21 @@ export default function Popup({ show, setShow, data, action }) {
                   defaultValue: ComandaData.mesa || "",
                   placeholder: "mesa del local",
                   fieldType: "input",
-                  type: "text",
+                  type: "int",
                   required: true,
-                  minLength: 3,
-                  maxLength: 50,
+                  min: 1,
                 },
                 {
                   label: "estado",
                   name: "estado",
-                  defaultValue: ComandaData.estado || "",
+                  defaultValue: ComandaData.estado || "Abierta",
                   placeholder: "estado de la comanda",
                   fieldType: "input",
                   type: "text",
                   required: true,
                   minLength: 3,
                   maxLength: 50,
+                  readOnly: true, 
                 },
               ]}
               onSubmit={handleSubmit}

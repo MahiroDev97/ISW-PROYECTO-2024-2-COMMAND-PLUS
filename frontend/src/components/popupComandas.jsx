@@ -6,7 +6,7 @@ export default function Popup({ show, setShow, data, action }) {
   const ComandaData = data && data.length > 0 ? data[0] : {};
 
   const handleSubmit = (formData) => {
-    action(formData);
+    action({ ...ComandaData, ...formData });
   };
 
   return (

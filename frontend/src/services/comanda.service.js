@@ -1,10 +1,9 @@
 import axios from './root.service.js';
 
-
 export async function createComanda(data) {
     try {
         const response = await axios.post('/comanda', data);
-        return response.data;
+        return response.data; 
     } catch (error) {
         return error.response.data;
     }
@@ -29,7 +28,7 @@ export async function getComandas() {
     }
 }
 
-export async function updateComanda(data, id) {
+export async function updateComanda(id, data) {
     try {
         const response = await axios.patch(`/comanda/detail/?id=${id}`, data);
         console.log(response);
@@ -37,9 +36,9 @@ export async function updateComanda(data, id) {
     } catch (error) {
         console.log(error);
         console.error('Error', error);
+        throw error; // Asegúrate de que el error se lanza para ser capturado en la función que llama
     }
 }
-
 
 export async function deleteComanda(id) {
     try {
