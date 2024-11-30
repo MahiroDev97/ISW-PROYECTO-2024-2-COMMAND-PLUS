@@ -10,9 +10,12 @@ const useCreateComanda = (setComandas) => {
   };
 
   const handleCreate = async (newComandaData) => {
+    const { mesa } = newComandaData;
     if (newComandaData) {
       try {
-        const newComanda = await createComanda(newComandaData);
+        const mesaInt= +mesa;
+        const newComandaDataInt= {...newComandaData, mesa: mesaInt};
+        const newComanda = await createComanda(newComandaDataInt);
         showSuccessAlert("¡Creado!", "La Comanda ha sido creada correctamente.");
         setIsPopupOpen(false);
         setComandas((prevComandas) => [...prevComandas, newComanda]);
