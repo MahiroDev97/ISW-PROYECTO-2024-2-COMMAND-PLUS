@@ -32,4 +32,6 @@ const VistaCocina = () => {
   );
 };
 
+
+
 export default VistaCocina;
