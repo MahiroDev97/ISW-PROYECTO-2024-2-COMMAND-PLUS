@@ -1,14 +1,14 @@
 import Table from "@components/Table";
-import useComandas from "../hooks/comandas/UseGetComandas.jsx";
 import Search from "../components/Search";
 import PopupComandas from "../components/popupComandas.jsx";
 import PopupCreateComanda from "../components/popupCreateComanda.jsx";
 import UpdateIcon from "../assets/updateIcon.svg";
-import AddIcon from "../assets/addIcon.svg";
+import AddIcon from "../assets/AddIcon.svg";
 import UpdateIconDisable from "../assets/updateIconDisabled.svg";
 import { useCallback, useState } from "react";
-import useEditComanda from "@hooks/Comandas/useEditComanda";
-import useCreateComanda from "../hooks/Comandas/UseCreateComanda";
+import useComandas from "../hooks/comandas/UseGetComandas.jsx";
+import useCreateComanda from "../hooks/comandas/useCreateComanda.jsx";
+import useEditComanda from "../hooks/comandas/useEditComanda.jsx";
 
 const Comandas = () => {
   const { comandas, setComandas } = useComandas();
@@ -82,12 +82,12 @@ const Comandas = () => {
           onSelectionChange={handleSelectionChange}
           filterBy={filterID}
         />
-      <PopupComandas
-        show={isPopupOpen}
-        setShow={setIsPopupOpen}
-        data={dataComanda}
-        action={handleUpdate}
-      />
+        <PopupComandas
+          show={isPopupOpen}
+          setShow={setIsPopupOpen}
+          data={dataComanda}
+          action={handleUpdate}
+        />
       </div>
       <PopupCreateComanda
         show={isPopupCreateOpen}
