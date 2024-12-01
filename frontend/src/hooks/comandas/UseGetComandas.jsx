@@ -7,16 +7,17 @@ const useComandas = () => {
   const fetchComandas = async () => {
     try {
       const response = await getComandas();
-      console.log(response);
 
-      // const formattedData = response.map((comanda) => ({
-      //   id: comanda.id,
-      //   mesa: comanda.mesa,
-      //   estado: comanda.estado,
-      //   fecha: comanda.fecha,
-      // }));
-      dataLogged(response);
-      setComandas(response);
+      const formattedData = response.map((comanda) => ({
+        id: comanda.id,
+        mesa: comanda.mesa,
+        estado: comanda.estado,
+        fecha: comanda.fecha,
+        productcomandas: comanda.productcomandas,
+      }));
+      
+      dataLogged(formattedData);
+      setComandas(formattedData);
     } catch (error) {
       console.error("Error: ", error);
     }
