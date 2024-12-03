@@ -3,7 +3,7 @@ import axios from './root.service.js';
 export async function createComanda(data) {
     try {
         const response = await axios.post('/comanda', data);
-        return response.data; 
+        return response.data;
     } catch (error) {
         return error.response.data;
     }
@@ -49,12 +49,3 @@ export async function deleteComanda(id) {
     }
 }
 
-export async function getMesAnoDisponibles() {
-    try {
-        const response = await axios.get('/comanda/getMesAnoDisponibles');
-        console.log('response.data', response.data);
-        return response.data;
-    } catch (error) {
-        return error.response.data;
-    }
-}

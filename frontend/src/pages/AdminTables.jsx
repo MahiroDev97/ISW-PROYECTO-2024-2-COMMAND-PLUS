@@ -3,6 +3,7 @@ import useTopProductos from '../hooks/adminTables/useTopProductos';
 import ProtectedRoute from '../components/ProtectedRoute';
 import Navbar from '../components/Navbar';
 import MonthSelector from '../components/MonthSelector';
+import VentasChart from '../components/VentasChart';
 
 const AdminTables = () => {
     const {
@@ -62,6 +63,7 @@ const AdminTables = () => {
                     </div>
                 </div>
             </div>
+            <VentasChart mesesDisponibles={mesAnoDisponibles} />
         </ProtectedRoute>
     );
 };

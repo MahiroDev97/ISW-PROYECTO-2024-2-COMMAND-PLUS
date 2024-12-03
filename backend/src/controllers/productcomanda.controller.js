@@ -4,10 +4,12 @@ import {
   createProductComandaService,
   deleteProductComandaService,
   getAvailableProductsService,
+  getMesAnoDisponiblesService,
   getProductComandaByComandaService,
   getProductComandaService,
   getProductComandasService,
   getProductosPorMesService,
+  getVentasTotalesService,
   updateProductComandaService,
 } from "../services/productcomanda.service.js";
 import {
@@ -233,3 +235,29 @@ export async function getComandasConProductosPorMesAnio(req, res) {
     handleErrorServer(res, 500, error.message);
   }
 }
+export async function getMesAnoDisponibles(req, res) {
+  try {
+    const [mesAnoDisponibles, errorMesAnoDisponibles] = await getMesAnoDisponiblesService();
+
+    if (errorMesAnoDisponibles) return handleErrorClient(res, 404, errorMesAnoDisponibles);
+
+    handleSuccess(res, 200, "Meses y años disponibles", mesAnoDisponibles);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export const getVentasTotales = async (req, res) => {
+  try {
+    const [ventasTotales, errorVentasTotales] = await getVentasTotalesService(req.query);
+
+    if (errorVentasTotales) {
+      return res.status(400).json({ message: errorVentasTotales });
+    }
+
+    return res.json(ventasTotales);
+  } catch (error) {
+    console.error("Error en getVentasTotales:", error);
+    return res.status(500).json({ message: "Error interno del servidor" });
+  }
+};

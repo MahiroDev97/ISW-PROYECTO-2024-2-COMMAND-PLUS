@@ -6,10 +6,11 @@ import {
   createProductComanda,
   deleteProductComanda,
   getAvailableProducts,
-
+  getMesAnoDisponibles,
   getProductComanda,
   getProductComandas,
   getProductosPorMes,
+  getVentasTotales,
   updateProductComanda
 } from "../controllers/productcomanda.controller.js";
 
@@ -23,6 +24,8 @@ router
   .get("/detail/", getProductComanda)
   .get("/history/mes", getProductosPorMes)
   .get("/available", getAvailableProducts)
+  .get("/getMesAnoDisponibles", getMesAnoDisponibles)
+  .get("/ventasTotales", getVentasTotales)
   .patch("/detail/", updateProductComanda)
   .delete("/detail/", deleteProductComanda);
 

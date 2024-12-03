@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { getProductComandaHistory } from '../../services/productcomanda.service';
-import { getMesAnoDisponibles } from '../../services/comanda.service';
+import { getProductComandaHistory, getMesAnoDisponibles } from '../../services/productcomanda.service';
 
 const useTopProductos = () => {
     const [state, setState] = useState({
@@ -33,6 +32,7 @@ const useTopProductos = () => {
                     mesSeleccionado: data[0]?.mes || prev.mesSeleccionado,
                     anoSeleccionado: data[0]?.ano || prev.anoSeleccionado
                 }));
+
             } else {
                 handleError('Error al obtener meses y años disponibles');
             }

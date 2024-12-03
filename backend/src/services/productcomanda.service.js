@@ -2,7 +2,7 @@
 "use strict";
 import ProductComanda from "../entity/productcomanda.entity.js";
 import { AppDataSource } from "../config/configDb.js";
-import { Between, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { Between, IsNull, LessThanOrEqual, MoreThanOrEqual, Not } from "typeorm";
 
 import Product from "../entity/product.entity.js";
 import Comanda from "../entity/comanda.entity.js";
@@ -257,6 +257,130 @@ export async function getAvailableProductsService() {
     return [availableProducts, null];
   } catch (error) {
     console.error("Error al obtener los productos disponibles:", error);
+    return [null, "Error interno del servidor"];
+  }
+}
+export async function getMesAnoDisponiblesService() {
+  try {
+    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+
+    // Obtener todas las comandas que tengan fechahorarecepcion no nula
+    const comandas = await productComandaRepository
+      .createQueryBuilder("productComanda")
+      .where("productComanda.fechahorarecepcion IS NOT NULL")
+      .select("productComanda.fechahorarecepcion")
+      .getMany();
+
+    if (!comandas || comandas.length === 0) {
+      return [null, "No hay comandas registradas"];
+    }
+
+    // Extraer meses y años únicos, filtrando valores nulos
+    const mesAnoUnicos = [...new Set(comandas
+      .filter(comanda => comanda.fechahorarecepcion) // Filtrar fechas nulas
+      .map(comanda => {
+        const fecha = new Date(comanda.fechahorarecepcion);
+        return {
+          mes: fecha.getMonth() + 1,
+          ano: fecha.getFullYear()
+        };
+      })
+      .map(fecha => JSON.stringify(fecha)))]
+      .map(str => JSON.parse(str));
+
+    // Ordenar por año y mes
+    mesAnoUnicos.sort((a, b) => {
+      if (a.ano !== b.ano) return b.ano - a.ano;
+      return b.mes - a.mes;
+    });
+
+    return [mesAnoUnicos, null];
+  } catch (error) {
+    console.error("Error al obtener los meses y años disponibles:", error);
+    return [null, "Error interno del servidor"];
+  }
+}
+
+export async function getVentasTotalesService(query) {
+  try {
+    const { ano } = query;
+
+    // Validar que el año existe y es válido
+    if (!ano) {
+      return [null, "El año es requerido"];
+    }
+
+    const anoNum = parseInt(ano);
+    if (isNaN(anoNum)) {
+      return [null, "El año debe ser un número válido"];
+    }
+
+    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
+
+    const ventasTotales = await productComandaRepository.find({
+      where: {
+        fechahoraentrega: Not(IsNull()),
+        fechahoraentrega: Between(
+          new Date(`${anoNum}-01-01T00:00:00.000Z`),
+          new Date(`${anoNum}-12-31T23:59:59.999Z`)
+        )
+      },
+      relations: ["product"]
+    });
+
+    if (!ventasTotales || ventasTotales.length === 0) {
+      return [null, "No hay ventas totales"];
+    }
+
+    // Crear objeto para almacenar ventas por mes/año
+    const ventasPorMesAno = ventasTotales.reduce((acc, venta) => {
+      const fecha = new Date(venta.fechahoraentrega);
+      const mes = fecha.getMonth() + 1;
+      const ano = fecha.getFullYear();
+      const key = `${mes}-${ano}`;
+
+      if (!acc[key]) {
+        acc[key] = {
+          mes,
+          ano,
+          totalVentas: 0,
+          productos: {}
+        };
+      }
+
+      // Sumar venta al total del mes
+      acc[key].totalVentas += venta.product.precio;
+
+      // Contar productos
+      if (!acc[key].productos[venta.product.id]) {
+        acc[key].productos[venta.product.id] = {
+          nombre: venta.product.nombre,
+          cantidad: 1,
+          precioUnitario: venta.product.precio,
+          total: venta.product.precio
+        };
+      } else {
+        acc[key].productos[venta.product.id].cantidad += 1;
+        acc[key].productos[venta.product.id].total += venta.product.precio;
+      }
+
+      return acc;
+    }, {});
+
+    // Convertir el objeto a un array y ordenar por fecha
+    const resumenVentas = Object.values(ventasPorMesAno)
+      .sort((a, b) => {
+        if (a.ano !== b.ano) return b.ano - a.ano;
+        return b.mes - a.mes;
+      })
+      .map(mesAno => ({
+        ...mesAno,
+        productos: Object.values(mesAno.productos)
+      }));
+
+    return [resumenVentas, null];
+  } catch (error) {
+    console.error("Error al obtener las ventas totales:", error);
     return [null, "Error interno del servidor"];
   }
 }

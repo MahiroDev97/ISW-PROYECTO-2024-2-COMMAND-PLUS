@@ -57,3 +57,22 @@ export async function getProductComandaHistory(mes, ano) {
     return { status: error.response?.status || 500, data: error.response?.data || {} };
   }
 }
+
+export async function getMesAnoDisponibles() {
+  try {
+    const response = await axios.get('/productcomanda/getMesAnoDisponibles');
+    console.log('response.data', response.data);
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+}
+
+export async function getVentasTotales(ano) {
+  try {
+    const response = await axios.get(`/productcomanda/ventasTotales?ano=${ano}`);
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+}
