@@ -1,15 +1,17 @@
 // year selector for ventas totales
 
-import useVentasTotales from '../hooks/adminTables/useVentasTotales';
 
 
-export default function YearSelector() {
-    const { anosDisponiblesState, anoSeleccionado, setAnoSeleccionado } = useVentasTotales();
-
+export default function YearSelector({ anos, anoSeleccionado, onChange }) {
     return (
-        <select value={anoSeleccionado} onChange={(e) => setAnoSeleccionado(e.target.value)}>
-            {anosDisponiblesState.map((ano) => (
-                <option key={ano} value={ano}>{ano}</option>
+        <select
+            value={anoSeleccionado}
+            onChange={(e) => onChange(e.target.value)}
+        >
+            {anos.map(({ ano, label }) => (
+                <option key={ano} value={ano}>
+                    {label}
+                </option>
             ))}
         </select>
     );
