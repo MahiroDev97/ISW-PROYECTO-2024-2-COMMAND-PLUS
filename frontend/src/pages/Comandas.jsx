@@ -9,7 +9,11 @@ import { useCallback, useState } from "react";
 import useComandas from "../hooks/comandas/UseGetComandas.jsx";
 import useCreateComanda from "../hooks/comandas/useCreateComanda.jsx";
 import useEditComanda from "../hooks/comandas/useEditComanda.jsx";
+
+import Navbar from "../components/Navbar";
+
 import { formatDate } from "../utils/dateUtils.js";
+
 
 const Comandas = () => {
   const { comandas, setComandas, fetchComandas } = useComandas();
@@ -55,33 +59,68 @@ const Comandas = () => {
   ];
 
   return (
-    <div className="main-container">
-      <div className="table-container">
-        <div className="top-table">
-          <h1 className="title-table">Comandas</h1>
-          <div className="filter-actions">
-            <Search
-              value={filterID}
-              onChange={handleIDFilterChange}
-              placeholder={"Filtrar por ID"}
-            />
+    <>
+      <Navbar />
+      <div className="h-[91vh] bg-gradient-to-br from-gray-50 to-gray-100 pt-[9vh]">
+        <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col h-full">
+            <div className="mb-4">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+                    Gestión de Comandas
+                  </h1>
+                  <p className="text-sm text-gray-600">
+                    Administra las comandas del restaurante
+                  </p>
+                </div>
+                <div className="flex items-center space-x-4">
+                  <Search
+                    value={filterID}
+                    onChange={handleIDFilterChange}
+                    placeholder={"Filtrar por ID"}
+                    className="bg-white rounded-lg shadow-sm"
+                  />
+                  <button
+                    onClick={handleClickCreate}
+                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <img src={AddIcon} alt="add" className="w-6 h-6" />
+                  </button>
+                  <button
+                    onClick={handleClickUpdate}
+                    disabled={dataComanda.length === 0}
+                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  >
+                    <img
+                      src={dataComanda.length === 0 ? UpdateIconDisable : UpdateIcon}
+                      alt="edit"
+                      className="w-6 h-6"
+                    />
+                  </button>
+                </div>
+              </div>
+            </div>
 
-            <button onClick={handleClickCreate}>
-              <img src={AddIcon} alt="add" />
-            </button>
-
-            <button
-              onClick={handleClickUpdate}
-              disabled={dataComanda.length === 0}
-            >
-              {dataComanda.length === 0 ? (
-                <img src={UpdateIconDisable} alt="edit-disabled" />
-              ) : (
-                <img src={UpdateIcon} alt="edit" />
-              )}
-            </button>
+            <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden flex flex-col">
+              <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
+                <h2 className="text-xl font-bold text-gray-900">
+                  Lista de Comandas
+                </h2>
+              </div>
+              <div className="flex-1 p-4 overflow-auto">
+                <Table
+                  columns={columns}
+                  data={comandas}
+                  onSelectionChange={handleSelectionChange}
+                  filterBy={filterID}
+                />
+              </div>
+            </div>
           </div>
         </div>
+
+
         <Table
           columns={columns}
           data={formattedComandas}
@@ -94,13 +133,20 @@ const Comandas = () => {
           data={dataComanda}
           action={handleUpdate}
         />
+
       </div>
+      <PopupComandas
+        show={isPopupOpen}
+        setShow={setIsPopupOpen}
+        data={dataComanda}
+        action={handleUpdate}
+      />
       <PopupCreateComanda
         show={isPopupCreateOpen}
         setShow={setIsPopupCreateOpen}
         action={handleCreate}
       />
-    </div>
+    </>
   );
 };
 

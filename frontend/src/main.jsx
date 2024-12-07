@@ -14,6 +14,7 @@ import AdminTables from "./pages/AdminTables";
 import Products from "./pages/Products";
 import Comandas from "./pages/Comandas";
 import VistaCocina from "./pages/VistaCocina";
+import "@styles/index.css";
 const user = JSON.parse(sessionStorage.getItem("usuario"));
 console.log("user", user);
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
