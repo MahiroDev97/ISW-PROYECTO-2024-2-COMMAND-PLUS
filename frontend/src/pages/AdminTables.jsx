@@ -19,7 +19,7 @@ const AdminTables = () => {
     return (
         <ProtectedRoute allowedRoles={['administrador']}>
             <Navbar />
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 pt-[9vh]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                     <div className="mb-6">
                         <div className="flex justify-between items-center">
@@ -69,6 +69,10 @@ const AdminTables = () => {
                                 <TopProductosTable
                                     products={topProductos}
                                     loading={loading}
+                                    mesAnoDisponibles={mesAnoDisponibles}
+                                    mesSeleccionado={mesSeleccionado}
+                                    anoSeleccionado={anoSeleccionado}
+                                    onMesAnoChange={cambiarMesAno}
                                 />
                             </div>
                         </div>
@@ -76,13 +80,11 @@ const AdminTables = () => {
                         <div className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden h-[500px]">
                             <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
                                 <h2 className="text-xl font-bold text-gray-900">
-                                    Panel 3
+                                    Horarios de Mayor Actividad
                                 </h2>
                             </div>
-                            <div className="p-4 h-[calc(500px-64px)] bg-gray-100/50">
-                                <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                    Contenido Futuro
-                                </div>
+                            <div className="p-4 h-[calc(500px-64px)]">
+                                <HorariosChart />
                             </div>
                         </div>
 
@@ -101,7 +103,6 @@ const AdminTables = () => {
                     </div>
                 </div>
             </div>
-            <HorariosChart />
         </ProtectedRoute>
     );
 };

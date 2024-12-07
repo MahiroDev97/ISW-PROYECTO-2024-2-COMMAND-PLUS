@@ -1,14 +1,67 @@
 import { useState, useEffect } from 'react';
 import { getComandasPorMesAno } from '../../services/comanda.service';
+import { getMesAnoDisponibles } from '../../services/productcomanda.service';
+
 export default function useHorariosChart() {
     const [horariosData, setHorariosData] = useState({
         labels: [],
         datasets: []
     });
-    const [fechaSeleccionada, setFechaSeleccionada] = useState(
-        `${String(new Date().getMonth() + 1).padStart(2, '0')}/${new Date().getFullYear()}`
-    );
+    const [mesAnoDisponibles, setMesAnoDisponibles] = useState([]);
+    const [mesSeleccionado, setMesSeleccionado] = useState(new Date().getMonth() + 1);
+    const [anoSeleccionado, setAnoSeleccionado] = useState(new Date().getFullYear());
     const [error, setError] = useState(null);
+
+    const fetchMesAnoDisponibles = async () => {
+        try {
+            const response = await getMesAnoDisponibles();
+            if (response.status === "Success") {
+                const data = response.data.map(({ mes, ano }) => ({
+                    mes,
+                    ano,
+                    label: `${mes}/${ano}`
+                }));
+                setMesAnoDisponibles(data);
+
+                // Establecer el mes y año inicial
+                if (data.length > 0) {
+                    setMesSeleccionado(data[0].mes);
+                    setAnoSeleccionado(data[0].ano);
+                }
+            }
+        } catch (error) {
+            setError('Error al obtener meses disponibles: ' + error);
+        }
+    };
+
+    const cambiarMesAno = (mes, ano) => {
+        setMesSeleccionado(mes);
+        setAnoSeleccionado(ano);
+    };
+
+    // Efecto para cargar los meses disponibles
+    useEffect(() => {
+        fetchMesAnoDisponibles();
+    }, []);
+
+    // Efecto para cargar los datos cuando cambia el mes/año
+    useEffect(() => {
+        const fetchHorarios = async () => {
+            try {
+                const response = await getComandasPorMesAno(mesSeleccionado, anoSeleccionado);
+                if (response.status === "Success") {
+                    const chartData = procesarDatos(response.data);
+                    setHorariosData(chartData);
+                } else {
+                    setError('Error al obtener datos de horarios');
+                }
+            } catch (error) {
+                setError(`Error al obtener horarios: ${error}`);
+            }
+        };
+
+        fetchHorarios();
+    }, [mesSeleccionado, anoSeleccionado]);
 
     const procesarDatos = (comandas) => {
         // Crear franjas horarias (8am a 12am)
@@ -64,27 +117,12 @@ export default function useHorariosChart() {
         };
     };
 
-    const fetchHorarios = async () => {
-        try {
-            const [mes, ano] = fechaSeleccionada.split('/');
-            const response = await getComandasPorMesAno(mes, ano);
-
-
-            if (response.status === "Success") {
-                const chartData = procesarDatos(response.data);
-                console.log(chartData);
-                setHorariosData(chartData);
-            } else {
-                setError('Error al obtener datos de horarios');
-            }
-        } catch (error) {
-            setError(`Error al obtener horarios: ${error}`);
-        }
+    return {
+        horariosData,
+        error,
+        mesAnoDisponibles,
+        mesSeleccionado,
+        anoSeleccionado,
+        cambiarMesAno
     };
-
-    useEffect(() => {
-        fetchHorarios();
-    }, [fechaSeleccionada]);
-
-    return { horariosData, fechaSeleccionada, setFechaSeleccionada, error };
 }
