@@ -49,3 +49,11 @@ export async function deleteComanda(id) {
     }
 }
 
+export async function getComandasPorMesAno(mes, ano) {
+    try {
+        const response = await axios.get(`/comanda/mesano/?mes=${mes}&ano=${ano}`);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}

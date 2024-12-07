@@ -8,9 +8,9 @@ import {
   createComandaService,
   deleteComandaService,
   getComandaService,
+  getComandasPorMesAnoService,
   getComandasService,
   updateComandaService,
-
 } from "../services/comanda.service.js";
 import {
   handleErrorClient,
@@ -121,6 +121,23 @@ export async function confirmComanda(req, res) {
     if (errorComanda) return handleErrorClient(res, 404, errorComanda);
 
     handleSuccess(res, 200, "Comanda confirmada", comanda);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function getComandasPorMesAno(req, res) {
+  try {
+    const { mes, ano } = req.query;
+
+    const [comandas, errorComandas] = await getComandasPorMesAnoService({
+      mes,
+      ano,
+    });
+
+    if (errorComandas) return handleErrorClient(res, 404, errorComandas);
+
+    handleSuccess(res, 200, "Comandas encontradas", comandas);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }

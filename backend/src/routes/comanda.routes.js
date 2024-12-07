@@ -12,7 +12,7 @@ import {
   deleteComanda,
   getComanda,
   getComandas,
-
+  getComandasPorMesAno,
   updateComanda
 } from "../controllers/comanda.controller.js";
 
@@ -24,6 +24,7 @@ router
   .post("/", createComanda)
   .get("/", getComandas)
   .get("/detail/", getComanda)
+  .get("/mesano/", getComandasPorMesAno)
   .patch("/detail/", updateComanda)
   .patch("/confirm/", confirmComanda)
   .delete("/detail/", deleteComanda);

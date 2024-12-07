@@ -165,3 +165,35 @@ export async function getComandasConProductosPorMesService(query) {
   }
 }
 
+
+//get comandas por mes y ano para el analisis de comandas
+
+export async function getComandasPorMesAnoService(query) {
+  try {
+    const { mes, ano } = query;
+    const mesFormateado = mes.toString().padStart(2, "0");
+    const ultimoDia = new Date(ano, mes, 0).getDate();
+
+
+    const comandaRepository = AppDataSource.getRepository(Comanda);
+
+    //buscar con between para el mes y ano
+    //get solo las comandas confirmadas
+    // get solo atributo fecha 
+    const comandas = await comandaRepository.find({
+      select: ["fecha"],
+      where: {
+        fecha: Between(
+          new Date(`${ano}-${mesFormateado}-01T00:00:00.000Z`),
+          new Date(`${ano}-${mesFormateado}-${ultimoDia}T23:59:59.999Z`)
+        ),
+        estado: "completada",
+      },
+    });
+
+    return [comandas, null];
+  } catch (error) {
+    console.error("Error al obtener las comandas por mes y ano:", error);
+    return [null, "Error interno del servidor"];
+  }
+}

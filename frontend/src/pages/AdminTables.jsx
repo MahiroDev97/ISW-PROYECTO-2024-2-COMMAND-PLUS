@@ -4,7 +4,7 @@ import ProtectedRoute from '../components/ProtectedRoute';
 import Navbar from '../components/Navbar';
 import MonthSelector from '../components/MonthSelector';
 import VentasChart from '../components/VentasChart';
-
+import HorariosChart from '../components/HorariosChart';
 const AdminTables = () => {
     const {
         topProductos,
@@ -101,6 +101,7 @@ const AdminTables = () => {
                     </div>
                 </div>
             </div>
+            <HorariosChart />
         </ProtectedRoute>
     );
 };
