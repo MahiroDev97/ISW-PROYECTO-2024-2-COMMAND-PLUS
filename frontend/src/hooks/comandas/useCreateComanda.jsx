@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createComanda } from "@services/comanda.service.js";
 import { showErrorAlert, showSuccessAlert } from "@helpers/sweetAlert.js";
 
-const useCreateComanda = (setComandas) => {
+const useCreateComanda = (fetchComandas) => {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   const handleClickCreate = () => {
@@ -18,7 +18,8 @@ const useCreateComanda = (setComandas) => {
         const newComanda = await createComanda(newComandaDataInt);
         showSuccessAlert("¡Creado!", "La Comanda ha sido creada correctamente.");
         setIsPopupOpen(false);
-        setComandas((prevComandas) => [...prevComandas, newComanda]);
+        fetchComandas((prevComandas) => [...prevComandas, newComanda]);
+        await fetchComandas();
       } catch (error) {
         console.error("Error al intentar crear la Comanda:", error);
         showErrorAlert(

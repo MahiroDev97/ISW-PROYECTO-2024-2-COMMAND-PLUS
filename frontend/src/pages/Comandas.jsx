@@ -9,9 +9,10 @@ import { useCallback, useState } from "react";
 import useComandas from "../hooks/comandas/UseGetComandas.jsx";
 import useCreateComanda from "../hooks/comandas/useCreateComanda.jsx";
 import useEditComanda from "../hooks/comandas/useEditComanda.jsx";
+import { formatDate } from "../utils/dateUtils.js";
 
 const Comandas = () => {
-  const { comandas, setComandas } = useComandas();
+  const { comandas, setComandas, fetchComandas } = useComandas();
   const [filterID, setFilterID] = useState("");
 
   const {
@@ -28,7 +29,7 @@ const Comandas = () => {
     handleCreate,
     isPopupOpen: isPopupCreateOpen,
     setIsPopupOpen: setIsPopupCreateOpen,
-  } = useCreateComanda(setComandas);
+  } = useCreateComanda(fetchComandas);
 
   const handleIDFilterChange = (e) => {
     setFilterID(e.target.value);
@@ -40,6 +41,11 @@ const Comandas = () => {
     },
     [setDataComanda]
   );
+
+  const formattedComandas = comandas.map((comanda) => ({
+    ...comanda,
+    fecha: formatDate(comanda.fecha),
+  }));
 
   const columns = [
     { title: "id", field: "id", width: 150, responsive: 0 },
@@ -78,7 +84,7 @@ const Comandas = () => {
         </div>
         <Table
           columns={columns}
-          data={comandas}
+          data={formattedComandas}
           onSelectionChange={handleSelectionChange}
           filterBy={filterID}
         />
