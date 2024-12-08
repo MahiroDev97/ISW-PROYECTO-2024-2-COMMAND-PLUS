@@ -33,6 +33,7 @@ export default function useVentasTotales() {
                 }
             } else {
                 setError('Error al obtener años disponibles');
+                console.error('Error al obtener años disponibles:', error);
             }
         } catch (error) {
             setError(`Error al obtener años disponibles: ${error}`);

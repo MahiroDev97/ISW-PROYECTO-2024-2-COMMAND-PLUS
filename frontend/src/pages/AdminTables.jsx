@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import MonthSelector from '../components/MonthSelector';
 import VentasChart from '../components/VentasChart';
 import HorariosChart from '../components/HorariosChart';
+import ProductsChart from '../components/ProductsChart';
 const AdminTables = () => {
     const {
         topProductos,
@@ -88,16 +89,14 @@ const AdminTables = () => {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden h-[500px]">
+                        <div className="bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden h-[500px] relative z-10">
                             <div className="px-6 py-4 border-b border-gray-200 bg-gray-50/50">
                                 <h2 className="text-xl font-bold text-gray-900">
-                                    Panel 4
+                                    Distribución de Productos
                                 </h2>
                             </div>
-                            <div className="p-4 h-[calc(500px-64px)] bg-gray-100/50">
-                                <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                    Contenido Futuro
-                                </div>
+                            <div className="p-4 h-[calc(500px-64px)] relative">
+                                <ProductsChart />
                             </div>
                         </div>
                     </div>
