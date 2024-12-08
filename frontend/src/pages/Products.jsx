@@ -12,7 +12,7 @@ import useCreateProduct from "../hooks/products/UseCreateProduct";
 import Navbar from "@components/Navbar";
 
 const Products = () => {
-  const { products, fetchProducts, setProducts } = useProducts();
+  const { products, setProducts } = useProducts();
   const [filterName, setFilterName] = useState("");
 
   const {
