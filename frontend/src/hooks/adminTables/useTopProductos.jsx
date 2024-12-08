@@ -7,8 +7,8 @@ const useTopProductos = () => {
         loading: false,
         error: null,
         mesAnoDisponibles: [],
-        mesSeleccionado: new Date().getMonth() + 1,
-        anoSeleccionado: new Date().getFullYear()
+        mesSeleccionado: null,
+        anoSeleccionado: null
     });
 
     const handleError = (errorMessage) => {
@@ -50,13 +50,16 @@ const useTopProductos = () => {
             const response = await getProductComandaHistory(mesSeleccionado, anoSeleccionado);
 
             if (response.status === "Success") {
-                const topProductosFormateados = response.data.resumenVentas.map(({
-                    id, nombre, categoria, precio, cantidad
-                }) => ({
-                    id, nombre, categoria, precio, cantidad
-                }));
+                const topProductosFormateados = response.data.resumenVentas
+                    .sort((a, b) => b.cantidad - a.cantidad)
+                    .slice(0, 5)
+                    .map(({
+                        id, nombre, categoria, precio, cantidad
+                    }) => ({
+                        id, nombre, categoria, precio, cantidad
+                    }));
 
-                console.log("Top productos formateados", topProductosFormateados);
+                console.log("Top 5 productos formateados", topProductosFormateados);
 
                 setState(prev => {
                     const newState = {
