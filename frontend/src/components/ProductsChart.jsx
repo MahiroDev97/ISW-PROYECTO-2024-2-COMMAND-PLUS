@@ -45,15 +45,20 @@ const ProductsChart = () => {
     };
 
     return (
-        <div className="relative h-full">
-            <h3 className="text-center text-sm font-semibold mb-2">Productos por Categoría</h3>
-            <div className="relative h-[calc(100%-2rem)]">
+        <div className="h-full flex flex-col">
+            <h3 className="text-center text-sm font-semibold mb-4 flex-shrink-0">
+                Productos por Categoría
+            </h3>
+            <div className="flex-1 min-h-[300px]">
                 <Pie
                     data={{
                         labels: products.labels,
                         datasets: products.datasets
                     }}
-                    options={options}
+                    options={{
+                        ...options,
+                        maintainAspectRatio: false
+                    }}
                 />
             </div>
         </div>

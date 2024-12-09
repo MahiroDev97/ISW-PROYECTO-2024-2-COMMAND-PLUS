@@ -35,22 +35,37 @@ export default function VentasChart() {
 
     const options = {
         responsive: true,
-        maintainAspectRatio: true,
+        maintainAspectRatio: false,
         plugins: {
             legend: {
                 position: 'top',
+                labels: {
+                    boxWidth: 12,
+                    padding: 10,
+                    font: {
+                        size: 11,
+                        family: 'Inter, sans-serif'
+                    }
+                }
             },
             title: {
-                display: true,
-                text: 'Ventas Totales por Mes',
-            },
+                display: false
+            }
         },
         scales: {
             y: {
                 beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Ventas ($)'
+                ticks: {
+                    font: {
+                        size: 11
+                    }
+                }
+            },
+            x: {
+                ticks: {
+                    font: {
+                        size: 11
+                    }
                 }
             }
         }
@@ -58,22 +73,20 @@ export default function VentasChart() {
 
     return (
         <div className="h-full w-full flex flex-col">
-            <div className="mb-2">
+            <div className="mb-2 flex-shrink-0">
                 <YearSelector
                     anos={anosDisponiblesState}
                     anoSeleccionado={anoSeleccionado}
                     onChange={setAnoSeleccionado}
                 />
             </div>
-            <div className="relative flex-1">
+            <div className="flex-1 min-h-[300px] relative">
                 {ventasTotales.datasets && (
-                    <div className="absolute inset-0">
-                        <Line
-                            options={options}
-                            data={ventasTotales}
-                            className="h-full w-full"
-                        />
-                    </div>
+                    <Line
+                        options={options}
+                        data={ventasTotales}
+                        className="h-full"
+                    />
                 )}
             </div>
         </div>

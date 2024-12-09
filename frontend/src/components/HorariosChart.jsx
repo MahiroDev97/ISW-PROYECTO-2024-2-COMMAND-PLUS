@@ -151,7 +151,7 @@ export default function HorariosChart() {
 
     return (
         <div className="h-full flex flex-col">
-            <div className="flex items-center justify-between mb-4 flex-shrink-0">
+            <div className="flex-shrink-0 mb-4">
                 <MonthSelector
                     mesesDisponibles={mesAnoDisponibles}
                     mesSeleccionado={mesSeleccionado}
@@ -159,22 +159,22 @@ export default function HorariosChart() {
                     onMesAnoChange={cambiarMesAno}
                 />
             </div>
-
-            {error ? (
-                <div className="flex items-center justify-center p-8 bg-red-50 rounded-lg flex-grow">
-                    <AlertCircle className="mr-2 text-red-500" size={24} />
-                    <span className="text-red-700">Error: {error}</span>
-                </div>
-            ) : (
-                <div className="flex-grow">
+            <div className="flex-1 min-h-[300px]">
+                {error ? (
+                    <div className="flex items-center justify-center p-4 bg-red-50 rounded-lg h-full">
+                        <AlertCircle className="mr-2 text-red-500" size={20} />
+                        <span className="text-red-700 text-sm">Error: {error}</span>
+                    </div>
+                ) : (
                     <Line
-                        options={chartOptions}
+                        options={{
+                            ...chartOptions,
+                            maintainAspectRatio: false
+                        }}
                         data={modifiedData}
-                        height="100%"
-                        width="100%"
                     />
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 }
