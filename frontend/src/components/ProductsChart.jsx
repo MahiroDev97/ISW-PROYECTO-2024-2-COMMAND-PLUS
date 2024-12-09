@@ -15,13 +15,7 @@ const ProductsChart = () => {
     const options = {
         responsive: true,
         maintainAspectRatio: false,
-        animation: {
-            duration: 1500,
-            easing: 'easeInOutCirc',
-            animateRotate: true,
-            animateScale: true,
-            delay: (context) => context.dataIndex * 100
-        },
+
         plugins: {
             tooltip: {
                 callbacks: {

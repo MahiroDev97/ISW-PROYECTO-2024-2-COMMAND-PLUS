@@ -28,7 +28,7 @@ export default function VentasChart() {
 
     useEffect(() => {
         fetchAnosDisponibles();
-    }, []);
+    }, [fetchAnosDisponibles]);
 
     if (error) {
         return <div className="error-message">{error}</div>;
@@ -38,15 +38,14 @@ export default function VentasChart() {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-            duration: 1200,
+            duration: 185,
             easing: 'easeOutQuad',
-            delay: 150
         },
         transitions: {
             active: {
                 animation: {
-                    duration: 1200,
-                    easing: 'easeOutQuad'
+                    duration: 500,
+                    easing: 'easeOutCubic'
                 }
             }
         },
