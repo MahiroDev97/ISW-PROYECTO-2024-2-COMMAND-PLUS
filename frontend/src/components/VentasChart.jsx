@@ -38,7 +38,7 @@ export default function VentasChart() {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-            duration: 185,
+            duration: 190,
             easing: 'easeOutQuad',
         },
         transitions: {
