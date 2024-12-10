@@ -45,3 +45,26 @@
     flex-direction: column;
     gap: 1rem;
   }
+ 
+  .order-card-body .comandstatus {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: #e0e7ff; /* indigo-50 */
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .order-card-body .comandstatus .status {
+    font-weight: 500;
+    color: #4f46e5; /* indigo-600 */
+  }
+
+  .order-card-body .comandstatus .status-indicator {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    background-color: #4f46e5; /* indigo-600 */
+  }
+  

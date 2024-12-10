@@ -27,6 +27,8 @@ router
   .get("/mesano/", getComandasPorMesAno)
   .patch("/detail/", updateComanda)
   .patch("/confirm/", confirmComanda)
-  .delete("/detail/", deleteComanda);
+  .delete("/delete/:id",isGarzonOrAdmin, deleteComanda);
+
+
 
 export default router;
