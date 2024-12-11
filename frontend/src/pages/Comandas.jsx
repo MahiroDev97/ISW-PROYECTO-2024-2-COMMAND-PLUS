@@ -10,11 +10,10 @@ import useComandas from "../hooks/comandas/UseGetComandas.jsx";
 import useCreateComanda from "../hooks/comandas/useCreateComanda.jsx";
 import useEditComanda from "../hooks/comandas/useEditComanda.jsx";
 import Navbar from "../components/Navbar";
-import { formatDate } from "../utils/dateUtils.js";
+
 
 const Comandas = () => {
   const { comandas, setComandas, fetchComandas } = useComandas();
-  const [filterID, setFilterID] = useState("");
 
   const {
     handleClickUpdate,
@@ -23,7 +22,9 @@ const Comandas = () => {
     setIsPopupOpen,
     dataComanda,
     setDataComanda,
-  } = useEditComanda(setComandas);
+  } = useEditComanda(fetchComandas);
+
+  const [filterID, setFilterID] = useState("");
 
   const {
     handleClickCreate,
@@ -43,10 +44,6 @@ const Comandas = () => {
     [setDataComanda]
   );
 
-  const formattedComandas = comandas.map((comanda) => ({
-    ...comanda,
-    fecha: formatDate(comanda.fecha),
-  }));
 
   const columns = [
     { title: "id", field: "id", width: 150, responsive: 0 },
@@ -108,7 +105,7 @@ const Comandas = () => {
               <div className="flex-1 p-3">
                 <Table
                   columns={columns}
-                  data={formattedComandas}
+                  data={comandas}
                   onSelectionChange={handleSelectionChange}
                   filterBy={filterID}
                   className="text-sm"

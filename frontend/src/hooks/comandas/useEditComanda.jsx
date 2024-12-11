@@ -3,7 +3,7 @@ import { updateComanda } from '@services/comanda.service.js';
 import { showErrorAlert, showSuccessAlert } from '@helpers/sweetAlert.js';
 import { formatPostUpdate } from '@helpers/formatData.js';
 
-const useEditComanda = (setComandas) => {
+const useEditComanda = (fetchComandas) => {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const [dataComanda, setDataComanda] = useState([]);
 
@@ -23,17 +23,7 @@ const useEditComanda = (setComandas) => {
               "La Comanda ha sido actualizada correctamente."
             );
             setIsPopupOpen(false);
-            const formattedComanda = formatPostUpdate(updatedComanda);
-    
-            setComandas((prevComandas) =>
-              prevComandas.map((comanda) => {
-                if (comanda.id === formattedComanda.id) {
-                  return formattedComanda;
-                }
-                return comanda;
-              })
-            );
-    
+            await fetchComandas(); // Actualiza las comandas después de la edición
             setDataComanda([]);
           } catch (error) {
             console.error("Error al intentar actualizar la Comanda:", error);
