@@ -56,4 +56,25 @@ export async function getTurnosDia(day) {
     } catch (error) {
         return error.response.data;
     }
-}   
+}
+
+export async function getTurnosMesAno(mes, ano) {
+    try {
+        const response = await axios.get(`${API_URL}/turno/getTurnosMesAno/${mes}/${ano}`);
+        if (response.data.length === 0) {
+            return [null, "No hay turnos para el mes y año especificado"];
+        }
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export async function getTurnosDate() {
+    try {
+        const response = await axios.get(`${API_URL}/turno/getDateTurnosDisponibles`);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
