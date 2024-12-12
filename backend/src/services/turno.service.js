@@ -258,22 +258,26 @@ export async function getTurnosDia(day) {
     try {
         const turnoRepository = AppDataSource.getRepository(Turno);
 
-        // Crear fecha de inicio (8am del día especificado)
-        const startDate = new Date(day);
-        startDate.setHours(8, 0, 0, 0);
+        // Crear fecha de inicio y fin ajustando la zona horaria
+        const fechaInicio = new Date(day);
+        fechaInicio.setUTCHours(0, 0, 0, 0);
 
-        // Crear fecha de fin (2am del día siguiente)
-        const endDate = new Date(day);
-        endDate.setDate(endDate.getDate() + 1); // Siguiente día
-        endDate.setHours(2, 0, 0, 0);
+        const fechaFin = new Date(day);
+        fechaFin.setUTCHours(23, 59, 59, 999);
+
+        console.log("Buscando turnos entre:", fechaInicio, fechaFin); // Debug
 
         const turnos = await turnoRepository.find({
             where: {
-                datetimeInicio: Between(startDate, endDate),
-                datetimeFin: Not(IsNull())
+                datetimeInicio: Between(fechaInicio, fechaFin)
             },
-            relations: ["user"]
+            relations: ["user"],
+            order: { datetimeInicio: "DESC" }
         });
+
+        if (!turnos || turnos.length === 0) {
+            return [null, "No se encontraron turnos para este día"];
+        }
 
         return [turnos, null];
     } catch (error) {

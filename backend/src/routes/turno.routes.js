@@ -19,9 +19,9 @@ router.use(authenticateJwt);
 
 router
   .post("/create", createTurno)
+  .get("/getTurnosDia", getTurnosDiaController)
   .get("/", getTurnos)
   .get("/:id", getTurno)
-  .get("/getTurnosDia", getTurnosDiaController)
   .patch("/:id", updateTurno)
   .delete("/:id", deleteTurno)
   .patch("/finishTurno/:id", finishTurno);
