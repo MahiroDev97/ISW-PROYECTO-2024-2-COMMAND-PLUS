@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 
-
+const pass = process.env.GMAIL_PASS;
+const user = process.env.GMAIL_USER;
 
 export async function enviarEmailReporte(datos) {
     const transporter = nodemailer.createTransport({
@@ -8,8 +9,8 @@ export async function enviarEmailReporte(datos) {
         port: 587,
         secure: false,
         auth: {
-            user: "dicodina03@gmail.com",
-            pass: "gmab mufm eruo gljn"
+            user: user,
+            pass: pass
         }
     });
     //to do: agregar el email del admin 

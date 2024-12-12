@@ -1,9 +1,9 @@
 import cron from "node-cron";
 import { getReportesDataService } from "../services/reportes.service.js";
-import { enviarEmailReporte } from "./email.service.js";
+import { enviarEmailReporte } from "../services/email.service.js";
 
 export function sendEmailCron() {
-    const cronJob = cron.schedule("*/5 * * * *", async () => {
+    const cronJob = cron.schedule("0 2 * * *", async () => {
         try {
             const reportes = await getReportesDataService();
 
