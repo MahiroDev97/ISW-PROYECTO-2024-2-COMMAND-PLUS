@@ -45,3 +45,15 @@ export async function getTurnos() {
         return error.response.data;
     }
 }
+
+export async function getTurnosDia(day) {
+    try {
+        const response = await axios.get(`${API_URL}/turno/getTurnosDia/${day}`);
+        if (response.data.length === 0) {
+            return [null, "No hay turnos para el día especificado"];
+        }
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}   

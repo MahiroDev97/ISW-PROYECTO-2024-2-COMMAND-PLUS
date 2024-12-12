@@ -3,8 +3,10 @@ import {
     createTurnoService,
     deleteTurnoService,
     finishTurnoService,
+    getFechasTurnosDisponibles,
     getTurnosDia,
     getTurnoService,
+    getTurnosMesAno,
     getTurnosUsuarioService,
     updateTurnoService,
 } from "../services/turno.service.js";
@@ -151,6 +153,23 @@ export async function finishTurno(req, res) {
     }
 }
 
+export async function getDatesTurnosDisponibles(req, res) {
+    try {
+        const [turnos, errorTurnos] = await getFechasTurnosDisponibles();
+
+
+
+        if (turnos.length === 0) return handleErrorClient(res, 404, "No hay turnos disponibles");
+
+        if (errorTurnos) return handleErrorClient(res, 404, errorTurnos);
+
+        handleSuccess(res, 200, "Fechas de turnos disponibles", turnos);
+
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
 export async function getTurnosDiaController(req, res) {
     try {
         const { day } = req.query;
@@ -160,6 +179,25 @@ export async function getTurnosDiaController(req, res) {
         const [turnos, errorTurnos] = await getTurnosDia(day);
 
         if (errorTurnos) return handleErrorClient(res, 404, errorTurnos);
+
+        handleSuccess(res, 200, "Turnos encontrados", turnos);
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
+export async function getTurnosMesAnoController(req, res) {
+    try {
+        const { mes, ano } = req.query;
+
+        console.log(mes, ano);
+
+        const [turnos, errorTurnos] = await getTurnosMesAno(mes, ano);
+
+        if (errorTurnos) return handleErrorClient(res, 404, errorTurnos);
+
+        if (turnos.length === 0) return handleErrorClient(res, 404, "No hay turnos para el mes y año especificado");
+
 
         handleSuccess(res, 200, "Turnos encontrados", turnos);
     } catch (error) {

@@ -253,6 +253,25 @@ export async function isUserInTurno(id_user) {
     }
 }
 
+export async function getFechasTurnosDisponibles() {
+    try {
+        const turnoRepository = AppDataSource.getRepository(Turno);
+        const turnos = await turnoRepository.find({
+            where: {
+                datetimeInicio: Not(IsNull())
+            }
+        });
+        if (!turnos) return [null, "No se encontraron turnos"];
+        // select fechaIncio
+        const fechasInicio = turnos.map(turno => turno.datetimeInicio);
+        console.log(fechasInicio);
+        return [fechasInicio, null];
+    } catch (error) {
+        console.error("Error al obtener las fechas de turnos disponibles:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
 
 export async function getTurnosDia(day) {
     try {
@@ -285,3 +304,27 @@ export async function getTurnosDia(day) {
         return [null, "Error interno del servidor"];
     }
 }
+
+export async function getTurnosMesAno(mes, ano) {
+    try {
+        const turnoRepository = AppDataSource.getRepository(Turno);
+        const primerDiaMes = new Date(ano, mes - 1, 1);
+        const ultimoDiaMes = new Date(ano, mes, 0);
+
+        const turnos = await turnoRepository.find({
+            where: {
+                datetimeInicio: Between(primerDiaMes, ultimoDiaMes)
+            },
+            relations: ["user"],
+            order: { datetimeInicio: "ASC" }
+        });
+
+        return [turnos, null];
+    } catch (error) {
+        console.error("Error al obtener los turnos por mes:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+
+
