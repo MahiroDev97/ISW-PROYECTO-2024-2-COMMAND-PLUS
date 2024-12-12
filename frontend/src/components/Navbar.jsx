@@ -48,14 +48,14 @@ const Navbar = () => {
         <ul>
           <li>
             <NavLink
-              to="/home"
+              to={userRole === "administrador" ? "/adminTables" : "/home"}
               onClick={() => {
                 setMenuOpen(false);
                 addActiveClass();
               }}
               activeClassName="active"
             >
-              Inicio
+              Dashboard
             </NavLink>
           </li>
           {userRole === "administrador" && (
@@ -72,22 +72,6 @@ const Navbar = () => {
               </NavLink>
             </li>
           )}
-          ,
-          {userRole === "administrador" && (
-            <li>
-              <NavLink
-                to="/adminTables"
-                onClick={() => {
-                  setMenuOpen(false);
-                  addActiveClass();
-                }}
-                activeClassName="active"
-              >
-                Tablas
-              </NavLink>
-            </li>
-          )}
-          ,
           {(userRole === "administrador" || userRole === "garzon") && (
             <li>
               <NavLink
@@ -102,7 +86,6 @@ const Navbar = () => {
               </NavLink>
             </li>
           )}
-          ,
           {(userRole === "administrador" || userRole === "cocinero") && (
             <li>
               <NavLink
@@ -117,7 +100,6 @@ const Navbar = () => {
               </NavLink>
             </li>
           )}
-          ,
           {userRole !== "administrador" && (
             <li>
               <NavLink

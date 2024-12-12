@@ -1,8 +1,7 @@
-import TopProductosTable from '../components/TopProductosTable';
+import { TopProductosTable } from '../components/TopProductosTable';
 import useTopProductos from '../hooks/adminTables/useTopProductos';
 import ProtectedRoute from '../components/ProtectedRoute';
 import Navbar from '../components/Navbar';
-import MonthSelector from '../components/MonthSelector';
 import VentasChart from '../components/VentasChart';
 import HorariosChart from '../components/HorariosChart';
 import ProductsChart from '../components/ProductsChart';
@@ -61,7 +60,7 @@ const AdminTables = () => {
                             <HorariosChart />
                         </ChartContainer>
 
-                        <ChartContainer title="Distribución de Productos">
+                        <ChartContainer title="Stock de Productos">
                             <ProductsChart />
                         </ChartContainer>
                     </div>

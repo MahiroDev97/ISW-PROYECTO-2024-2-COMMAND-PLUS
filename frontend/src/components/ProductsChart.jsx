@@ -6,18 +6,16 @@ import { useEffect } from 'react';
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const ProductsChart = () => {
-    const { products, loading, error, fetchProducts } = useProducts();
+    const { products, loading, fetchProducts } = useProducts();
 
     useEffect(() => {
         fetchProducts();
     }, []);
 
-    if (loading) return <div className="flex justify-center items-center h-full">Cargando...</div>;
-    if (error) return <div className="text-red-500">Error: {error.message}</div>;
-
     const options = {
         responsive: true,
         maintainAspectRatio: false,
+
         plugins: {
             tooltip: {
                 callbacks: {
@@ -49,17 +47,20 @@ const ProductsChart = () => {
             <h3 className="text-center text-sm font-semibold mb-4 flex-shrink-0">
                 Productos por Categoría
             </h3>
-            <div className="flex-1 min-h-[300px]">
-                <Pie
-                    data={{
-                        labels: products.labels,
-                        datasets: products.datasets
-                    }}
-                    options={{
-                        ...options,
-                        maintainAspectRatio: false
-                    }}
-                />
+            <div className="flex-1 h-[400px]"> {/* Altura fija */}
+                {loading ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                        <div className="animate-pulse text-gray-400">Cargando...</div>
+                    </div>
+                ) : (
+                    <Pie
+                        data={{
+                            labels: products.labels,
+                            datasets: products.datasets
+                        }}
+                        options={options}
+                    />
+                )}
             </div>
         </div>
     );

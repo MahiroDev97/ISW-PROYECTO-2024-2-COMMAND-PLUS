@@ -1,6 +1,6 @@
 import MonthSelector from "./MonthSelector";
 
-const TopProductosTable = ({
+export const TopProductosTable = ({
     products,
     loading,
     mesAnoDisponibles,

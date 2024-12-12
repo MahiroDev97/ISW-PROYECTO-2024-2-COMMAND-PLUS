@@ -30,7 +30,8 @@ export default function HorariosChart() {
         mesAnoDisponibles,
         mesSeleccionado,
         anoSeleccionado,
-        cambiarMesAno
+        cambiarMesAno,
+        loading
     } = useHorariosChart();
 
     // Calcular el máximo valor de los datos
@@ -41,6 +42,19 @@ export default function HorariosChart() {
     const chartOptions = {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+            duration: 1200,
+            easing: 'easeOutQuad',
+            delay: (context) => context.dataIndex * 50
+        },
+        transitions: {
+            active: {
+                animation: {
+                    duration: 500,
+                    easing: 'easeOutCubic'
+                }
+            }
+        },
         plugins: {
             legend: {
                 position: 'top',
@@ -159,18 +173,19 @@ export default function HorariosChart() {
                     onMesAnoChange={cambiarMesAno}
                 />
             </div>
-            <div className="flex-1 min-h-[300px]">
-                {error ? (
+            <div className="flex-1 h-[400px]">
+                {loading ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                        <div className="animate-pulse text-gray-400">Cargando...</div>
+                    </div>
+                ) : error ? (
                     <div className="flex items-center justify-center p-4 bg-red-50 rounded-lg h-full">
                         <AlertCircle className="mr-2 text-red-500" size={20} />
                         <span className="text-red-700 text-sm">Error: {error}</span>
                     </div>
                 ) : (
                     <Line
-                        options={{
-                            ...chartOptions,
-                            maintainAspectRatio: false
-                        }}
+                        options={chartOptions}
                         data={modifiedData}
                     />
                 )}

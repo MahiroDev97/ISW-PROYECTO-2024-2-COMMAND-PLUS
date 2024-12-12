@@ -2,11 +2,7 @@ import { getVentasTotales } from '../../services/productcomanda.service';
 import { useState, useEffect } from 'react';
 import { getMesAnoDisponibles } from '../../services/productcomanda.service';
 
-//get solo anos disponibles
 export default function useVentasTotales() {
-
-
-
     const [ventasTotales, setVentasTotales] = useState({
         labels: [],
         datasets: []
@@ -15,30 +11,37 @@ export default function useVentasTotales() {
     const [anosDisponiblesState, setAnosDisponiblesState] = useState([]);
     const [error, setError] = useState(null);
 
+    // Efecto para cargar años disponibles solo una vez al montar el componente
+    useEffect(() => {
+        fetchAnosDisponibles();
+    }, []);
+    // Solo se ejecuta al montar el componente
+    useEffect(() => {
+        if (anoSeleccionado) {
+            fetchVentasTotales();
+        }
+    }, [anoSeleccionado]);
 
     const fetchAnosDisponibles = async () => {
         try {
             const response = await getMesAnoDisponibles();
             if (response.status === "Success") {
-                // Eliminar duplicados usando Set y crear objetos únicos
                 const anosUnicos = [...new Set(response.data.map(item => item.ano))]
                     .map(ano => ({ ano, label: ano }));
 
                 setAnosDisponiblesState(anosUnicos);
-                console.log('años únicos', anosUnicos);
 
-                // Seleccionar el primer año disponible
-                if (anosUnicos.length > 0) {
+                // Seleccionar el primer año disponible solo si no hay año seleccionado
+                if (anosUnicos.length > 0 && !anoSeleccionado) {
                     setAnoSeleccionado(anosUnicos[0].ano);
                 }
             } else {
                 setError('Error al obtener años disponibles');
-                console.error('Error al obtener años disponibles:', error);
             }
         } catch (error) {
             setError(`Error al obtener años disponibles: ${error}`);
         }
-    }
+    };
 
     const fetchVentasTotales = async () => {
         console.log('Iniciando fetchVentasTotales con año:', anoSeleccionado);
@@ -91,9 +94,12 @@ export default function useVentasTotales() {
             setError(`Error al obtener ventas totales: ${error}`);
         }
     }
-    useEffect(() => {
-        fetchVentasTotales();
-    }, [anoSeleccionado]);
 
-    return { ventasTotales, anosDisponiblesState, anoSeleccionado, setAnoSeleccionado, fetchAnosDisponibles };
+    return {
+        ventasTotales,
+        anosDisponiblesState,
+        anoSeleccionado,
+        setAnoSeleccionado,
+        error
+    };
 }
