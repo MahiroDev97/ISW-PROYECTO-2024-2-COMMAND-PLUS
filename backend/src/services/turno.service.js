@@ -252,3 +252,10 @@ export async function isUserInTurno(id_user) {
         return false;
     }
 }
+
+
+export async function getTurnosByDay(day) {
+    const turnoRepository = AppDataSource.getRepository(Turno);
+    const turnos = await turnoRepository.find({ where: { datetimeInicio: MoreThan(day) } });
+    return turnos;
+}
