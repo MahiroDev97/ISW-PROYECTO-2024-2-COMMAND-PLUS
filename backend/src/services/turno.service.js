@@ -2,7 +2,7 @@
 import Turno from "../entity/turno.entity.js";
 import User from "../entity/user.entity.js";
 import { AppDataSource } from "../config/configDb.js";
-import { IsNull, Not } from "typeorm"; // Asegúrate de importar IsNull
+import { Between, IsNull, Not } from "typeorm"; // Asegúrate de importar IsNull
 
 export async function createTurnoService(body) {
     try {
@@ -254,8 +254,30 @@ export async function isUserInTurno(id_user) {
 }
 
 
-export async function getTurnosByDay(day) {
-    const turnoRepository = AppDataSource.getRepository(Turno);
-    const turnos = await turnoRepository.find({ where: { datetimeInicio: MoreThan(day) } });
-    return turnos;
+export async function getTurnosDia(day) {
+    try {
+        const turnoRepository = AppDataSource.getRepository(Turno);
+
+        // Crear fecha de inicio (8am del día especificado)
+        const startDate = new Date(day);
+        startDate.setHours(8, 0, 0, 0);
+
+        // Crear fecha de fin (2am del día siguiente)
+        const endDate = new Date(day);
+        endDate.setDate(endDate.getDate() + 1); // Siguiente día
+        endDate.setHours(2, 0, 0, 0);
+
+        const turnos = await turnoRepository.find({
+            where: {
+                datetimeInicio: Between(startDate, endDate),
+                datetimeFin: Not(IsNull())
+            },
+            relations: ["user"]
+        });
+
+        return [turnos, null];
+    } catch (error) {
+        console.error("Error al obtener los turnos por día:", error);
+        return [null, "Error interno del servidor"];
+    }
 }

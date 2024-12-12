@@ -20,10 +20,18 @@ export async function getReportesDataService() {
     const comandaRepository = AppDataSource.getRepository(Comanda);
     const turnoRepository = AppDataSource.getRepository(Turno);
     const userRepository = AppDataSource.getRepository(User);
-    const fecha = new Date().toISOString().split("T")[0];
-    const fechaInicio = new Date(fecha + "T00:01:00");
-    const fechaFin = new Date(fecha + "T23:59:00");
-    //mock fecha para que se pueda ejecutar el servicio 2024-08-03
+    // Obtener fecha actual
+    const fechaActual = new Date();
+
+    // Configurar fechaInicio (7 AM del día)
+    const fechaInicio = new Date(fechaActual);
+    fechaInicio.setDate(fechaInicio.getDate() - 1);
+    fechaInicio.setHours(7, 0, 0, 0);
+
+    // Configurar fechaFin (2 AM del día actual)
+    const fechaFin = new Date(fechaActual);
+    fechaFin.setDate(fechaFin.getDate());
+    fechaFin.setHours(2, 0, 0, 0);
     try {
         const ventas = await productComandaRepository.find({
             where: {

@@ -1,6 +1,7 @@
 "use strict";
 import { authenticateJwt } from "../middlewares/authentication.middleware.js";
 
+
 import { Router } from "express";
 import {
   createTurno,
@@ -8,6 +9,7 @@ import {
   finishTurno,
   getTurno,
   getTurnos,
+  getTurnosDiaController,
   updateTurno,
 } from "../controllers/turno.controller.js";
 
@@ -19,6 +21,7 @@ router
   .post("/create", createTurno)
   .get("/", getTurnos)
   .get("/:id", getTurno)
+  .get("/getTurnosDia", getTurnosDiaController)
   .patch("/:id", updateTurno)
   .delete("/:id", deleteTurno)
   .patch("/finishTurno/:id", finishTurno);
