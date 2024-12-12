@@ -7,7 +7,7 @@ import ProductComanda from "../entity/productcomanda.entity.js";
 import Comanda from "../entity/comanda.entity.js";
 import Turno from "../entity/turno.entity.js";
 import User from "../entity/user.entity.js";
-
+import { Between } from "typeorm";
 
 //get data to send an email to the admin with the report of ventas, products solds, comandas, Turnos del dia.
 // esto debe ser un servicio que se ejecute cada dia a las 12:00 am
@@ -20,33 +20,35 @@ export async function getReportesDataService() {
     const comandaRepository = AppDataSource.getRepository(Comanda);
     const turnoRepository = AppDataSource.getRepository(Turno);
     const userRepository = AppDataSource.getRepository(User);
+    const fecha = new Date().toISOString().split("T")[0];
+    const fechaInicio = new Date(fecha + "T00:01:00");
+    const fechaFin = new Date(fecha + "T23:59:00");
     //mock fecha para que se pueda ejecutar el servicio 2024-08-03
-    const fecha = new Date("2024-08-03").toISOString().split("T")[0]
     try {
         const ventas = await productComandaRepository.find({
             where: {
-                comanda: {
-                    fecha: fecha
-                }
+                fechahoraentrega: Between(fechaInicio, fechaFin)
             }
         });
         //if (ventas.length === 0) return null;
 
         const comandas = await comandaRepository.find({
             where: {
-                fecha: fecha
+                fecha: Between(fechaInicio, fechaFin)
             }
         });
         //if (comandas.length === 0) return null;
+        //between 00:01 am and 11:59 pm
+
 
         const turnos = await turnoRepository.find({
             where: {
-                datetimeInicio: fecha
+                datetimeInicio: Between(fechaInicio, fechaFin)
             }
         });
         //if (turnos.length === 0) return null;
 
-        return { ventas, comandas, turnos };
+        return { ventas, comandas, turnos, fecha };
 
     } catch (error) {
         console.error("Error al obtener los reportes:", error);

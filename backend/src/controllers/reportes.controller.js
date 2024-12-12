@@ -5,11 +5,13 @@ import { handleErrorClient, handleSuccess } from "../handlers/responseHandlers.j
 export const sendEmailCronController = async (req, res) => {
 
     try {
-        const [reportes, errorSendEmail] = await sendEmailCron();
+        const resultado = sendEmailCron();
 
-        if (errorSendEmail) return handleErrorClient(res, errorSendEmail);
+        if (!resultado) {
+            return handleErrorClient(res, "No hay datos para generar el reporte");
+        }
 
-        handleSuccess(res, 200, "Email enviado correctamente", reportes);
+        handleSuccess(res, 200, "Email enviado correctamente", resultado);
     } catch (error) {
         handleErrorClient(res, 500, error.message);
     }

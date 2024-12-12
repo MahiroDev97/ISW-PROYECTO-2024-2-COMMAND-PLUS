@@ -1,17 +1,17 @@
 import cron from "node-cron";
 import { getReportesDataService } from "../services/reportes.service.js";
-import { enviarEmailReporte } from "../services/email.service.js"; // Necesitarás crear este servicio
+import { enviarEmailReporte } from "./email.service.js";
 
-// Ejecutar todos los días a las 12:00 AM
-// cron.schedule("0 0 * * *", async () =>
+export function sendEmailCron() {
+    const cronJob = cron.schedule("*/5 * * * *", async () => {
+        try {
+            const reportes = await getReportesDataService();
 
-const sendEmailCron = async () => {
-    try {
-        const reportes = await getReportesDataService();
+            if (!reportes) {
+                console.log("No hay datos para generar el reporte");
+                return null;
+            }
 
-
-        if (reportes) {
-            // Procesar los datos para el email
             const datosEmail = {
                 ventas: reportes.ventas,
                 comandas: reportes.comandas,
@@ -19,16 +19,15 @@ const sendEmailCron = async () => {
                 fecha: new Date().toISOString().split("T")[0]
             };
 
-            // Enviar el email
-            await enviarEmailReporte(datosEmail);
-            console.log("Reporte diario enviado exitosamente");
-        } else {
-            console.log("No hay datos para generar el reporte del día");
+            const resultado = await enviarEmailReporte(datosEmail);
+            console.log("Reporte enviado exitosamente");
+            return resultado;
+
+        } catch (error) {
+            console.error("Error al ejecutar el reporte programado:", error);
+            throw error;
         }
-    } catch (error) {
+    });
 
-        console.error("Error al ejecutar el reporte programado:", error);
-    }
+    cronJob.start();
 }
-
-export { sendEmailCron };

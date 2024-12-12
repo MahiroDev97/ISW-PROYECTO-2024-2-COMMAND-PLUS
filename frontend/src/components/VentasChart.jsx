@@ -7,7 +7,7 @@ import {
 import { Line } from 'react-chartjs-2';
 import useVentasTotales from '../hooks/adminTables/useVentasTotales';
 import YearSelector from './YearSelector';
-import { useEffect } from 'react';
+
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -21,14 +21,9 @@ export default function VentasChart() {
         anosDisponiblesState,
         anoSeleccionado,
         setAnoSeleccionado,
-        fetchAnosDisponibles,
         error,
         loading
     } = useVentasTotales();
-
-    useEffect(() => {
-        fetchAnosDisponibles();
-    }, [fetchAnosDisponibles]);
 
     if (error) {
         return <div className="error-message">{error}</div>;
@@ -38,7 +33,7 @@ export default function VentasChart() {
         responsive: true,
         maintainAspectRatio: false,
         animation: {
-            duration: 190,
+            duration: 1000,
             easing: 'easeOutQuad',
         },
         transitions: {

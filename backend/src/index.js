@@ -10,7 +10,7 @@ import { cookieKey, HOST, PORT } from "./config/configEnv.js";
 import { connectDB } from "./config/configDb.js";
 import { createInitialSetup } from "./config/initialSetup.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
-
+import { sendEmailCron } from "./services/cron.service.js";
 async function setupServer() {
   try {
     const app = express();
@@ -74,6 +74,7 @@ async function setupAPI() {
     await connectDB();
     await setupServer();
     await createInitialSetup();
+    sendEmailCron();
   } catch (error) {
     console.log("Error en index.js -> setupAPI(), el error es: ", error);
   }
