@@ -27,7 +27,7 @@ router
   .get("/mesano/", getComandasPorMesAno)
   .patch("/detail/", updateComanda)
   .patch("/confirm/", confirmComanda)
-  .delete("/delete/:id",isGarzonOrAdmin, deleteComanda);
+  .delete("/delete/",isGarzonOrAdmin, deleteComanda);
 
 
 

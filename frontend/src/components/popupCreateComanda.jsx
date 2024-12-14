@@ -33,14 +33,14 @@ export default function Popup({ show, setShow, data, action }) {
                 {
                   label: "estado",
                   name: "estado",
-                  defaultValue: ComandaData.estado || "Abierta",
+                  defaultValue: "Abierta",
                   placeholder: "estado de la comanda",
-                  fieldType: "input",
-                  type: "text",
+                  fieldType: "select",
+                  options: [
+                    { value: "Abierta", label: "Abierta" },
+                  ],
                   required: true,
-                  minLength: 3,
-                  maxLength: 50,
-                  readOnly: true, 
+                  readOnly: true,
                 },
               ]}
               onSubmit={handleSubmit}

@@ -42,7 +42,7 @@ export async function updateComanda(id, data) {
 
 export async function deleteComanda(id) {
     try {
-        const response = await axios.delete(`/comanda/delete/:?id=${id}`);
+        const response = await axios.delete(`/comanda/delete/?id=${id}`);
         return response.data;
     } catch (error) {
         return error.response.data;

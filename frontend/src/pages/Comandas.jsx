@@ -1,5 +1,4 @@
 import Table from "@components/Table";
-import Search from "../components/Search";
 import PopupComandas from "../components/popupComandas.jsx";
 import PopupCreateComanda from "../components/popupCreateComanda.jsx";
 import UpdateIcon from "../assets/updateIcon.svg";
@@ -24,18 +23,12 @@ const Comandas = () => {
     setDataComanda,
   } = useEditComanda(fetchComandas);
 
-  const [filterID, setFilterID] = useState("");
-
   const {
     handleClickCreate,
     handleCreate,
     isPopupOpen: isPopupCreateOpen,
     setIsPopupOpen: setIsPopupCreateOpen,
   } = useCreateComanda(fetchComandas);
-
-  const handleIDFilterChange = (e) => {
-    setFilterID(e.target.value);
-  };
 
   const handleSelectionChange = useCallback(
     (selectedComandas) => {
@@ -46,10 +39,25 @@ const Comandas = () => {
 
 
   const columns = [
-    { title: "id", field: "id", width: 150, responsive: 0 },
-    { title: "fecha", field: "fecha", width: 300, responsive: 3 },
-    { title: "mesa", field: "mesa", width: 350, responsive: 2 },
-    { title: "estado", field: "estado", width: 200, responsive: 2 },
+    // { title: "id", field: "id", width: 150, responsive: 0 },
+    {
+      title: "Fecha",
+      field: "fecha",
+      width: 300,
+      responsive: 3,
+      formatter: (cell) => {
+        const date = new Date(cell.getValue());
+        return date.toLocaleString("es-ES", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      },
+    },
+    { title: "Mesa", field: "mesa", width: 350, responsive: 2 },
+    { title: "Estado", field: "estado", width: 200, responsive: 2 },
   ];
 
   return (
@@ -69,12 +77,6 @@ const Comandas = () => {
                   </p>
                 </div>
                 <div className="flex items-center space-x-4">
-                  <Search
-                    value={filterID}
-                    onChange={handleIDFilterChange}
-                    placeholder={"Filtrar por ID"}
-                    className="bg-white rounded-lg shadow-sm"
-                  />
                   <button
                     onClick={handleClickCreate}
                     className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
@@ -107,7 +109,6 @@ const Comandas = () => {
                   columns={columns}
                   data={comandas}
                   onSelectionChange={handleSelectionChange}
-                  filterBy={filterID}
                   className="text-sm"
                 />
               </div>
