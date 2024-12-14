@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './root.service.js';
 
 const API_URL = 'http://127.0.0.1:3000/api';
 
@@ -48,12 +48,15 @@ export async function getTurnos() {
 
 export async function getTurnosDia(day) {
     try {
-        const response = await axios.get(`${API_URL}/turno/getTurnosDia/${day}`);
+        //query params day is the date in the format YYYY-MM-DD
+        console.log("day", day);
+        const response = await axios.get(`${API_URL}/turno/getTurnosDia?day=${day}`);
         if (response.data.length === 0) {
             return [null, "No hay turnos para el día especificado"];
         }
         return response.data;
     } catch (error) {
+        console.log("error encontrando Turnos para el dia:" + day, ":", error);
         return error.response.data;
     }
 }
@@ -73,8 +76,10 @@ export async function getTurnosMesAno(mes, ano) {
 export async function getTurnosDate() {
     try {
         const response = await axios.get(`${API_URL}/turno/getDateTurnosDisponibles`);
+        console.log("response", response);
         return response.data;
     } catch (error) {
+        console.log("error", error);
         return error.response.data;
     }
 }

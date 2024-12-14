@@ -163,6 +163,8 @@ export async function getDatesTurnosDisponibles(req, res) {
 
         if (errorTurnos) return handleErrorClient(res, 404, errorTurnos);
 
+        console.log("turnos", turnos);
+
         handleSuccess(res, 200, "Fechas de turnos disponibles", turnos);
 
     } catch (error) {
