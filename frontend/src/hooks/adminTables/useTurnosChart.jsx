@@ -11,6 +11,8 @@ export const useTurnosCharts = () => {
     const [dateSelected, setDateSelected] = useState(new Date().toISOString().split('T')[0]);
 
     // Estados para el modo mes
+    const [monthsAvailable, setMonthsAvailable] = useState([]);
+    const [yearsAvailable, setYearsAvailable] = useState([]);
     const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
     const [yearSelected, setYearSelected] = useState(new Date().getFullYear());
 
@@ -26,6 +28,14 @@ export const useTurnosCharts = () => {
         console.log("datesAvailable", datesAvailable);
         setDatesAvailable(datesAvailable);
         setDateSelected(datesAvailable[0]);
+
+        const monthsAvailable = uniqueDates.map(date => new Date(date).getMonth() + 1);
+        console.log("monthsAvailable", monthsAvailable);
+        setMonthsAvailable(monthsAvailable);
+
+        const yearsAvailable = uniqueDates.map(date => new Date(date).getFullYear());
+        console.log("yearsAvailable", yearsAvailable);
+        setYearsAvailable(yearsAvailable);
     };
 
     // Cambiar modo de visualización
@@ -49,12 +59,14 @@ export const useTurnosCharts = () => {
 
     // Obtener datos por mes
     const fetchMonthData = async (month, year) => {
-        const [data, error] = await getTurnosMesAno(month, year);
-        if (error) {
+        try {
+            const data = await getTurnosMesAno(month, year);
+            console.log("Datos del mes:", data);
+            setTurnos(data);
+        } catch (error) {
             console.error("Error al obtener datos del mes:", error);
-            return;
+            setTurnos([]); // Establecer un array vacío en caso de error
         }
-        setTurnos(data);
     };
 
     // Manejadores de cambios
@@ -102,6 +114,8 @@ export const useTurnosCharts = () => {
         monthSelected,
         yearSelected,
         datesAvailable,
+        monthsAvailable,
+        yearsAvailable,
 
         // Manejadores
         handleViewModeChange,

@@ -10,11 +10,13 @@ const TurnosDayTable = ({ data }) => {
             title: "Nombre",
             field: "user.nombreCompleto",
             headerFilter: true,
-            headerFilterPlaceholder: "Filtrar nombre..."
+            headerFilterPlaceholder: "Filtrar nombre...",
+            headerSort: true
         },
         {
             title: "Hora Inicio",
             field: "datetimeInicio",
+            headerSort: true,
             formatter: (cell) => {
                 const date = new Date(cell.getValue());
                 return date.toLocaleTimeString('es-ES', {
@@ -26,6 +28,7 @@ const TurnosDayTable = ({ data }) => {
         {
             title: "Hora Fin",
             field: "datetimeFin",
+            headerSort: true,
             formatter: (cell) => {
                 const date = new Date(cell.getValue());
                 return date.toLocaleTimeString('es-ES', {
@@ -37,18 +40,12 @@ const TurnosDayTable = ({ data }) => {
         {
             title: "Horas Totales",
             field: "horasTotales",
+            headerSort: true,
             formatter: (cell) => {
                 const inicio = new Date(cell.getRow().getData().datetimeInicio);
                 const fin = new Date(cell.getRow().getData().datetimeFin);
-                const diff = (fin - inicio) / (1000 * 60 * 60); // Diferencia en horas
+                const diff = (fin - inicio) / (1000 * 60 * 60);
                 return diff.toFixed(2);
-            },
-            bottomCalc: "sum",
-            bottomCalcFormatter: "money",
-            bottomCalcFormatterParams: {
-                decimal: ".",
-                thousand: ",",
-                precision: 2
             }
         },
         {
@@ -56,6 +53,7 @@ const TurnosDayTable = ({ data }) => {
             field: "user.rol",
             headerFilter: true,
             headerFilterPlaceholder: "Filtrar rol...",
+            headerSort: true,
             formatter: (cell) => {
                 const rol = cell.getValue();
                 return rol.charAt(0).toUpperCase() + rol.slice(1);
@@ -64,18 +62,19 @@ const TurnosDayTable = ({ data }) => {
     ];
 
     useEffect(() => {
-        // Inicializar tabla
         if (tableRef.current && data?.data) {
             const table = new Tabulator(tableRef.current, {
-                data: data.data, // Accedemos al array dentro de data.data
+                data: data.data,
                 columns: columns,
                 layout: "fitColumns",
                 responsiveLayout: "collapse",
                 pagination: "local",
-                paginationSize: 10,
-                paginationSizeSelector: [5, 10, 20, 50],
+                paginationSize: 8,
                 movableColumns: true,
                 placeholder: "No hay turnos para mostrar",
+                height: "550px",
+                rowHeight: 50,
+                headerSort: true,
                 locale: true,
                 langs: {
                     "es-es": {
@@ -88,12 +87,11 @@ const TurnosDayTable = ({ data }) => {
                             "prev_title": "Página Anterior",
                             "next": "Siguiente",
                             "next_title": "Página Siguiente",
-                        },
+                        }
                     }
                 }
             });
 
-            // Cleanup
             return () => {
                 table.destroy();
             };
@@ -101,9 +99,15 @@ const TurnosDayTable = ({ data }) => {
     }, [data]);
 
     return (
-        <div className="card bg-white rounded-lg shadow-lg p-4">
-            <div className="card-body">
-                <div ref={tableRef} className="w-full"></div>
+        <div className="w-full bg-white rounded-xl shadow-md overflow-hidden">
+            <div className="p-4 sm:p-6">
+                <div className="overflow-x-auto">
+                    <div className="inline-block min-w-full align-middle">
+                        <div className="overflow-hidden border-2 border-gray-200 rounded-lg">
+                            <div ref={tableRef} className="min-w-full"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

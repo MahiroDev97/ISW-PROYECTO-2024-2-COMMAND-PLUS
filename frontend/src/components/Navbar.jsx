@@ -1,14 +1,12 @@
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { logout } from "@services/auth.service.js";
-import "@styles/navbar.css";
 import { useState } from "react";
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const user = JSON.parse(sessionStorage.getItem("usuario")) || "";
   const userRole = user?.rol;
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const logoutSubmit = () => {
     try {
@@ -19,133 +17,192 @@ const Navbar = () => {
     }
   };
 
-  const toggleMenu = () => {
-    if (!menuOpen) {
-      removeActiveClass();
-    } else {
-      addActiveClass();
-    }
-    setMenuOpen(!menuOpen);
-  };
-
-  const removeActiveClass = () => {
-    const activeLinks = document.querySelectorAll(".nav-menu ul li a.active");
-    activeLinks.forEach((link) => link.classList.remove("active"));
-  };
-
-  const addActiveClass = () => {
-    const links = document.querySelectorAll(".nav-menu ul li a");
-    links.forEach((link) => {
-      if (link.getAttribute("href") === location.pathname) {
-        link.classList.add("active");
+  const NavItem = ({ to, onClick, children }) => (
+    <NavLink
+      to={to}
+      onClick={onClick}
+      className={({ isActive }) =>
+        `block px-4 py-2 text-sm transition-all duration-200 ${isActive
+          ? "bg-white/10 text-white font-medium"
+          : "text-gray-100 hover:bg-white/10 hover:text-white"
+        } rounded-md`
       }
-    });
-  };
+    >
+      {children}
+    </NavLink>
+  );
 
   return (
-    <nav className="navbar">
-      <div className={`nav-menu ${menuOpen ? "activado" : ""}`}>
-        <ul>
-          <li>
-            <NavLink
+    <nav className="bg-[#003366] fixed w-full top-0 left-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-[9vh]">
+          {/* Logo o título */}
+          <div className="flex-shrink-0">
+            <span className="text-white font-bold text-2xl">Command+</span>
+          </div>
+
+          {/* Botón de menú móvil */}
+          <div className="flex md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-white 
+              bg-blue-800 hover:bg-transparent transition-colors duration-200"
+            >
+              <span className="sr-only">Abrir menú principal</span>
+              <svg
+                className={`${isOpen ? "hidden" : "block"} h-6 w-6`}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                className={`${isOpen ? "block" : "hidden"} h-6 w-6`}
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
+          {/* Menú de escritorio */}
+          <div className="hidden md:flex md:items-center md:space-x-4">
+            <NavItem
               to={userRole === "administrador" ? "/adminTables" : "/home"}
-              onClick={() => {
-                setMenuOpen(false);
-                addActiveClass();
-              }}
-              activeClassName="active"
             >
               Dashboard
-            </NavLink>
-          </li>
-          {userRole === "administrador" && (
-            <li>
-              <NavLink
-                to="/users"
-                onClick={() => {
-                  setMenuOpen(false);
-                  addActiveClass();
-                }}
-                activeClassName="active"
-              >
-                Usuarios
-              </NavLink>
-            </li>
-          )}
-          {(userRole === "administrador" || userRole === "garzon") && (
-            <li>
-              <NavLink
-                to="/comandas"
-                onClick={() => {
-                  setMenuOpen(false);
-                  addActiveClass();
-                }}
-                activeClassName="active"
-              >
-                Comandas
-              </NavLink>
-            </li>
-          )}
-          {(userRole === "administrador" || userRole === "cocinero") && (
-            <li>
-              <NavLink
-                to="/cocina"
-                onClick={() => {
-                  setMenuOpen(false);
-                  addActiveClass();
-                }}
-                activeClassName="active"
-              >
-                Cocina
-              </NavLink>
-            </li>
-          )}
-          {userRole !== "administrador" && (
-            <li>
-              <NavLink
-                to="/finishturno"
-                onClick={() => {
-                  setMenuOpen(false);
-                  addActiveClass();
-                }}
-                activeClassName="active"
-              >
-                Terminar Turno
-              </NavLink>
-            </li>
-          )}
-          {userRole === "administrador" && (
-            <li>
-              <NavLink
-                to="/products"
-                onClick={() => {
-                  setMenuOpen(false);
-                  addActiveClass();
-                }}
-                activeClassName="active"
-              >
-                Productos
-              </NavLink>
-            </li>
-          )}
-          <li>
-            <NavLink
-              to="/auth"
-              onClick={() => {
-                logoutSubmit();
-                setMenuOpen(false);
-              }}
-              activeClassName="active"
+            </NavItem>
+
+            {userRole === "administrador" && (
+              <>
+                <NavItem to="/users">Usuarios</NavItem>
+                <NavItem to="/turnosadmin">Turnos</NavItem>
+                <NavItem to="/products">Productos</NavItem>
+              </>
+            )}
+
+            {(userRole === "administrador" || userRole === "garzon") && (
+              <NavItem to="/comandas">Comandas</NavItem>
+            )}
+
+            {(userRole === "administrador" || userRole === "cocinero") && (
+              <NavItem to="/cocina">Cocina</NavItem>
+            )}
+
+            {userRole !== "administrador" && (
+              <NavItem to="/finishturno">Terminar Turno</NavItem>
+            )}
+
+            <button
+              onClick={logoutSubmit}
+              className="flex items-center px-4 py-2 text-sm text-white 
+              bg-red-500 rounded-md transition-all duration-200 font-medium
+              hover:bg-red-600 hover:shadow-md hover:-translate-y-0.5"
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3zm11 4.414L11.586 5H15v2.414zM5 5h4.586L7.414 7.414 5 9.828V5zm0 5.172l3-3 3 3 3-3V15H5v-4.828z"
+                  clipRule="evenodd"
+                />
+              </svg>
               Cerrar sesión
-            </NavLink>
-          </li>
-        </ul>
+            </button>
+          </div>
+        </div>
       </div>
-      <div className="hamburger" onClick={toggleMenu}>
-        <span className="bar"></span>
-        <span className="bar"></span>
-        <span className="bar"></span>
+
+      {/* Menú móvil */}
+      <div
+        className={`${isOpen ? "block" : "hidden"
+          } md:hidden bg-[#003366] border-t border-blue-800 shadow-lg`}
+      >
+        <div className="px-2 pt-2 pb-3 space-y-1">
+          <NavItem
+            to={userRole === "administrador" ? "/adminTables" : "/home"}
+            onClick={() => setIsOpen(false)}
+          >
+            Dashboard
+          </NavItem>
+
+          {userRole === "administrador" && (
+            <>
+              <NavItem to="/users" onClick={() => setIsOpen(false)}>
+                Usuarios
+              </NavItem>
+              <NavItem to="/turnosadmin" onClick={() => setIsOpen(false)}>
+                Turnos
+              </NavItem>
+              <NavItem to="/products" onClick={() => setIsOpen(false)}>
+                Productos
+              </NavItem>
+            </>
+          )}
+
+          {(userRole === "administrador" || userRole === "garzon") && (
+            <NavItem to="/comandas" onClick={() => setIsOpen(false)}>
+              Comandas
+            </NavItem>
+          )}
+
+          {(userRole === "administrador" || userRole === "cocinero") && (
+            <NavItem to="/cocina" onClick={() => setIsOpen(false)}>
+              Cocina
+            </NavItem>
+          )}
+
+          {userRole !== "administrador" && (
+            <NavItem to="/finishturno" onClick={() => setIsOpen(false)}>
+              Terminar Turno
+            </NavItem>
+          )}
+
+          <button
+            onClick={() => {
+              logoutSubmit();
+              setIsOpen(false);
+            }}
+            className="flex items-center w-full px-4 py-2 text-sm font-medium text-white 
+            bg-red-500 rounded-md transition-all duration-200
+            hover:bg-red-600 hover:shadow-md hover:-translate-y-0.5 mt-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M3 3a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H3zm11 4.414L11.586 5H15v2.414zM5 5h4.586L7.414 7.414 5 9.828V5zm0 5.172l3-3 3 3 3-3V15H5v-4.828z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Cerrar sesión
+          </button>
+        </div>
       </div>
     </nav>
   );

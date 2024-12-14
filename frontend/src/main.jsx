@@ -27,7 +27,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/home",
-        element: <Home />,
+        element: (
+          <ProtectedRoute allowedRoles={["garzon", "cocinero"]}>
+            <Home />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/users",
@@ -71,7 +75,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/adminTables",
-        element: <AdminTables />,
+        element: (
+          <ProtectedRoute allowedRoles={["administrador"]}>
+            <AdminTables />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/turnosAdmin",
