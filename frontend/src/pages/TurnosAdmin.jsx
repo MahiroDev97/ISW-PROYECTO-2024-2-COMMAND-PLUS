@@ -16,15 +16,14 @@ const AdminTurnos = () => {
         yearSelected,
         datesAvailable,
         monthsAvailable,
-        yearsAvailable,
+
         handleViewModeChange,
         handleDateChange,
         handleMonthYearChange,
     } = useTurnosCharts();
 
     // Crear el array de mesesDisponibles a partir de monthsAvailable y yearsAvailable
-    const mesesDisponibles = monthsAvailable.map((mes, index) => {
-        const ano = yearsAvailable[index];
+    const mesesDisponibles = monthsAvailable.map(({ mes, ano }) => {
         const nombresMeses = [
             'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
             'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
@@ -35,6 +34,9 @@ const AdminTurnos = () => {
             label: `${nombresMeses[mes - 1]} ${ano}`
         };
     });
+
+
+
 
     return (
         <ProtectedRoute allowedRoles={['administrador']}>

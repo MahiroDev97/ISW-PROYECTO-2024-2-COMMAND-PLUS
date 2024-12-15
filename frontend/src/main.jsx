@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import Login from "@pages/Login";
 import Home from "@pages/Home";
 import Users from "@pages/Users";
@@ -27,7 +27,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/home",
-        element: <Home />,
+        element: (
+          <ProtectedRoute>
+            {user?.rol === "administrador" ? <Navigate to="/adminTables" /> : <Home />}
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/users",

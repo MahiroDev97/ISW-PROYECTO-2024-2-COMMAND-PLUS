@@ -12,30 +12,66 @@ export const useTurnosCharts = () => {
 
     // Estados para el modo mes
     const [monthsAvailable, setMonthsAvailable] = useState([]);
-    const [yearsAvailable, setYearsAvailable] = useState([]);
     const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
     const [yearSelected, setYearSelected] = useState(new Date().getFullYear());
 
     // Obtener fechas disponibles al iniciar
     const initializeDates = async () => {
         const response = await getTurnosDate();
-        console.log("response", response);
 
-        const uniqueDates = response.data;
-        console.log("uniqueDates", uniqueDates);
+        if (response.data) {
+            const uniqueDates = response.data;
 
-        const datesAvailable = uniqueDates.map(date => new Date(date).toISOString().split('T')[0]);
-        console.log("datesAvailable", datesAvailable);
-        setDatesAvailable(datesAvailable);
-        setDateSelected(datesAvailable[0]);
+            // Configurar fechas disponibles para vista diaria
+            const datesAvailable = uniqueDates
+                .map(date => new Date(date).toISOString().split('T')[0])
+                .sort(); // Ordenar fechas cronológicamente
 
-        const monthsAvailable = uniqueDates.map(date => new Date(date).getMonth() + 1);
-        console.log("monthsAvailable", monthsAvailable);
-        setMonthsAvailable(monthsAvailable);
+            setDatesAvailable(datesAvailable);
 
-        const yearsAvailable = uniqueDates.map(date => new Date(date).getFullYear());
-        console.log("yearsAvailable", yearsAvailable);
-        setYearsAvailable(yearsAvailable);
+            // Seleccionar la última fecha disponible
+            const lastAvailableDate = datesAvailable[datesAvailable.length - 1];
+            setDateSelected(lastAvailableDate);
+
+            // Crear array de meses/años únicos para vista mensual
+            const mesAnoSet = new Set();
+            const mesAnoArray = [];
+
+            uniqueDates.forEach(date => {
+                const fecha = new Date(date);
+                const mes = fecha.getMonth() + 1;
+                const ano = fecha.getFullYear();
+                const mesAnoKey = `${mes}-${ano}`;
+
+                if (!mesAnoSet.has(mesAnoKey)) {
+                    mesAnoSet.add(mesAnoKey);
+                    mesAnoArray.push({ mes, ano });
+                }
+            });
+
+            // Ordenar por año y mes
+            mesAnoArray.sort((a, b) => {
+                if (a.ano !== b.ano) return a.ano - b.ano;
+                return a.mes - b.mes;
+            });
+
+            setMonthsAvailable(mesAnoArray);
+
+            // Establecer el último mes disponible como seleccionado
+            if (mesAnoArray.length > 0) {
+                const ultimoMes = mesAnoArray[mesAnoArray.length - 1];
+                setMonthSelected(ultimoMes.mes);
+                setYearSelected(ultimoMes.ano);
+            }
+
+            // Cargar datos iniciales según el modo de vista
+            if (viewMode === "day") {
+                fetchDayData(lastAvailableDate);
+            } else {
+                const ultimoMes = mesAnoArray[mesAnoArray.length - 1];
+                fetchMonthData(ultimoMes.mes, ultimoMes.ano);
+            }
+        }
     };
 
     // Cambiar modo de visualización
@@ -115,7 +151,6 @@ export const useTurnosCharts = () => {
         yearSelected,
         datesAvailable,
         monthsAvailable,
-        yearsAvailable,
 
         // Manejadores
         handleViewModeChange,
