@@ -35,4 +35,19 @@ export const comandaBodyValidation = Joi.object({
         "string.min": "El estado debe tener como mínimo 3 caracteres.",
         "string.max": "El estado debe tener como máximo 50 caracteres.",
     }),
+    productos: Joi.array().items(Joi.object({
+        id: Joi.number().integer().min(1).positive().messages({
+            "number.base": "El id debe ser un número.",
+            "number.integer": "El id debe ser un número entero.",
+            "number.positive": "El id debe ser un número positivo.",
+        }),
+        cantidad: Joi.number().integer().min(1).positive().messages({
+            "number.base": "La cantidad debe ser un número.",
+            "number.integer": "La cantidad debe ser un número entero.",
+            "number.positive": "La cantidad debe ser un número positivo.",
+        }),
+    })).min(1).messages({
+        "array.base": "Los productos deben ser un array.",
+        "array.min": "Debe haber al menos un producto.",
+    }),
 }); 

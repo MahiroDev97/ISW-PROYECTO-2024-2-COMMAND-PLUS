@@ -29,6 +29,7 @@ const ComandaSchema = new EntitySchema({
       type: "one-to-many",
       target: "ProductComanda",
       inverseSide: "comanda",
+      eager:true,
     },
   }
 });

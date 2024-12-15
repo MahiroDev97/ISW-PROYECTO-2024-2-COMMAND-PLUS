@@ -1,5 +1,6 @@
 "use strict";
 import Comanda from "../entity/comanda.entity.js";
+import { createProductComandaService } from "./productcomanda.service.js";
 import ProductComanda from "../entity/productcomanda.entity.js";
 import { AppDataSource } from "../config/configDb.js";
 import { Between } from "typeorm";
@@ -7,12 +8,30 @@ import { Between } from "typeorm";
 export async function createComandaService(body) {
   try {
     const comandaRepository = AppDataSource.getRepository(Comanda);
-
-    const newComanda = comandaRepository.create(body);
-
+    const { productos, ...comanda } = body;
+    const newComanda = comandaRepository.create(comanda);
     await comandaRepository.save(newComanda);
+    const comandaId = newComanda.id;
 
-    return [newComanda, null];
+    for (const producto of productos) {
+      for (let i = 0; i < producto.cantidad; i++) {
+        const productComanda = {
+          estadoproductocomanda: "recibido",
+          comandaId: comandaId,
+          productoId: producto.id,
+        }
+        const [, error] = await createProductComandaService(productComanda);
+        if (error) {
+          console.error("Error al crear el producto de la comanda:", error);
+          return [null, "Error interno del servidor"];
+        }
+      }
+    }
+    const comandaWithRelations = await comandaRepository.findOne({
+      where: { id: comandaId },
+      relations: ["productcomandas"],
+    });
+    return [comandaWithRelations, null];
   } catch (error) {
     console.error("Error al crear la comanda:", error);
     return [null, "Error interno del servidor"];

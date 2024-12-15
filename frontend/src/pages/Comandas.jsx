@@ -9,11 +9,13 @@ import useComandas from "../hooks/comandas/UseGetComandas.jsx";
 import useCreateComanda from "../hooks/comandas/useCreateComanda.jsx";
 import useEditComanda from "../hooks/comandas/useEditComanda.jsx";
 import Navbar from "../components/Navbar";
-
+import useGetProducts from "../hooks/products/useGetProducts.jsx";
 
 const Comandas = () => {
   const { comandas, setComandas, fetchComandas } = useComandas();
 
+  const { products, setProducts, fetchProducts } = useGetProducts();
+  
   const {
     handleClickUpdate,
     handleUpdate,
@@ -126,6 +128,7 @@ const Comandas = () => {
         show={isPopupCreateOpen}
         setShow={setIsPopupCreateOpen}
         action={handleCreate}
+        products={useGetProducts().products}
       />
     </>
   );
