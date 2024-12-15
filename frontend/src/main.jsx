@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import Login from "@pages/Login";
 import Home from "@pages/Home";
 import Users from "@pages/Users";
@@ -15,6 +15,7 @@ import Products from "./pages/Products";
 import Comandas from "./pages/Comandas";
 import VistaCocina from "./pages/VistaCocina";
 import "@styles/index.css";
+import TurnosAdmin from "./pages/TurnosAdmin";
 const user = JSON.parse(sessionStorage.getItem("usuario"));
 console.log("user", user);
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
@@ -26,7 +27,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/home",
-        element: <Home />,
+        element: (
+          <ProtectedRoute>
+            {user?.rol === "administrador" ? <Navigate to="/adminTables" /> : <Home />}
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/users",
@@ -72,7 +77,12 @@ const router = createBrowserRouter([
         path: "/adminTables",
         element: <AdminTables />,
       },
+      {
+        path: "/turnosAdmin",
+        element: <TurnosAdmin />,
+      },
     ],
+
   },
   {
     path: "/auth",

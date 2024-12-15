@@ -19,6 +19,7 @@ const Login = () => {
     const loginSubmit = async (data) => {
         try {
             const response = await login(data);
+            console.log(response);
             if (response.status === 'Success') {
                 navigate('/home');
             } else if (response.status === 'Client error') {

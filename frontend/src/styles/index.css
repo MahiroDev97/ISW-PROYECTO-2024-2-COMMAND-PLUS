@@ -58,3 +58,98 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+/* En tu archivo de estilos CSS global */
+.tabulator {
+  font-family: inherit;
+  background-color: transparent;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+}
+
+.tabulator-header {
+  background-color: #f8fafc !important;
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+
+.tabulator-header .tabulator-col {
+  background-color: transparent;
+  border-right: 1px solid #e2e8f0;
+  padding: 1rem;
+}
+
+.tabulator-header .tabulator-col:last-child {
+  border-right: none;
+}
+
+.tabulator-row {
+  border-bottom: 1px solid #cbd5e1;
+}
+
+.tabulator-row .tabulator-cell {
+  padding: 1rem;
+  border-right: 1px solid #e2e8f0;
+}
+
+.tabulator-row .tabulator-cell:last-child {
+  border-right: none;
+}
+
+.tabulator-row.tabulator-row-even {
+  background-color: #ffffff;
+}
+
+.tabulator-row.tabulator-row-odd {
+  background-color: #f8fafc;
+}
+
+.tabulator-row:hover {
+  background-color: #f1f5f9 !important;
+}
+
+.tabulator-footer {
+  background-color: #f8fafc;
+  border-top: 2px solid #cbd5e1;
+  padding: 0.75rem;
+}
+
+.tabulator input {
+  border: 2px solid #e2e8f0;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+}
+
+/* Estilos para los filtros del encabezado */
+.tabulator-header-filter input {
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+}
+
+/* Estilos para el paginador */
+.tabulator-footer .tabulator-paginator {
+  border-top: 1px solid #cbd5e1;
+  padding-top: 0.5rem;
+}
+
+/* Estilos para los botones del paginador */
+.tabulator-page {
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+  color: #64748b !important;
+  padding: 0.5rem 1rem !important;
+  margin: 0 0.25rem !important;
+  border-radius: 0.375rem !important;
+}
+
+.tabulator-page.active,
+.tabulator-page:hover {
+  background-color: #f1f5f9 !important;
+  color: #1e293b !important;
+}
+
+/* Estilos para el selector de tamaño de página */
+.tabulator-page-size {
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0.375rem !important;
+  padding: 0.5rem !important;
+}
