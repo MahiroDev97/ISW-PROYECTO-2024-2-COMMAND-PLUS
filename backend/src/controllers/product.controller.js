@@ -1,4 +1,7 @@
 "use strict";
+import fs from "fs";
+import path from "path";
+import { HOST, PORT } from "../config/configEnv.js";
 import {
   productBodyValidation,
   productQueryValidation,
@@ -19,12 +22,17 @@ import {
 export async function createProduct(req, res) {
   try {
     const { body } = req;
+    const imagePath = req.file?.path;
+    const baseUrl = `http://${HOST}:${PORT}/api/uploads/`;
+    if (imagePath) {
+      body.imagen = `${baseUrl}${path.basename(imagePath)}`;
+    }
 
-    const { error } = productBodyValidation.validate(body); // Por Implementar
+    const { error } = productBodyValidation.validate(body);
 
     if (error) return handleErrorClient(res, 400, error.message);
 
-    const [newProduct, errorProduct] = await createProductService(body); //Por Implementar
+    const [newProduct, errorProduct] = await createProductService(body);
 
     if (errorProduct) return handleErrorClient(res, 400, errorProduct);
 
@@ -38,11 +46,11 @@ export async function getProduct(req, res) {
   try {
     const { id, nombre } = req.query;
 
-    const { error } = productQueryValidation.validate({ id, nombre }); // Por Implementar
+    const { error } = productQueryValidation.validate({ id, nombre });
 
     if (error) return handleErrorClient(res, 400, error.message);
 
-    const [product, errorProduct] = await getProductService({ id, nombre }); //Por Implementar
+    const [product, errorProduct] = await getProductService({ id, nombre });
 
     if (errorProduct) return handleErrorClient(res, 404, errorProduct);
 
@@ -66,6 +74,24 @@ export async function getProducts(req, res) {
   }
 }
 
+export async function getAvailableProducts(req, res) {
+  try {
+    const [products, errorProducts] = await getProductsService();
+
+    if (errorProducts) return handleErrorClient(res, 404, errorProducts);
+
+    const availableProducts = products.filter(
+      (product) => product.disponibilidad,
+    );
+
+    availableProducts.length === 0
+      ? handleSuccess(res, 204)
+      : handleSuccess(res, 200, "Productos disponibles", availableProducts);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
 export async function updateProduct(req, res) {
   try {
     const { id } = req.query;
@@ -83,6 +109,30 @@ export async function updateProduct(req, res) {
 
     if (bodyError) {
       return handleErrorClient(res, 400, bodyError.message);
+    }
+
+    const [currentProduct, errorCurrentProduct] = await getProductService({
+      id,
+    });
+
+    if (errorCurrentProduct)
+      return handleErrorClient(res, 404, errorCurrentProduct);
+
+    const imagePath = req.file?.path;
+    const baseUrl = `http://${HOST}:${PORT}/api/uploads/`;
+
+    if (imagePath) {
+      body.imagen = `${baseUrl}${path.basename(imagePath)}`;
+      if (currentProduct.imagen) {
+        const oldImagePath = path.join(
+          path.resolve(),
+          "uploads",
+          path.basename(currentProduct.imagen),
+        );
+        fs.unlink(oldImagePath, (err) => {
+          if (err) console.error("Error al eliminar la imagen anterior:", err);
+        });
+      }
     }
 
     const [updatedProduct, errorUpdate] = await updateProductService(
