@@ -13,15 +13,28 @@ import FinishTurno from "./pages/FinishTurno";
 import AdminTables from "./pages/AdminTables";
 import Products from "./pages/Products";
 import Comandas from "./pages/Comandas";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import Modal from 'react-modal';
 import VistaCocina from "./pages/VistaCocina";
 import "@styles/index.css";
+
+
+Modal.setAppElement('#root'); 
+
 const user = JSON.parse(sessionStorage.getItem("usuario"));
 console.log("user", user);
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: (
+      <> 
+      <ToastContainer/>
+      <Root />
+      </>
+    ), 
     errorElement: <Error404 />,
     children: [
       {

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Utensils, Calendar } from "lucide-react";
 import { ProductCard } from "./ComandaProductCard";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "../styles/ComandaOrderCard.css"; // Importa el archivo CSS
 
 const ComandStatus = {
@@ -21,6 +23,33 @@ export const OrderCard = ({ comanda }) => {
   const handleStatusChange = (e) => {
     setEstado(e.target.value);
     console.log(`Status changed to: ${e.target.value}`);
+  };
+
+  const updateComandaStatus = async (productId, newStatus) => {
+    try {
+      // Aquí puedes agregar la lógica para actualizar el estado en el backend si es necesario
+      console.log(`Updating product ${productId} to status ${newStatus}`);
+      // Simulación de una llamada a la API
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success('¡Estado actualizado correctamente!', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      toast.error('Error al actualizar el estado', {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      console.error('Error al actualizar el estado:', error);
+    }
   };
 
   return (
@@ -47,25 +76,12 @@ export const OrderCard = ({ comanda }) => {
               <ProductCard
                 key={productComanda.id}
                 productcomandas={productComanda}
+                updateComandaStatus={updateComandaStatus}
               />
             ))
           ) : (
             <p>No hay productos en esta comanda.</p>
           )}
-        </div>
-        <div className="status-selector">
-          <label htmlFor="status">Estado Comanda:</label>
-          <select
-            id="status"
-            value={estado}
-            onChange={handleStatusChange}
-          >
-            {statusOptions.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
     </div>
