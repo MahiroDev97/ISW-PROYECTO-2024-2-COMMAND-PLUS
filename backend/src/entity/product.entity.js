@@ -31,6 +31,10 @@ const ProductSchema = new EntitySchema({
       type: "boolean",
       default: true,
     },
+    imagen: {
+      type: "text",
+      nullable: true,
+    },
   },
   relations: {
     productcomandas: {
@@ -38,7 +42,7 @@ const ProductSchema = new EntitySchema({
       target: "ProductComanda",
       inverseSide: "product",
     },
-  }
+  },
 });
 
 export default ProductSchema;

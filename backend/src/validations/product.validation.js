@@ -39,4 +39,7 @@ export const productBodyValidation = Joi.object({
   disponibilidad: Joi.boolean().messages({
     "boolean.base": "La disponibilidad debe ser un booleano.",
   }),
+  imagen: Joi.any().optional().messages({
+    "any.base": "La imagen debe ser un archivo.",
+  }),
 });

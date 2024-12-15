@@ -21,6 +21,7 @@ import {
 export async function createComanda(req, res) {
   try {
     const { body } = req;
+    body.imagen = req.file.path;
 
     const { error } = comandaBodyValidation.validate(body);
 

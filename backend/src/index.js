@@ -61,6 +61,8 @@ async function setupServer() {
 
     app.use("/api", indexRoutes);
 
+    app.use("/api/uploads", express.static("uploads"));
+
     app.listen(PORT, () => {
       console.log(`=> Servidor corriendo en ${HOST}:${PORT}/api`);
     });

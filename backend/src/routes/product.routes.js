@@ -1,13 +1,14 @@
 "use strict";
 import { Router } from "express";
-import { isAdmin } from "../middlewares/authorization.middleware.js";
 import { authenticateJwt } from "../middlewares/authentication.middleware.js";
+import { upload } from "../middlewares/upload.middleware.js";
 import {
   createProduct,
   deleteProduct,
+  getAvailableProducts,
   getProduct,
   getProducts,
-  updateProduct
+  updateProduct,
 } from "../controllers/product.controller.js";
 
 const router = Router();
@@ -15,10 +16,11 @@ const router = Router();
 router.use(authenticateJwt);
 
 router
-  .post("/", createProduct)
+  .post("/", upload, createProduct)
   .get("/", getProducts)
+  .get("/disponibles/", getAvailableProducts)
   .get("/detail/", getProduct)
-  .patch("/detail/", updateProduct)
+  .patch("/detail/", upload, updateProduct)
   .delete("/detail/", deleteProduct);
 
 export default router;
