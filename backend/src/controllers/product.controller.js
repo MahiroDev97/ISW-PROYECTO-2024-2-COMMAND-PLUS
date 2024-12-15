@@ -167,3 +167,13 @@ export async function deleteProduct(req, res) {
     handleErrorServer(res, 500, error.message);
   }
 }
+if (product.imagen) {
+  const imagePath = path.join(
+    path.resolve(),
+    "uploads",
+    path.basename(product.imagen),
+  );
+  fs.unlink(imagePath, (err) => {
+    if (err) console.error("Error al eliminar la imagen:", err);
+  });
+}
