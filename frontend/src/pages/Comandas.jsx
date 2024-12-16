@@ -4,7 +4,7 @@ import PopupCreateComanda from "../components/popupCreateComanda.jsx";
 import UpdateIcon from "../assets/updateIcon.svg";
 import AddIcon from "../assets/AddIcon.svg";
 import UpdateIconDisable from "../assets/updateIconDisabled.svg";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import useComandas from "../hooks/comandas/UseGetComandas.jsx";
 import useCreateComanda from "../hooks/comandas/useCreateComanda.jsx";
 import useEditComanda from "../hooks/comandas/useEditComanda.jsx";
@@ -16,6 +16,10 @@ const Comandas = () => {
 
   const { products, setProducts, fetchProducts } = useGetProducts();
   
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const {
     handleClickUpdate,
     handleUpdate,
@@ -128,7 +132,7 @@ const Comandas = () => {
         show={isPopupCreateOpen}
         setShow={setIsPopupCreateOpen}
         action={handleCreate}
-        products={useGetProducts().products}
+        products={products}
       />
     </>
   );

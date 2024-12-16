@@ -32,7 +32,10 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
             {fields.map((field, index) => (
                 <div className="container_inputs" key={index}>
                     {field.label && <label htmlFor={field.name}>{field.label}</label>}
-                    {field.fieldType === 'input' && (
+                    {/* Agregar manejo específico para fieldType custom */}
+                    {field.fieldType === 'custom' ? (
+                        field.customContent
+                    ) : field.fieldType === 'input' ? (
                         <input
                             {...register(field.name, {
                                 required: field.required ? 'Este campo es obligatorio' : false,
@@ -51,8 +54,7 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                             disabled={field.disabled}
                             onChange={field.onChange}
                         />
-                    )}
-                    {field.fieldType === 'textarea' && (
+                    ) : field.fieldType === 'textarea' ? (
                         <textarea
                             {...register(field.name, {
                                 required: field.required ? 'Este campo es obligatorio' : false,
@@ -67,8 +69,7 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                             disabled={field.disabled}
                             onChange={field.onChange}
                         />
-                    )}
-                    {field.fieldType === 'select' && (
+                    ) : field.fieldType === 'select' ? (
                         <select
                             {...register(field.name, {
                                 required: field.required ? 'Este campo es obligatorio' : false,
@@ -86,7 +87,7 @@ const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundCo
                                 </option>
                             ))}
                         </select>
-                    )}
+                    ) : null}
                     {field.type === 'password' && field.name === 'password' && (
                         <span className="toggle-password-icon" onClick={togglePasswordVisibility}>
                             <img src={showPassword ? ViewIcon : HideIcon} />

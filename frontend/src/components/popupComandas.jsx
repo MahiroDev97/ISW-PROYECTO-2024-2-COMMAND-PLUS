@@ -25,11 +25,12 @@ export default function Popup({ show, setShow, data, action }) {
                   name: "mesa",
                   defaultValue: ComandaData.mesa || "",
                   placeholder: "mesa del local",
-                  fieldType: "input",
-                  type: "text",
+                  fieldType: "select",
+                  options: Array.from({ length: 10 }, (_, i) => ({
+                    value: (i + 1).toString(),
+                    label: (i + 1).toString(),
+                  })),
                   required: true,
-                  minLength: 1,
-                  maxLength: 50,
                 },
                 {
                   label: "estado",
