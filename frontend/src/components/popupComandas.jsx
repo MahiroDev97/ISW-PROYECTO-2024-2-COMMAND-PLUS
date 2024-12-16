@@ -1,12 +1,17 @@
 import "@styles/popup.css";
 import CloseIcon from "@assets/XIcon.svg";
 import Form from "./Form";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Popup({ show, setShow, data, action }) {
   const ComandaData = data && data.length > 0 ? data[0] : {};
 
   const handleSubmit = (formData) => {
     action({ ...ComandaData, ...formData });
+    if (formData.estado === 'Cerrada') {
+      toast.success(`Mesa número ${ComandaData.mesa} lista`);
+    }
   };
 
   return (

@@ -1,6 +1,8 @@
+import React from 'react';
+
 export const OrderStatus = ({ onStatusChange, isUpdating, id }) => {
   const getStatusClassName = (status) => {
-    const baseClasses = "px-3 py-1 rounded-full text-sm font-medium cursor-pointer";
+    const baseClasses = "px-3 py-1 rounded-full text-sm font-medium cursor-pointer transition-all duration-200 hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed";
     switch (status) {
       case "pendiente":
         return `${baseClasses} bg-yellow-100 text-yellow-800`;
@@ -19,36 +21,25 @@ export const OrderStatus = ({ onStatusChange, isUpdating, id }) => {
     onStatusChange({ target: { value: newStatus } }, id);
   };
 
+  const statusOptions = [
+    { status: "pendiente", label: "Pendiente" },
+    { status: "en-preparacion", label: "En preparación" },
+    { status: "completado", label: "Completado" },
+    { status: "cancelado", label: "Cancelado" }
+  ];
+
   return (
-    <div className="flex gap-2">
-      <button
-        onClick={() => handleClick("pendiente")}
-        className={getStatusClassName("pendiente")}
-        disabled={isUpdating}
-      >
-        Pendiente
-      </button>
-      <button
-        onClick={() => handleClick("en-preparacion")}
-        className={getStatusClassName("en-preparacion")}
-        disabled={isUpdating}
-      >
-        En preparación
-      </button>
-      <button
-        onClick={() => handleClick("completado")}
-        className={getStatusClassName("completado")}
-        disabled={isUpdating}
-      >
-        Completado
-      </button>
-      <button
-        onClick={() => handleClick("cancelado")}
-        className={getStatusClassName("cancelado")}
-        disabled={isUpdating}
-      >
-        Cancelado
-      </button>
+    <div className="flex gap-2 flex-wrap justify-center">
+      {statusOptions.map(({ status, label }) => (
+        <button
+          key={status}
+          onClick={() => handleClick(status)}
+          className={getStatusClassName(status)}
+          disabled={isUpdating}
+        >
+          {label}
+        </button>
+      ))}
     </div>
   );
 };

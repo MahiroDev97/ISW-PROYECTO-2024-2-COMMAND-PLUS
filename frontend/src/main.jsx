@@ -18,7 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-modal';
 import VistaCocina from "./pages/VistaCocina";
 import "@styles/index.css";
-
+import React from 'react';
 
 Modal.setAppElement('#root'); 
 
@@ -97,6 +97,10 @@ const router = createBrowserRouter([
   },
 ]);
 //renderiza el router en el root del html
+
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
+  <React.StrictMode>
+    <RouterProvider router={router} />
+    <ToastContainer />
+  </React.StrictMode>
 );
