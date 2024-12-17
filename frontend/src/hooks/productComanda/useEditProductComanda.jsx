@@ -1,32 +1,37 @@
-import { useState } from 'react';
-import { updateProductComanda } from '../../services/productcomanda.service';
+import { useState } from "react";
+import { updateProductComanda } from "../../services/productcomanda.service";
 
 const useEditProductComanda = (initialProducts = []) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [productStatuses, setProductStatuses] = useState(
-    initialProducts.reduce((acc, product) => ({
-      ...acc,
-      [product.id]: product.estadoproductocomanda
-    }), {})
+    initialProducts.reduce(
+      (acc, product) => ({
+        ...acc,
+        [product.id]: product.estadoproductocomanda,
+      }),
+      {}
+    )
   );
 
   const handleProductStatusUpdate = async (productId, newStatus) => {
     try {
       setLoading(true);
-      console.log('productId en el hook', productId);
-      console.log('newStatus en el hook', newStatus);
+      setError(null);
 
       const product = {
         id: productId,
-        estadoproductocomanda: newStatus
-      }
+        estadoproductocomanda: newStatus,
+      };
+
       const response = await updateProductComanda(product);
-      setProductStatuses(prev => ({
+
+      setProductStatuses((prev) => ({
         ...prev,
-        [productId]: newStatus
+        [productId]: newStatus,
       }));
-      return response.data;
+
+      return response; // Return the full response
     } catch (err) {
       setError(err.message);
       throw err;
@@ -36,7 +41,7 @@ const useEditProductComanda = (initialProducts = []) => {
   };
 
   const checkAllProductsReady = () => {
-    return Object.values(productStatuses).every(status => status === "listo");
+    return Object.values(productStatuses).every((status) => status === "listo");
   };
 
   return {
@@ -44,7 +49,7 @@ const useEditProductComanda = (initialProducts = []) => {
     error,
     productStatuses,
     updateProductStatus: handleProductStatusUpdate,
-    checkAllProductsReady
+    checkAllProductsReady,
   };
 };
 

@@ -1,4 +1,4 @@
-import axios from './root.service.js';
+import axios from "./root.service.js";
 
 export async function getProductComandaByComanda(req, res) {
   try {
@@ -13,19 +13,18 @@ export async function getProductComandaByComanda(req, res) {
   }
 }
 
-export async function updateProductComanda(req, res) {
+export async function updateProductComanda(data) {
   try {
-    console.log('req completa en el service',req.id);
-    console.log('params del service',req.params);
-    const { id } = req.id;
-    const { body } = req.estadoproductocomanda;
-
-    const response = await axios.patch(`/productcomanda/detail/?id=${id}`, body);
-
-    return res.status(response.status).json(response.data);
+    const response = await axios.patch(
+      `/productcomanda/detail/?id=${data.id}`,
+      {
+        estadoproductocomanda: data.estadoproductocomanda,
+      }
+    );
+    return response.data; // Return just the response.data
   } catch (error) {
     console.error("Error al actualizar el producto de la comanda:", error);
-    return res.status(500).json("Error interno del servidor");
+    throw error; // Throw the error to be handled by the caller
   }
 }
 
@@ -42,28 +41,31 @@ export async function getProductComanda(req, res) {
   }
 }
 
-
 export async function getProductComandaHistory(mes, ano) {
   if (!mes || !ano) {
-    return { status: 400, data: { message: 'Mes y año son requeridos' } };
+    return { status: 400, data: { message: "Mes y año son requeridos" } };
   }
-  console.log("mes", mes);
-  console.log("ano", ano);
 
   try {
-    const response = await axios.get(`/productcomanda/history/mes?mes=${mes}&ano=${ano}`);
+    const response = await axios.get(
+      `/productcomanda/history/mes?mes=${mes}&ano=${ano}`
+    );
     return response.data;
   } catch (error) {
-
-    console.error("Error al obtener el historial de productos de la comanda:", error);
-    return { status: error.response?.status || 500, data: error.response?.data || {} };
+    console.error(
+      "Error al obtener el historial de productos de la comanda:",
+      error
+    );
+    return {
+      status: error.response?.status || 500,
+      data: error.response?.data || {},
+    };
   }
 }
 
 export async function getMesAnoDisponibles() {
   try {
-    const response = await axios.get('/productcomanda/getMesAnoDisponibles');
-    console.log('response.data', response.data);
+    const response = await axios.get("/productcomanda/getMesAnoDisponibles");
     return response.data;
   } catch (error) {
     return error.response.data;
@@ -72,7 +74,9 @@ export async function getMesAnoDisponibles() {
 
 export async function getVentasTotales(ano) {
   try {
-    const response = await axios.get(`/productcomanda/ventasTotales?ano=${ano}`);
+    const response = await axios.get(
+      `/productcomanda/ventasTotales?ano=${ano}`
+    );
     return response.data;
   } catch (error) {
     return error.response.data;

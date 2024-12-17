@@ -39,7 +39,6 @@ const validStatuses = [
 export async function createProductComanda(req, res) {
   try {
     const { body } = req;
-    console.log(body);
     if (!validStatuses.includes(body.estadoproductocomanda)) {
       return handleErrorClient(res, 400, "Invalid status");
     }
@@ -101,9 +100,7 @@ export async function getProductComandas(req, res) {
 
 // busca los productos de una comanda
 export async function getProductComandaByComanda(req, res) {
-
   try {
-
     const { idComanda } = req.query;
 
     const { error } = productComandaQueryValidation.validate({
@@ -113,7 +110,6 @@ export async function getProductComandaByComanda(req, res) {
     if (error) return handleErrorClient(res, 400, error.message);
 
     const [productComanda, errorProductComanda] =
-
       await getProductComandaByComandaService({ idComanda });
 
     if (errorProductComanda)
@@ -125,14 +121,10 @@ export async function getProductComandaByComanda(req, res) {
   }
 }
 
-// funcion que actualiza el estado de un producto de una comanda
 export async function updateProductComanda(req, res) {
-  console.log('query backend',req.query);
-console.log('body backend',req.body);
   try {
     const { id } = req.query;
     const { body } = req;
-
 
     if (body.status && !validStatuses.includes(body.status)) {
       return handleErrorClient(res, 400, "Invalid status");
@@ -193,7 +185,10 @@ export async function getProductosPorMes(req, res) {
 
     if (error) return handleErrorClient(res, 400, error.message);
 
-    const [productos, errorProductos] = await getProductosPorMesService({ mes, ano });
+    const [productos, errorProductos] = await getProductosPorMesService({
+      mes,
+      ano,
+    });
 
     if (errorProductos) return handleErrorClient(res, 404, errorProductos);
 
@@ -217,7 +212,12 @@ export async function getAvailableProducts(req, res) {
     if (errorAvailableProducts)
       return handleErrorClient(res, 404, errorAvailableProducts);
 
-    handleSuccess(res, 200, "Productos disponibles encontrados", availableProducts);
+    handleSuccess(
+      res,
+      200,
+      "Productos disponibles encontrados",
+      availableProducts,
+    );
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }
@@ -227,7 +227,10 @@ export async function getComandasConProductosPorMesAnio(req, res) {
   try {
     const { mes, ano } = req.query;
 
-    const [comandas, error] = await getComandasConProductosPorMesService({ mes, ano });
+    const [comandas, error] = await getComandasConProductosPorMesService({
+      mes,
+      ano,
+    });
 
     if (error) {
       return handleErrorClient(res, 500, error);
@@ -240,9 +243,11 @@ export async function getComandasConProductosPorMesAnio(req, res) {
 }
 export async function getMesAnoDisponibles(req, res) {
   try {
-    const [mesAnoDisponibles, errorMesAnoDisponibles] = await getMesAnoDisponiblesService();
+    const [mesAnoDisponibles, errorMesAnoDisponibles] =
+      await getMesAnoDisponiblesService();
 
-    if (errorMesAnoDisponibles) return handleErrorClient(res, 404, errorMesAnoDisponibles);
+    if (errorMesAnoDisponibles)
+      return handleErrorClient(res, 404, errorMesAnoDisponibles);
 
     handleSuccess(res, 200, "Meses y años disponibles", mesAnoDisponibles);
   } catch (error) {
@@ -252,7 +257,9 @@ export async function getMesAnoDisponibles(req, res) {
 
 export const getVentasTotales = async (req, res) => {
   try {
-    const [ventasTotales, errorVentasTotales] = await getVentasTotalesService(req.query);
+    const [ventasTotales, errorVentasTotales] = await getVentasTotalesService(
+      req.query,
+    );
 
     if (errorVentasTotales) {
       return res.status(400).json({ message: errorVentasTotales });

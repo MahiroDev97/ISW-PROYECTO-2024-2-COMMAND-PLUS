@@ -13,10 +13,9 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@formkit/tempo": "^0.1.2",
-    "@mui/material": "^6.2.0",
     "@heroicons/react": "^2.2.0",
+    "@mui/material": "^6.2.0",
     "axios": "^1.7.5",
-
     "chart.js": "^4.4.7",
     "js-cookie": "^3.0.5",
     "jwt-decode": "^4.0.0",
@@ -29,6 +28,7 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.1",
     "react-tabulator": "^0.21.0",
+    "react-toastify": "^11.0.0",
     "rut.js": "^2.1.0",
     "sweetalert2": "^11.14.5"
   },

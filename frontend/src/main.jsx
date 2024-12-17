@@ -1,5 +1,9 @@
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import Login from "@pages/Login";
 import Home from "@pages/Home";
 import Users from "@pages/Users";
@@ -13,22 +17,20 @@ import FinishTurno from "./pages/FinishTurno";
 import AdminTables from "./pages/AdminTables";
 import Products from "./pages/Products";
 import Comandas from "./pages/Comandas";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Modal from 'react-modal';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Modal from "react-modal";
 import VistaCocina from "./pages/VistaCocina";
 import "@styles/index.css";
-import React from 'react';
-import { wsService } from './services/websocket';
+import React from "react";
+import { wsService } from "./services/websocket";
 import GlobalNotifications from "./components/GlobalNotifications";
 
-Modal.setAppElement('#root'); 
-
+Modal.setAppElement("#root");
 
 import TurnosAdmin from "./pages/TurnosAdmin";
 
 const user = JSON.parse(sessionStorage.getItem("usuario"));
-console.log("user", user);
 //funcion que crea el router y lo renderiza en el root del html en pocas palabras es el punto de entrada de la aplicacion
 
 // Inicializar WebSocket antes del router
@@ -38,18 +40,22 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <> 
-      <ToastContainer/>
-      <Root />
+      <>
+        <ToastContainer />
+        <Root />
       </>
-    ), 
+    ),
     errorElement: <Error404 />,
     children: [
       {
         path: "/home",
         element: (
           <ProtectedRoute>
-            {user?.rol === "administrador" ? <Navigate to="/adminTables" /> : <Home />}
+            {user?.rol === "administrador" ? (
+              <Navigate to="/adminTables" />
+            ) : (
+              <Home />
+            )}
           </ProtectedRoute>
         ),
       },
@@ -102,7 +108,6 @@ const router = createBrowserRouter([
         element: <TurnosAdmin />,
       },
     ],
-
   },
   {
     path: "/auth",
