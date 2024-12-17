@@ -53,6 +53,11 @@ export const ProductCard = ({ productcomandas, comanda, updateComandaStatus, cur
           }
         });
 
+        toast.success(`Estado del producto "${productcomandas.product.nombre}" actualizado a ${newStatus}`, {
+          position: "top-right",
+          autoClose: 3000,
+        });
+
         closeModal();
       } catch (error) {
         toast.error('Error al actualizar el estado');

@@ -24,7 +24,7 @@ export const OrderCard = ({ comanda, onUpdateComanda }) => {
 
     if (allReady && estado !== "listo" && !isNotified && isAuthorizedUser) {
       const user = JSON.parse(sessionStorage.getItem("usuario"));
-      const roleText = user?.role === "administrador" ? "Administrador" : "Garzón";
+      const roleText = user?.role === "administrador" ? "Administrador" : "cocinero";
 
       toast.info(
         <div className="flex items-center">
