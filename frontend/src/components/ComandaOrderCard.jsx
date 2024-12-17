@@ -3,6 +3,7 @@ import { Utensils, Calendar, Bell, CheckCircle } from "lucide-react";
 import { ProductCard } from "./ComandaProductCard";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { io } from "socket.io-client";
 import "../styles/ComandaOrderCard.css";
 
 // Funciones helper para manejar el estado persistente
@@ -16,6 +17,8 @@ const setStoredOrderState = (comandaId, state) => {
   const key = `orderState_${comandaId}`;
   localStorage.setItem(key, JSON.stringify(state));
 };
+
+const socket = io("http://localhost:3000"); // Adjust the URL as needed
 
 export const OrderCard = ({ comanda, onUpdateComanda }) => {
   const [estado, setEstado] = useState(() => {
@@ -102,6 +105,10 @@ export const OrderCard = ({ comanda, onUpdateComanda }) => {
         setAllProductsReady(false);
       }
 
+      if (newStatus === "listo") {
+        socket.emit("comandaReady", `Administrador: ¡Comanda ${comandaId} para Mesa #${comanda.mesa} lista para servir!`);
+      }
+
       // Actualizar el estado en localStorage
       setStoredOrderState(comandaId, {
         estado: newStatus,
@@ -180,10 +187,14 @@ export const OrderCard = ({ comanda, onUpdateComanda }) => {
               <ProductCard
                 key={productComanda.id}
                 productcomandas={productComanda}
-                comanda={comanda} // Añadimos esta prop
+                comanda={comanda}
                 updateComandaStatus={async (productId, newStatus) => {
                   await updateComandaStatus(productId, newStatus);
                   updateProductStatus(productId, newStatus);
+                }}
+                onAllProductsReady={() => {
+                  // Esta función ya está implementada en el useEffect
+                  // No necesita hacer nada adicional aquí
                 }}
               />
             ))
