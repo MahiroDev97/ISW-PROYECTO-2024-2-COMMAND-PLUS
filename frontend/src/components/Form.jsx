@@ -1,26 +1,36 @@
-import { useForm } from 'react-hook-form';
-import { useState } from 'react';
-import '@styles/form.css';
-import HideIcon from '../assets/HideIcon.svg';
-import ViewIcon from '../assets/ViewIcon.svg';
+import { useForm } from "react-hook-form";
+import { useState } from "react";
+import "@styles/form.css";
+import HideIcon from "../assets/HideIcon.svg";
+import ViewIcon from "../assets/ViewIcon.svg";
 
-const Form = ({ title, fields, buttonText, onSubmit, footerContent, backgroundColor }) => {
-    const { register, handleSubmit, formState: { errors } } = useForm();
-    const [showPassword, setShowPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
+const Form = ({
+  title,
+  fields,
+  buttonText,
+  onSubmit,
+  footerContent,
+  backgroundColor,
+}) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
-    const togglePasswordVisibility = () => {
-        setShowPassword(!showPassword);
-    };
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
-    const toggleNewPasswordVisibility = () => {
-        setShowNewPassword(!showNewPassword);
-    };
+  const toggleNewPasswordVisibility = () => {
+    setShowNewPassword(!showNewPassword);
+  };
 
-    const onFormSubmit = (data) => {
-        onSubmit(data);
-    };
-
+  const onFormSubmit = (data) => {
+    onSubmit(data);
+  };
     return (
         <form
             className="form"

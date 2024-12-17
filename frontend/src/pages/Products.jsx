@@ -1,19 +1,24 @@
-import Table from "@components/Table";
-import useProducts from "@hooks/products/useGetProducts.jsx";
+import { useState } from "react";
+import useGetProducts from "@hooks/products/useGetProducts.jsx";
+import useCreateProduct from "../hooks/products/UseCreateProduct";
+import useEditProduct from "@hooks/products/useEditProduct";
+import { UtensilsCrossed } from "lucide-react";
+import AddIcon from "@assets/AddIcon.svg";
 import Search from "../components/Search";
 import PopupProducts from "../components/PopupProducts";
 import PopupCreateProduct from "../components/PopupCreateProduct";
-import UpdateIcon from "../assets/updateIcon.svg";
-import AddIcon from "../assets/AddIcon.svg";
-import UpdateIconDisable from "../assets/updateIconDisabled.svg";
-import { useCallback, useState } from "react";
-import useEditProduct from "@hooks/products/useEditProduct";
-import useCreateProduct from "../hooks/products/UseCreateProduct";
+import { Select, MenuItem, Switch, FormControlLabel } from "@mui/material";
 import Navbar from "@components/Navbar";
+import { ProductCard } from "../components/ProductCard";
 
 const Products = () => {
-  const { products, setProducts } = useProducts();
-  const [filterName, setFilterName] = useState("");
+  const { products, loading, error, fetchProducts } = useGetProducts();
+  const [filter, setFilter] = useState("");
+  const [sortBy, setSortBy] = useState("nombre");
+  const [showUnavailable, setShowUnavailable] = useState(true);
+  const uniqueCategories = [
+    ...new Set(products.map((product) => product.categoria)),
+  ];
 
   const {
     handleClickUpdate,
@@ -21,110 +26,145 @@ const Products = () => {
     isPopupOpen,
     setIsPopupOpen,
     dataProduct,
-    setDataProduct,
-  } = useEditProduct(setProducts);
+  } = useEditProduct(fetchProducts);
 
   const {
     handleClickCreate,
     handleCreate,
     isPopupOpen: isPopupCreateOpen,
     setIsPopupOpen: setIsPopupCreateOpen,
-  } = useCreateProduct(setProducts);
+  } = useCreateProduct(fetchProducts);
 
   const handleNameFilterChange = (e) => {
-    setFilterName(e.target.value);
+    setFilter(e.target.value);
   };
 
-  const handleSelectionChange = useCallback(
-    (selectedProducts) => {
-      setDataProduct(selectedProducts);
-    },
-    [setDataProduct]
+  const filterBySearch = (products) => {
+    const lowerCaseFilter = filter.toLowerCase();
+    return products.filter(
+      (product) =>
+        product.nombre.toLowerCase().includes(lowerCaseFilter) ||
+        product.categoria.toLowerCase().includes(lowerCaseFilter) ||
+        product.descripcion.toLowerCase().includes(lowerCaseFilter)
+    );
+  };
+
+  const filterByAvailability = (products) => {
+    if (showUnavailable) return products;
+    return products.filter((product) => product.disponibilidad);
+  };
+
+  const sortProducts = (products) => {
+    return [...products].sort((a, b) => {
+      switch (sortBy) {
+        case "nombre":
+          return a.nombre.localeCompare(b.nombre);
+        case "categoria":
+          return a.categoria.localeCompare(b.categoria);
+        case "precio":
+          return a.precio - b.precio;
+        default:
+          return 0;
+      }
+    });
+  };
+  const filteredProducts = sortProducts(
+    filterByAvailability(filterBySearch(products))
   );
 
-  const columns = [
-    { title: "Categoria", field: "categoria", width: 120, responsive: 0 },
-    { title: "Nombre", field: "nombre", width: 200, responsive: 3 },
-    { title: "Descripción", field: "descripcion", width: 250, responsive: 2 },
-    { title: "Precio", field: "precio", width: 100, responsive: 2 },
-    {
-      title: "Disponibilidad",
-      field: "disponibilidad",
-      width: 120,
-      responsive: 2,
-    },
-  ];
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <>
       <Navbar />
-      <div className="h-[91vh] bg-gradient-to-br from-gray-50 to-gray-100 pt-[9vh]">
-        <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="flex flex-col h-full">
-            <div className="mb-2">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h1 className="text-2xl font-extrabold text-gray-900 mb-1">
-                    Gestión de Productos
-                  </h1>
-                  <p className="text-xs text-gray-600">
-                    Administra los productos del restaurante
-                  </p>
-                </div>
-                <div className="flex items-center space-x-4">
-                  <Search
-                    value={filterName}
-                    onChange={handleNameFilterChange}
-                    placeholder={"Filtrar por nombre"}
-                    className="bg-white rounded-lg shadow-sm"
-                  />
-                  <button
-                    onClick={handleClickCreate}
-                    className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <img src={AddIcon} alt="add" className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={handleClickUpdate}
-                    disabled={dataProduct.length === 0}
-                    className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
-                  >
-                    <img
-                      src={dataProduct.length === 0 ? UpdateIconDisable : UpdateIcon}
-                      alt="edit"
-                      className="w-5 h-5"
-                    />
-                  </button>
-                </div>
-              </div>
+      <header className="fixed w-full left-0 top-[80px] bg-white shadow-md z-20">
+        <div className="max-w-7xl mx-auto px-4 py-2 md:py-4">
+          <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-center justify-center md:justify-start gap-2 md:gap-3">
+              <UtensilsCrossed className="w-6 h-6 md:w-8 md:h-8 text-emerald-600" />
+              <h1 className="text-xl md:text-2xl font-semibold text-gray-800">
+                Productos
+              </h1>
             </div>
 
-            <div className="flex-1 bg-white rounded-xl border border-gray-200 shadow-lg overflow-hidden flex flex-col h-[calc(91vh-140px)]">
-              <div className="px-4 py-2 border-b border-gray-200 bg-gray-50/50">
-                <h2 className="text-lg font-bold text-gray-900">
-                  Lista de Productos
-                </h2>
-              </div>
-              <div className="flex-1 p-2">
-                <Table
-                  columns={columns}
-                  data={products}
-                  onSelectionChange={handleSelectionChange}
-                  filterBy={filterName}
-                  className="text-sm h-full"
+            <div className="grid grid-cols-[2fr_2fr] md:flex md:flex-row md:items-center md:space-x-4">
+              <Select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                size="small"
+                className="w-50 md:w-[220px] bg-white rounded-md border border-gray-300 text-center"
+              >
+                <MenuItem value="nombre">Ordenar por nombre</MenuItem>
+                <MenuItem value="categoria">Ordenar por categoría</MenuItem>
+                <MenuItem value="precio">Ordenar por precio</MenuItem>
+              </Select>
+
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={showUnavailable}
+                    onChange={(e) => setShowUnavailable(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label={showUnavailable ? "Todos" : "Solo Disponibles"}
+                className="w-50 md:w-[220px] flex justify-center"
+              />
+              <div className="w-full md:w-[200px]">
+                <Search
+                  value={filter}
+                  onChange={handleNameFilterChange}
+                  placeholder="Buscar producto"
+                  className="w-50 text-center"
                 />
+              </div>
+
+              <div className="w-full md:w-[200px]">
+                <button
+                  onClick={handleClickCreate}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition-colors"
+                >
+                  <img src={AddIcon} alt="Agregar producto" />
+                  <span>Producto</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
+      </header>
+      <div className="min-h-screen bg-gray-50 mt-[200px] md:mt-[160px]">
+        <main className="max-w-7xl mx-auto px-4 py-8">
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  producto={product}
+                  onToggleAvailability={handleUpdate}
+                  onClick={handleClickUpdate}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-4 py-12">
+              <p className="text-xl text-gray-600">
+                No se encontraron productos :(
+              </p>
+              <p className="text-gray-500">Prueba a agregar alguno</p>
+            </div>
+          )}
+        </main>
       </div>
       <PopupProducts
+        categories={uniqueCategories}
         show={isPopupOpen}
         setShow={setIsPopupOpen}
-        data={dataProduct}
+        producto={dataProduct}
         action={handleUpdate}
       />
       <PopupCreateProduct
+        categories={uniqueCategories}
         show={isPopupCreateOpen}
         setShow={setIsPopupCreateOpen}
         action={handleCreate}
