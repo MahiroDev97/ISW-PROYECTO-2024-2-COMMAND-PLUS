@@ -1,7 +1,12 @@
 import "@styles/popup.css";
 import CloseIcon from "@assets/XIcon.svg";
 import Form from "./Form";
+
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 import { useState, useEffect } from "react";
+
 
 export default function Popup({ show, setShow, data, action, products }) {
   const ComandaData = data && data.length > 0 ? data[0] : {};
@@ -46,6 +51,12 @@ export default function Popup({ show, setShow, data, action, products }) {
   };
 
   const handleSubmit = (formData) => {
+
+    action({ ...ComandaData, ...formData });
+    if (formData.estado === 'Cerrada') {
+      toast.success(`Mesa número ${ComandaData.mesa} lista`);
+    }
+
     // Convertir los productos individuales al formato esperado por el backend
     const productosAgrupados = selectedProducts.reduce((acc, item) => {
       const existingProduct = acc.find(p => p.id === item.id);
@@ -67,6 +78,7 @@ export default function Popup({ show, setShow, data, action, products }) {
   const getProductName = (productId) => {
     const product = products?.find(p => p.id === parseInt(productId));
     return product ? product.nombre : '';
+
   };
 
   return (

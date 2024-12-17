@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { Clock } from "lucide-react";
-import "../styles/ComandaProductCard.css"; // Asegúrate de importar el archivo CSS
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import "../styles/ComandaProductCard.css";
+import Modal from 'react-modal';
 
 const OrderStatus = {
   PENDING: "pendiente",
@@ -18,20 +21,79 @@ const statusColors = {
 
 const statusOptions = Object.values(OrderStatus);
 
-export const ProductCard = ({ productcomandas, updateComandaStatus }) => {
+export const ProductCard = ({ 
+  productcomandas, 
+  updateComandaStatus, 
+  comanda, 
+  onAllProductsReady 
+}) => {
   const [status, setStatus] = useState(() => {
     const savedStatus = localStorage.getItem(`status-${productcomandas.id}`);
     return savedStatus || productcomandas.estadoproductocomanda;
   });
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [newStatus, setNewStatus] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false); 
+
   useEffect(() => {
     localStorage.setItem(`status-${productcomandas.id}`, status);
   }, [status, productcomandas.id]);
 
-  const handleStatusChange = async (event) => {
-    const newStatus = event.target.value;
-    setStatus(newStatus);
-    await updateComandaStatus(productcomandas.id, newStatus);
+  const openModal = (status) => {
+    setNewStatus(status);
+    setModalIsOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setNewStatus(null);
+  };
+
+  const handleStatusChange = async () => {
+    if (newStatus) {
+      try {
+        await updateComandaStatus(productcomandas.id, newStatus);
+        setStatus(newStatus);
+
+        if (newStatus === OrderStatus.READY) {
+          toast.success(`La comanda de la ${comanda.mesa} está lista`, {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+
+          // Llamar a onAllProductsReady para verificar estado de la comanda
+          if (onAllProductsReady) {
+            onAllProductsReady();
+          }
+        } else {
+          toast.success('¡Estado actualizado correctamente! ', {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        }
+        closeModal();
+      } catch (error) {
+        toast.error('Error al actualizar el estado', {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        console.error('Error al actualizar el estado:', error);
+        closeModal();
+      }
+    }
   };
 
   return (
@@ -46,17 +108,19 @@ export const ProductCard = ({ productcomandas, updateComandaStatus }) => {
           </p>
         </div>
         <div className="product-card-status">
-          <select
-            value={status}
-            onChange={handleStatusChange}
-            className={`status-select ${statusColors[status]}`}
-          >
+          <div className="status-buttons">
             {statusOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
+              <button
+                key={option}
+                onClick={() => openModal(option)}
+                className={`status-btn ${status === option ? 'active' : ''} ${statusColors[option]}`}
+              >
+                {option === OrderStatus.PENDING ? 'P' : 
+                 option === OrderStatus.IN_PREPARATION ? 'EP' :
+                 option === OrderStatus.READY ? 'L' : 'R'}
+              </button>
             ))}
-          </select>
+          </div>
         </div>
       </div>
       <div className="product-card-footer">
@@ -65,6 +129,39 @@ export const ProductCard = ({ productcomandas, updateComandaStatus }) => {
           {new Date(productcomandas.fechahorarecepcion).toLocaleTimeString()}
         </span>
       </div>
+
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Confirmar Cambio de Estado"
+        className="modal"
+        overlayClassName="overlay"
+        ariaHideApp={false}
+      >
+        <div className="modal-content">
+          <h2 className="modal-title">Confirmar Cambio de Estado</h2>
+          <p className="modal-message">¿Está seguro que desea cambiar el estado a {newStatus}?</p>
+          <div className="modal-buttons">
+            <button
+              onClick={() => {
+                toast.dismiss();
+                handleStatusChange();
+              }}
+              className="accept-button"
+              disabled={isUpdating}
+            >
+              {isUpdating ? 'Actualizando...' : 'Aceptar'}
+            </button>
+            <button
+              onClick={closeModal}
+              className="cancel-button"
+              disabled={isUpdating}
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };
