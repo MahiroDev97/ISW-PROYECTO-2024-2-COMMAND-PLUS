@@ -80,18 +80,51 @@ export async function getComandasService() {
 export async function updateComandaService(query, body) {
   try {
     const { id } = query;
+    const { productos, ...comandaData } = body;
 
     const comandaRepository = AppDataSource.getRepository(Comanda);
+    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
 
-    const comandaFound = await comandaRepository.findOne({ where: { id } });
+    // 1. Encontrar la comanda existente
+    const comandaFound = await comandaRepository.findOne({ 
+      where: { id },
+      relations: ["productcomandas"]
+    });
 
     if (!comandaFound) return [null, "Comanda no encontrada"];
 
-    comandaRepository.merge(comandaFound, body);
+    // 2. Eliminar todos los productos existentes de la comanda
+    await productComandaRepository.remove(comandaFound.productcomandas);
 
+    // 3. Actualizar los datos básicos de la comanda
+    comandaRepository.merge(comandaFound, comandaData);
     await comandaRepository.save(comandaFound);
 
-    return [comandaFound, null];
+    // 4. Crear los nuevos productos
+    if (productos && productos.length > 0) {
+      for (const producto of productos) {
+        for (let i = 0; i < producto.cantidad; i++) {
+          const productComanda = {
+            estadoproductocomanda: "recibido",
+            comandaId: id,
+            productId: producto.id,
+          };
+          const [, error] = await createProductComandaService(productComanda);
+          if (error) {
+            console.error("Error al actualizar el producto de la comanda:", error);
+            return [null, "Error interno del servidor"];
+          }
+        }
+      }
+    }
+
+    // 5. Obtener la comanda actualizada con sus relaciones
+    const comandaActualizada = await comandaRepository.findOne({
+      where: { id },
+      relations: ["productcomandas"],
+    });
+
+    return [comandaActualizada, null];
   } catch (error) {
     console.error("Error al actualizar la comanda:", error);
     return [null, "Error interno del servidor"];

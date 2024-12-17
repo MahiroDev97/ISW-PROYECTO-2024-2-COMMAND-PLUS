@@ -127,6 +127,7 @@ const Comandas = () => {
         setShow={setIsPopupOpen}
         data={dataComanda}
         action={handleUpdate}
+        products={products} // Agregar esta línea
       />
       <PopupCreateComanda
         show={isPopupCreateOpen}
