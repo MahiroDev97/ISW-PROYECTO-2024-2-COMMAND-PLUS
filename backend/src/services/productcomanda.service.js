@@ -17,6 +17,9 @@ export async function createProductComandaService(body) {
     const product = await productRepository.findOne({ where: { id: body.productId } });
     const comanda = await comandaRepository.findOne({ where: { id: body.comandaId } });
 
+    console.log("Product found:", product);
+    console.log("Comanda found:", comanda);
+
     if (!product || !comanda) {
       return [null, "Producto o Comanda no encontrados"];
     }
@@ -32,6 +35,7 @@ export async function createProductComandaService(body) {
 
     await productComandaRepository.save(newProductComanda);
 
+    console.log("New ProductComanda created:", newProductComanda);
     return [newProductComanda, null];
   } catch (error) {
     console.error("Error al crear el producto de la comanda:", error);

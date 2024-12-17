@@ -9,28 +9,35 @@ export async function createComandaService(body) {
   try {
     const comandaRepository = AppDataSource.getRepository(Comanda);
     const { productos, ...comanda } = body;
+    console.log("Productos received:", productos);
+    console.log("Comanda data:", comanda);
     const newComanda = comandaRepository.create(comanda);
     await comandaRepository.save(newComanda);
     const comandaId = newComanda.id;
 
-    for (const producto of productos) {
-      for (let i = 0; i < producto.cantidad; i++) {
-        const productComanda = {
+    // Crear un array de promesas para todos los productos
+    const productPromises = productos.flatMap(producto => 
+      Array(producto.cantidad).fill().map(() => {
+        const productoId = parseInt(producto.id);
+        console.log("Producto ID being processed:", productoId);
+        return createProductComandaService({
           estadoproductocomanda: "recibido",
           comandaId: comandaId,
-          productoId: producto.id,
-        }
-        const [, error] = await createProductComandaService(productComanda);
-        if (error) {
-          console.error("Error al crear el producto de la comanda:", error);
-          return [null, "Error interno del servidor"];
-        }
-      }
-    }
+          productoId: productoId // Asegurarse de que el ID sea número
+        });
+      })
+    );
+
+    // Esperar a que todas las promesas se resuelvan
+    await Promise.all(productPromises);
+
+    // Obtener la comanda actualizada con sus relaciones
     const comandaWithRelations = await comandaRepository.findOne({
       where: { id: comandaId },
-      relations: ["productcomandas"],
+      relations: ["productcomandas", "productcomandas.product"], // Incluir la relación con product
     });
+
+    console.log("Comanda with relations:", comandaWithRelations);
     return [comandaWithRelations, null];
   } catch (error) {
     console.error("Error al crear la comanda:", error);

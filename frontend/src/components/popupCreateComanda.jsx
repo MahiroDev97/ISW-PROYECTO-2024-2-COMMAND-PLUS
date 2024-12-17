@@ -4,22 +4,25 @@ import Form from "./Form";
 import { useState } from "react";
 
 export default function Popup({ show, setShow, action, products }) {
-  // Agregar console.log para debuggear
-  console.log("Products received:", products);
 
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentProduct, setCurrentProduct] = useState({ id: "", cantidad: 1 });
 
   const handleAddProduct = () => {
+    console.log("Current product before adding:", currentProduct);
     if (currentProduct.id) {
       setSelectedProducts([...selectedProducts, { ...currentProduct }]);
       setCurrentProduct({ id: "", cantidad: 1 });
+      console.log("Selected products after adding:", selectedProducts);
+    } else {
+      alert("Selecciona un producto y cantidad válida");
     }
   };
 
   const handleRemoveProduct = (index) => {
     const newProducts = selectedProducts.filter((_, i) => i !== index);
     setSelectedProducts(newProducts);
+    console.log("Selected products after removing:", newProducts);
   };
 
   const handleSubmit = (formData) => {
@@ -27,6 +30,7 @@ export default function Popup({ show, setShow, action, products }) {
       ...formData,
       productos: selectedProducts
     };
+    console.log("Comanda data on submit:", comandaData);
     action(comandaData);
     setSelectedProducts([]);
   };
@@ -80,10 +84,14 @@ export default function Popup({ show, setShow, action, products }) {
                       <div className="producto-selector">
                         <select
                           value={currentProduct.id}
-                          onChange={(e) => setCurrentProduct({
-                            ...currentProduct,
-                            id: e.target.value
-                          })}
+                          onChange={(e) => {
+                            const newProductId = parseInt(e.target.value);
+                            console.log("Selected product ID:", newProductId);
+                            setCurrentProduct({
+                              ...currentProduct,
+                              id: newProductId
+                            });
+                          }}
                         >
                           <option value="">Seleccionar producto</option>
                           {Array.isArray(products) && products.map((product) => (
@@ -96,10 +104,14 @@ export default function Popup({ show, setShow, action, products }) {
                           type="number"
                           min="1"
                           value={currentProduct.cantidad}
-                          onChange={(e) => setCurrentProduct({
-                            ...currentProduct,
-                            cantidad: parseInt(e.target.value)
-                          })}
+                          onChange={(e) => {
+                            const newCantidad = parseInt(e.target.value);
+                            console.log("Selected product cantidad:", newCantidad);
+                            setCurrentProduct({
+                              ...currentProduct,
+                              cantidad: newCantidad
+                            });
+                          }}
                         />
                         <button type="button" onClick={handleAddProduct}>
                           Agregar
