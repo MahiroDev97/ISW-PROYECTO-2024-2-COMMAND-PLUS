@@ -23,15 +23,17 @@ export async function getReportesDataService() {
     // Obtener fecha actual
     const fechaActual = new Date();
 
+
+
     // Configurar fechaInicio (7 AM del día)
     const fechaInicio = new Date(fechaActual);
     fechaInicio.setDate(fechaInicio.getDate() - 1);
-    fechaInicio.setHours(7, 0, 0, 0);
+    fechaInicio.setUTCHours(7, 0, 0, 0);
 
     // Configurar fechaFin (2 AM del día actual)
     const fechaFin = new Date(fechaActual);
     fechaFin.setDate(fechaFin.getDate());
-    fechaFin.setHours(2, 0, 0, 0);
+    fechaFin.setUTCHours(2, 0, 0, 0);
     try {
         const ventas = await productComandaRepository.find({
             where: {
