@@ -127,9 +127,12 @@ export async function getProductComandaByComanda(req, res) {
 
 // funcion que actualiza el estado de un producto de una comanda
 export async function updateProductComanda(req, res) {
+  console.log('query backend',req.query);
+console.log('body backend',req.body);
   try {
     const { id } = req.query;
     const { body } = req;
+
 
     if (body.status && !validStatuses.includes(body.status)) {
       return handleErrorClient(res, 400, "Invalid status");

@@ -88,7 +88,7 @@ export async function getProductComandasService() {
 export async function updateProductComandaService(query, body) {
   try {
     const { id } = query;
-
+console.log('query service backend',query);
     const productComandaRepository =
       AppDataSource.getRepository(ProductComanda);
 

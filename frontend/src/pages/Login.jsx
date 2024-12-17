@@ -38,15 +38,15 @@ const Login = () => {
                     {
                         label: "Correo electrónico",
                         name: "email",
-                        placeholder: "example@gmail.com",
+                        placeholder: "example@domain.com",
                         fieldType: 'input',
                         type: "email",
                         required: true,
-                        minLength: 15,
-                        maxLength: 30,
+                        minLength: 5,
+                        maxLength: 50,
                         errorMessageData: errorEmail,
                         validate: {
-                            emailDomain: (value) => value.endsWith('@gmail.com') || 'El correo debe terminar en @gmail.com'
+                            emailFormat: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Ingrese un correo electrónico válido'
                         },
                         onChange: (e) => handleInputChange('email', e.target.value),
                     },
