@@ -35,6 +35,8 @@ export default function HorariosChart() {
     } = useHorariosChart();
 
     // Calcular el máximo valor de los datos
+
+    console.log(horariosData);
     const maxValue = Math.max(
         ...horariosData.datasets.flatMap(dataset => dataset.data)
     );

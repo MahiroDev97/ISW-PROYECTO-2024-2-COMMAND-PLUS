@@ -228,6 +228,9 @@ export async function getComandasPorMesAnoService(query) {
     const mesFormateado = mes.toString().padStart(2, "0");
     const ultimoDia = new Date(ano, mes, 0).getDate();
 
+    console.log(mesFormateado);
+    console.log(ultimoDia);
+
 
     const comandaRepository = AppDataSource.getRepository(Comanda);
 
@@ -241,7 +244,7 @@ export async function getComandasPorMesAnoService(query) {
           new Date(`${ano}-${mesFormateado}-01T00:00:00.000Z`),
           new Date(`${ano}-${mesFormateado}-${ultimoDia}T23:59:59.999Z`)
         ),
-        estado: "completada",
+        estado: "cerrada",
       },
     });
 

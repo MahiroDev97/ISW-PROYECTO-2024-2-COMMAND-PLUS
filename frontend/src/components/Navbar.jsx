@@ -92,8 +92,9 @@ const Navbar = () => {
 
             {userRole === "administrador" && (
               <>
-                <NavItem to="/users">Usuarios</NavItem>
                 <NavItem to="/turnosadmin">Turnos</NavItem>
+
+                <NavItem to="/users">Usuarios</NavItem>
                 <NavItem to="/products">Productos</NavItem>
               </>
             )}
