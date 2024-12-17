@@ -9,16 +9,18 @@ export async function createComandaService(body) {
   try {
     const comandaRepository = AppDataSource.getRepository(Comanda);
     const { productos, ...comanda } = body;
+    console.log(productos);
     const newComanda = comandaRepository.create(comanda);
     await comandaRepository.save(newComanda);
     const comandaId = newComanda.id;
 
     for (const producto of productos) {
+      console.log(producto);
       for (let i = 0; i < producto.cantidad; i++) {
         const productComanda = {
           estadoproductocomanda: "recibido",
           comandaId: comandaId,
-          productoId: producto.id,
+          productId: producto.id,
         }
         const [, error] = await createProductComandaService(productComanda);
         if (error) {
@@ -78,18 +80,51 @@ export async function getComandasService() {
 export async function updateComandaService(query, body) {
   try {
     const { id } = query;
+    const { productos, ...comandaData } = body;
 
     const comandaRepository = AppDataSource.getRepository(Comanda);
+    const productComandaRepository = AppDataSource.getRepository(ProductComanda);
 
-    const comandaFound = await comandaRepository.findOne({ where: { id } });
+    // 1. Encontrar la comanda existente
+    const comandaFound = await comandaRepository.findOne({ 
+      where: { id },
+      relations: ["productcomandas"]
+    });
 
     if (!comandaFound) return [null, "Comanda no encontrada"];
 
-    comandaRepository.merge(comandaFound, body);
+    // 2. Eliminar todos los productos existentes de la comanda
+    await productComandaRepository.remove(comandaFound.productcomandas);
 
+    // 3. Actualizar los datos básicos de la comanda
+    comandaRepository.merge(comandaFound, comandaData);
     await comandaRepository.save(comandaFound);
 
-    return [comandaFound, null];
+    // 4. Crear los nuevos productos
+    if (productos && productos.length > 0) {
+      for (const producto of productos) {
+        for (let i = 0; i < producto.cantidad; i++) {
+          const productComanda = {
+            estadoproductocomanda: "recibido",
+            comandaId: id,
+            productId: producto.id,
+          };
+          const [, error] = await createProductComandaService(productComanda);
+          if (error) {
+            console.error("Error al actualizar el producto de la comanda:", error);
+            return [null, "Error interno del servidor"];
+          }
+        }
+      }
+    }
+
+    // 5. Obtener la comanda actualizada con sus relaciones
+    const comandaActualizada = await comandaRepository.findOne({
+      where: { id },
+      relations: ["productcomandas"],
+    });
+
+    return [comandaActualizada, null];
   } catch (error) {
     console.error("Error al actualizar la comanda:", error);
     return [null, "Error interno del servidor"];
@@ -193,6 +228,9 @@ export async function getComandasPorMesAnoService(query) {
     const mesFormateado = mes.toString().padStart(2, "0");
     const ultimoDia = new Date(ano, mes, 0).getDate();
 
+    console.log(mesFormateado);
+    console.log(ultimoDia);
+
 
     const comandaRepository = AppDataSource.getRepository(Comanda);
 
@@ -206,7 +244,7 @@ export async function getComandasPorMesAnoService(query) {
           new Date(`${ano}-${mesFormateado}-01T00:00:00.000Z`),
           new Date(`${ano}-${mesFormateado}-${ultimoDia}T23:59:59.999Z`)
         ),
-        estado: "completada",
+        estado: "cerrada",
       },
     });
 

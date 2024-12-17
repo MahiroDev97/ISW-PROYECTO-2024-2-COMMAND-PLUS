@@ -9,13 +9,19 @@ import Comanda from "../entity/comanda.entity.js";
 
 export async function createProductComandaService(body) {
   try {
+
+    console.log("este es el body en el productcomanda service ",body);
     const productComandaRepository = AppDataSource.getRepository(ProductComanda);
     const productRepository = AppDataSource.getRepository(Product);
     const comandaRepository = AppDataSource.getRepository(Comanda);
 
     // Buscar las entidades relacionadas
+    console.log(body.productId);
     const product = await productRepository.findOne({ where: { id: body.productId } });
     const comanda = await comandaRepository.findOne({ where: { id: body.comandaId } });
+
+    console.log("Product found:", product);
+    console.log("Comanda found:", comanda);
 
     if (!product || !comanda) {
       return [null, "Producto o Comanda no encontrados"];
@@ -32,6 +38,7 @@ export async function createProductComandaService(body) {
 
     await productComandaRepository.save(newProductComanda);
 
+    console.log("New ProductComanda created:", newProductComanda);
     return [newProductComanda, null];
   } catch (error) {
     console.error("Error al crear el producto de la comanda:", error);
