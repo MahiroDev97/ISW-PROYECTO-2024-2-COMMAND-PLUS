@@ -1,24 +1,19 @@
 import { useState, useEffect } from "react";
-import { getProducts } from "@services/product.service.js";
+import { getProducts } from "../../services/product.service";
 
-const useProducts = () => {
+const useGetProducts = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const fetchProducts = async () => {
     try {
       const response = await getProducts();
-      const formattedData = response.data.map((product) => ({
-        id: product.id,
-        categoria: product.categoria,
-        nombre: product.nombre,
-        descripcion: product.descripcion,
-        precio: product.precio,
-        disponibilidad: product.disponibilidad ? "Sí" : "No",
-      }));
-      dataLogged(formattedData);
-      setProducts(formattedData);
+      setProducts(response.data);
     } catch (error) {
-      console.error("Error: ", error);
+      setError(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -26,21 +21,7 @@ const useProducts = () => {
     fetchProducts();
   }, []);
 
-  const dataLogged = (formattedData) => {
-    try {
-      const { rut } = JSON.parse(sessionStorage.getItem("usuario"));
-      for (let i = 0; i < formattedData.length; i++) {
-        if (formattedData[i].rut === rut) {
-          formattedData.splice(i, 1);
-          break;
-        }
-      }
-    } catch (error) {
-      console.error("Error: ", error);
-    }
-  };
-
-  return { products, fetchProducts, setProducts };
+  return { products, loading, error, fetchProducts };
 };
 
-export default useProducts;
+export default useGetProducts;
