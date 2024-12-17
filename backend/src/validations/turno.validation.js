@@ -53,4 +53,13 @@ export const turnoDeleteValidation = Joi.object({
         "number.integer": "El id debe ser un número entero.",
         "number.positive": "El id debe ser un número positivo.",
     }),
-}); 
+});
+
+
+export const turnoGetDiaValidation = Joi.object({
+    day: Joi.date().required().messages({
+        "date.base": "La fecha debe ser una fecha válida.",
+        "date.required": "La fecha es requerida.",
+        "any.required": "El parámetro 'day' es requerido",
+    }),
+});

@@ -60,7 +60,7 @@ const AdminTables = () => {
                             <HorariosChart />
                         </ChartContainer>
 
-                        <ChartContainer title="Stock de Productos">
+                        <ChartContainer title="Distribución de Productos">
                             <ProductsChart />
                         </ChartContainer>
                     </div>

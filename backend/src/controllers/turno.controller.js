@@ -3,11 +3,19 @@ import {
     createTurnoService,
     deleteTurnoService,
     finishTurnoService,
+    getFechasTurnosDisponibles,
+    getTurnosDia,
     getTurnoService,
+    getTurnosMesAno,
     getTurnosUsuarioService,
     updateTurnoService,
 } from "../services/turno.service.js";
-import { turnoBodyValidation, turnoDeleteValidation, turnoQueryValidation } from "../validations/turno.validation.js";
+import {
+    turnoBodyValidation,
+    turnoDeleteValidation,
+    turnoGetDiaValidation,
+    turnoQueryValidation
+} from "../validations/turno.validation.js";
 import { handleErrorClient, handleErrorServer, handleSuccess } from "../handlers/responseHandlers.js";
 
 
@@ -142,5 +150,59 @@ export async function finishTurno(req, res) {
     } catch (error) {
         handleErrorServer(res, 500, error.message);
 
+    }
+}
+
+export async function getDatesTurnosDisponibles(req, res) {
+    try {
+        const [turnos, errorTurnos] = await getFechasTurnosDisponibles();
+
+
+
+        if (turnos.length === 0) return handleErrorClient(res, 404, "No hay turnos disponibles");
+
+        if (errorTurnos) return handleErrorClient(res, 404, errorTurnos);
+
+        console.log("turnos", turnos);
+
+        handleSuccess(res, 200, "Fechas de turnos disponibles", turnos);
+
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
+export async function getTurnosDiaController(req, res) {
+    try {
+        const { day } = req.query;
+        const { error } = turnoGetDiaValidation.validate({ day });
+        if (error) return handleErrorClient(res, 400, error.message);
+
+        const [turnos, errorTurnos] = await getTurnosDia(day);
+
+        if (errorTurnos) return handleErrorClient(res, 404, errorTurnos);
+
+        handleSuccess(res, 200, "Turnos encontrados", turnos);
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
+    }
+}
+
+export async function getTurnosMesAnoController(req, res) {
+    try {
+        const { mes, ano } = req.query;
+
+        console.log(mes, ano);
+
+        const [turnos, errorTurnos] = await getTurnosMesAno(mes, ano);
+
+        if (errorTurnos) return handleErrorClient(res, 404, errorTurnos);
+
+        if (turnos.length === 0) return handleErrorClient(res, 404, "No hay turnos para el mes y año especificado");
+
+
+        handleSuccess(res, 200, "Turnos encontrados", turnos);
+    } catch (error) {
+        handleErrorServer(res, 500, error.message);
     }
 }

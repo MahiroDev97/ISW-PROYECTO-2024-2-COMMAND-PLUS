@@ -1,14 +1,24 @@
-
 const MonthSelector = ({
     mesesDisponibles,
     mesSeleccionado,
     anoSeleccionado,
     onMesAnoChange
 }) => {
+    const nombresMeses = [
+        'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+
     const handleMonthChange = (event) => {
         const [mes, ano] = event.target.value.split('/');
         onMesAnoChange(parseInt(mes), parseInt(ano));
     };
+
+    const mesesFormateados = mesesDisponibles.map(({ mes, ano }) => ({
+        mes,
+        ano,
+        label: `${nombresMeses[mes - 1]} ${ano}`
+    }));
 
     return (
         <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
@@ -35,7 +45,7 @@ const MonthSelector = ({
                         text-gray-700
                     "
                 >
-                    {mesesDisponibles.map(({ mes, ano, label }) => (
+                    {mesesFormateados.map(({ mes, ano, label }) => (
                         <option key={`${mes}-${ano}`} value={`${mes}/${ano}`}>
                             {label}
                         </option>

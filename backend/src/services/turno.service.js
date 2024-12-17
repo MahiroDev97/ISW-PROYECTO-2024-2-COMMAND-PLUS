@@ -2,7 +2,7 @@
 import Turno from "../entity/turno.entity.js";
 import User from "../entity/user.entity.js";
 import { AppDataSource } from "../config/configDb.js";
-import { IsNull, Not } from "typeorm"; // Asegúrate de importar IsNull
+import { Between, IsNull, Not } from "typeorm"; // Asegúrate de importar IsNull
 
 export async function createTurnoService(body) {
     try {
@@ -253,9 +253,78 @@ export async function isUserInTurno(id_user) {
     }
 }
 
-
-export async function getTurnosByDay(day) {
-    const turnoRepository = AppDataSource.getRepository(Turno);
-    const turnos = await turnoRepository.find({ where: { datetimeInicio: MoreThan(day) } });
-    return turnos;
+export async function getFechasTurnosDisponibles() {
+    try {
+        const turnoRepository = AppDataSource.getRepository(Turno);
+        const turnos = await turnoRepository.find({
+            where: {
+                datetimeInicio: Not(IsNull())
+            }
+        });
+        if (!turnos) return [null, "No se encontraron turnos"];
+        // select fechaIncio
+        const fechasInicio = turnos.map(turno => turno.datetimeInicio);
+        console.log(fechasInicio);
+        return [fechasInicio, null];
+    } catch (error) {
+        console.error("Error al obtener las fechas de turnos disponibles:", error);
+        return [null, "Error interno del servidor"];
+    }
 }
+
+
+export async function getTurnosDia(day) {
+    try {
+        const turnoRepository = AppDataSource.getRepository(Turno);
+
+        // Crear fecha de inicio y fin ajustando la zona horaria
+        const fechaInicio = new Date(day);
+        fechaInicio.setUTCHours(0, 0, 0, 0);
+
+        const fechaFin = new Date(day);
+        fechaFin.setUTCHours(23, 59, 59, 999);
+
+        console.log("Buscando turnos entre:", fechaInicio, fechaFin); // Debug
+
+        const turnos = await turnoRepository.find({
+            where: {
+                datetimeInicio: Between(fechaInicio, fechaFin)
+            },
+            relations: ["user"],
+            order: { datetimeInicio: "DESC" }
+        });
+
+        if (!turnos || turnos.length === 0) {
+            return [null, "No se encontraron turnos para este día"];
+        }
+
+        return [turnos, null];
+    } catch (error) {
+        console.error("Error al obtener los turnos por día:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+export async function getTurnosMesAno(mes, ano) {
+    try {
+        const turnoRepository = AppDataSource.getRepository(Turno);
+        const primerDiaMes = new Date(ano, mes - 1, 1);
+        const ultimoDiaMes = new Date(ano, mes, 0);
+
+        const turnos = await turnoRepository.find({
+            where: {
+                datetimeInicio: Between(primerDiaMes, ultimoDiaMes)
+            },
+            relations: ["user"],
+            order: { datetimeInicio: "ASC" }
+        });
+
+        return [turnos, null];
+    } catch (error) {
+        console.error("Error al obtener los turnos por mes:", error);
+        return [null, "Error interno del servidor"];
+    }
+}
+
+
+

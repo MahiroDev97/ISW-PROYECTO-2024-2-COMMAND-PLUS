@@ -16,8 +16,15 @@ const useEditComanda = (fetchComandas) => {
     const handleUpdate = async (updatedComandaData) => {
         if (updatedComandaData) {
           try {
-            const { id, productcomandas, ...dataComanda } = updatedComandaData;
-            const updatedComanda = await updateComanda(id, dataComanda);
+            const { id, productcomandas, productos, ...dataComanda } = updatedComandaData;
+            
+            // Incluir los productos en la actualización
+            const commandaToUpdate = {
+              ...dataComanda,
+              productos: productos // Agregar los productos modificados
+            };
+
+            const updatedComanda = await updateComanda(id, commandaToUpdate);
             showSuccessAlert(
               "¡Actualizado!",
               "La Comanda ha sido actualizada correctamente."
