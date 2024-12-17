@@ -10,6 +10,8 @@ import useCreateComanda from "../hooks/comandas/useCreateComanda.jsx";
 import useEditComanda from "../hooks/comandas/useEditComanda.jsx";
 import Navbar from "../components/Navbar";
 import useGetProducts from "../hooks/products/useGetProducts.jsx";
+import { wsService } from '../services/websocket';
+import { Bell } from "lucide-react";
 
 const Comandas = () => {
   const { comandas, setComandas, fetchComandas } = useComandas();
@@ -43,6 +45,67 @@ const Comandas = () => {
     [setDataComanda]
   );
 
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("usuario"));
+    console.log('Usuario actual:', user); // Para debug
+    
+    const handleComandaUpdate = (data) => {
+      console.log('Notificación recibida:', data); // Para debug
+
+      if (user?.role === "garzon" || user?.role === "administrador") {
+        if (data.type === 'COMANDA_UPDATE') {
+          // Notificación de actualización de estado de producto
+          toast.info(
+            <div className="flex items-center">
+              <Bell className="mr-2" />
+              <span>
+                Mesa #{data.data.mesa}: Producto actualizado a {data.data.newStatus}
+              </span>
+            </div>,
+            {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              className: "bg-blue-100 text-blue-800 font-bold",
+            }
+          );
+        } else if (data.type === 'COMANDA_READY') {
+          // Notificación de comanda lista
+          toast.success(
+            <div className="flex items-center">
+              <Bell className="mr-2" />
+              <span>
+                ¡ATENCIÓN! Comanda de Mesa #{data.data.mesa} está lista para servir
+              </span>
+            </div>,
+            {
+              position: "top-center",
+              autoClose: false, // No se cierra automáticamente
+              hideProgressBar: false,
+              closeOnClick: false, // No se cierra al hacer click
+              pauseOnHover: true,
+              draggable: false,
+              className: "bg-green-100 text-green-800 font-bold text-lg",
+            }
+          );
+          // Reproducir sonido de notificación
+          new Audio('/notification.mp3').play().catch(console.error);
+        }
+        fetchComandas(); // Actualizar la lista de comandas
+      }
+    };
+
+    wsService.subscribe('COMANDA_UPDATE', handleComandaUpdate);
+    wsService.subscribe('COMANDA_READY', handleComandaUpdate);
+
+    return () => {
+      wsService.unsubscribe('COMANDA_UPDATE', handleComandaUpdate);
+      wsService.unsubscribe('COMANDA_READY', handleComandaUpdate);
+    };
+  }, [fetchComandas]);
 
   const columns = [
     // { title: "id", field: "id", width: 150, responsive: 0 },

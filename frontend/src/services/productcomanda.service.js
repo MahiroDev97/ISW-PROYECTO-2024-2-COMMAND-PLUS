@@ -15,10 +15,12 @@ export async function getProductComandaByComanda(req, res) {
 
 export async function updateProductComanda(req, res) {
   try {
-    const { id } = req.params;
-    const { body } = req;
+    console.log('req completa en el service',req.id);
+    console.log('params del service',req.params);
+    const { id } = req.id;
+    const { body } = req.estadoproductocomanda;
 
-    const response = await axios.patch(`/productcomanda/${id}`, body);
+    const response = await axios.patch(`/productcomanda/detail/?id=${id}`, body);
 
     return res.status(response.status).json(response.data);
   } catch (error) {
