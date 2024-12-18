@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import {
   createBrowserRouter,
   RouterProvider,
-  Navigate,
+
 } from "react-router-dom";
 import Login from "@pages/Login";
 import Home from "@pages/Home";
@@ -92,19 +92,36 @@ const router = createBrowserRouter([
       },
       {
         path: "/activeturno",
-        element: <ActiveTurno />,
+        element: (
+
+          <ActiveTurno />
+
+
+        ),
       },
       {
         path: "/finishturno",
-        element: <FinishTurno />,
+        element: (
+          <ProtectedRoute allowedRoles={["garzon", "cocinero"]}>
+            <FinishTurno />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/adminTables",
-        element: <AdminTables />,
+        element: (
+          <ProtectedRoute allowedRoles={["administrador"]}>
+            <AdminTables />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/turnosAdmin",
-        element: <TurnosAdmin />,
+        element: (
+          <ProtectedRoute allowedRoles={["administrador"]}>
+            <TurnosAdmin />
+          </ProtectedRoute>
+        ),
       },
     ],
   },

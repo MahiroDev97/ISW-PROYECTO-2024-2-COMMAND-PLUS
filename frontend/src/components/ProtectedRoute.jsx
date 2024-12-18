@@ -9,8 +9,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
         return <Navigate to="/auth" replace />;
     }
 
-    // Verificar roles permitidos
-    if (!allowedRoles.includes(user.rol)) {
+    // Si es administrador y está en una ruta que no es /adminTables, redirigir
+    if (user.rol === "administrador" && window.location.pathname !== "/adminTables") {
+        return <Navigate to="/adminTables" replace />;
+    }
+
+    // Verificar roles permitidos si se especificaron
+    if (allowedRoles && !allowedRoles.includes(user.rol)) {
         return <Navigate to="/home" replace />;
     }
 
