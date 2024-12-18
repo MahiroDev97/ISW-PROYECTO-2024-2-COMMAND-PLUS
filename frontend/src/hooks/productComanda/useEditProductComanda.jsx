@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { updateProductComanda } from "../../services/productcomanda.service";
+import { toast } from 'react-toastify';
 
 const useEditProductComanda = (initialProducts = []) => {
   const [loading, setLoading] = useState(false);
@@ -31,9 +32,15 @@ const useEditProductComanda = (initialProducts = []) => {
         [productId]: newStatus,
       }));
 
+      
+
       return response; // Return the full response
     } catch (err) {
       setError(err.message);
+      toast.error(`Error al actualizar el producto: ${err.message}`, {
+        position: "bottom-right",
+        autoClose: 4000,
+      });
       throw err;
     } finally {
       setLoading(false);

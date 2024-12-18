@@ -15,16 +15,28 @@ export async function getProductComandaByComanda(req, res) {
 
 export async function updateProductComanda(data) {
   try {
-    const response = await axios.patch(
-      `/productcomanda/detail/?id=${data.id}`,
-      {
-        estadoproductocomanda: data.estadoproductocomanda,
-      }
-    );
-    return response.data; // Return just the response.data
+    const user = JSON.parse(sessionStorage.getItem("usuario"));
+    let endpoint;
+
+    // Seleccionar el endpoint según el rol del usuario
+    switch (user.rol) {
+      case "cocinero":
+        endpoint = `/cocinero/detail/?id=${data.id}`;
+        break;
+      case "administrador":
+        endpoint = `/productcomanda/detail/?id=${data.id}`;
+        break;
+      default:
+        throw new Error("No tienes permisos para realizar esta acción");
+    }
+
+    const response = await axios.patch(endpoint, {
+      estadoproductocomanda: data.estadoproductocomanda,
+    });
+    return response.data;
   } catch (error) {
     console.error("Error al actualizar el producto de la comanda:", error);
-    throw error; // Throw the error to be handled by the caller
+    throw error;
   }
 }
 
