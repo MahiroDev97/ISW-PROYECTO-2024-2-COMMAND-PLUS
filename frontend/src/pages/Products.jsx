@@ -109,7 +109,13 @@ const Products = () => {
                   />
                 }
                 label={showUnavailable ? "Todos" : "Solo Disponibles"}
-                className="w-50 md:w-[220px] flex justify-center"
+                className="w-[220px] flex items-center justify-between px-2"
+                sx={{
+                  margin: 0,
+                  "& .MuiFormControlLabel-label": {
+                    minWidth: "120px",
+                  },
+                }}
               />
               <div className="w-full md:w-[200px]">
                 <Search
