@@ -119,7 +119,7 @@ export async function updateProduct(req, res) {
       return handleErrorClient(res, 404, errorCurrentProduct);
 
     const imagePath = req.file?.path;
-    const baseUrl = `http://${HOST}:${PORT}/api/uploads/`;
+    const baseUrl = `http://${HOST}:${EXTERNAL_PORT}/api/uploads/`;
 
     if (imagePath) {
       body.imagen = `${baseUrl}${path.basename(imagePath)}`;
