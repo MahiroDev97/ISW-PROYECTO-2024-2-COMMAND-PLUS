@@ -16,7 +16,6 @@ const AdminTurnos = () => {
         yearSelected,
         datesAvailable,
         monthsAvailable,
-
         handleViewModeChange,
         handleDateChange,
         handleMonthYearChange,

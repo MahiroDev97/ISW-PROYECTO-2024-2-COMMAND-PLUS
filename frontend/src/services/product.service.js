@@ -9,10 +9,18 @@ export async function getProducts() {
   }
 }
 
+export async function getAvailableProducts() {
+  try {
+    const response = await axios.get("/product/disponibles");
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+}
+
 export async function getProductById(id) {
   try {
     const response = await axios.get(`/product/detail/?id=${id}`);
-    console.log(response);
     return response.data;
   } catch (error) {
     return error.response.data;
@@ -34,7 +42,11 @@ export async function createProduct(data) {
 
 export async function updateProduct(id, data) {
   try {
-    const response = await axios.patch(`/product/detail/?id=${id}`, data);
+    const response = await axios.patch(`/product/detail/?id=${id}`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   } catch (error) {
     return error.response.data;

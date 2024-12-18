@@ -4,10 +4,13 @@ import useComandas from "../hooks/comandas/UseGetComandas";
 import { ClipboardList } from "lucide-react";
 
 const VistaCocina = () => {
+
   const { comandas, setComandas } = useComandas();
   const [filterID, setFilterID] = useState("");
 
-  useEffect(() => {}, [comandas]);
+  useEffect(() => { }, [comandas]);
+
+
 
   return (
     <div className="min-h-screen bg-gray-50 overflow-auto">

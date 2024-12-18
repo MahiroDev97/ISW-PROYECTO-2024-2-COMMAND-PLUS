@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import {
   createBrowserRouter,
   RouterProvider,
-  Navigate,
+
 } from "react-router-dom";
 import Login from "@pages/Login";
 import Home from "@pages/Home";
@@ -25,6 +25,7 @@ import "@styles/index.css";
 import React from "react";
 import { wsService } from "./services/websocket";
 import GlobalNotifications from "./components/GlobalNotifications";
+import { Menu } from "./pages/Menu";
 
 Modal.setAppElement("#root");
 
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <>
+
         <ToastContainer />
         <Root />
       </>
@@ -51,11 +53,9 @@ const router = createBrowserRouter([
         path: "/home",
         element: (
           <ProtectedRoute>
-            {user?.rol === "administrador" ? (
-              <Navigate to="/adminTables" />
-            ) : (
-              <Home />
-            )}
+
+            <Home />
+
           </ProtectedRoute>
         ),
       },
@@ -78,7 +78,7 @@ const router = createBrowserRouter([
       {
         path: "/cocina",
         element: (
-          <ProtectedRoute allowedRoles={["administrador", "cocinero"]}>
+          <ProtectedRoute allowedRoles={["cocinero", "administrador"]}>
             <VistaCocina />
           </ProtectedRoute>
         ),
@@ -86,26 +86,43 @@ const router = createBrowserRouter([
       {
         path: "/comandas",
         element: (
-          <ProtectedRoute allowedRoles={["administrador", "garzon"]}>
+          <ProtectedRoute allowedRoles={["garzon", "administrador"]}>
             <Comandas />
           </ProtectedRoute>
         ),
       },
       {
         path: "/activeturno",
-        element: <ActiveTurno />,
+        element: (
+
+          <ActiveTurno />
+
+
+        ),
       },
       {
         path: "/finishturno",
-        element: <FinishTurno />,
+        element: (
+          <ProtectedRoute allowedRoles={["garzon", "cocinero"]}>
+            <FinishTurno />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/adminTables",
-        element: <AdminTables />,
+        element: (
+          <ProtectedRoute allowedRoles={["administrador"]}>
+            <AdminTables />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/turnosAdmin",
-        element: <TurnosAdmin />,
+        element: (
+          <ProtectedRoute allowedRoles={["administrador"]}>
+            <TurnosAdmin />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
@@ -116,6 +133,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/menu",
+    element: <Menu />,
   },
 ]);
 //renderiza el router en el root del html

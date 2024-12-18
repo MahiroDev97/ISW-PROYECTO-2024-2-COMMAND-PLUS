@@ -1,7 +1,7 @@
 "use strict";
 import fs from "fs";
 import path from "path";
-import { HOST, PORT } from "../config/configEnv.js";
+import { EXTERNAL_PORT, HOST } from "../config/configEnv.js";
 import {
   productBodyValidation,
   productQueryValidation,
@@ -23,7 +23,7 @@ export async function createProduct(req, res) {
   try {
     const { body } = req;
     const imagePath = req.file?.path;
-    const baseUrl = `http://${HOST}:${PORT}/api/uploads/`;
+    const baseUrl = `http://${HOST}:${EXTERNAL_PORT}/api/uploads/`;
     if (imagePath) {
       body.imagen = `${baseUrl}${path.basename(imagePath)}`;
     }

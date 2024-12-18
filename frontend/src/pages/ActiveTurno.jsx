@@ -3,15 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import useTurnoError from '../hooks/turno/useTurnoError.jsx';
 import { createTurno } from '../services/turno.service.js';
 import useUser from '../hooks/auth/useUser';
+import { useEffect } from 'react';
 
 const ActiveTurno = () => {
     const navigate = useNavigate();
     const { error, handleError, clearError } = useTurnoError();
     const user = useUser();
 
-    if (user.active) {
-        navigate('/home');
-    }
+    useEffect(() => {
+        if (user?.active) {
+            user.rol === 'garzon' ? navigate('/comandas') : navigate('/cocina');
+        }
+    }, [user, navigate]);
 
     const activeTurno = async () => {
         try {
@@ -21,20 +24,22 @@ const ActiveTurno = () => {
             console.log('response', response);
             if (response.status === 'Success') {
                 console.log('response.status === Success');
-                navigate('/home');
+                user?.rol === 'garzon' ? navigate("/comandas") : navigate("/cocina");
             } else if (response.status === 'Client error') {
                 console.log('response.status === Client error');
+                navigate("/home");
                 handleError(response.details);
             }
         } catch (error) {
             console.log('error en activeTurno');
+            navigate("/home");
             handleError(error);
         }
     }
 
     return (
         <div className="turno-container">
-            {error && <div className="error-message">{error.message || 'Error desconocido'}</div>}
+            {error && <div className="error-message">{error.message || 'Turno ya iniciado :)'}</div>}
             <h1 className="logo">Command+</h1>
             <button className="iniciar-turno" onClick={activeTurno}>Iniciar turno</button>
             <div className="turno-description">
