@@ -1,9 +1,10 @@
 import cron from "node-cron";
 import { getReportesDataService } from "../services/reportes.service.js";
 import { enviarEmailReporte } from "../services/email.service.js";
+import { handleErrorClient } from "../handlers/responseHandlers.js";
 
-export function sendEmailCron() {
-    const cronJob = cron.schedule("0 2 * * *", async () => {
+export async function sendEmailCron() {
+    const cronJob = cron.schedule("55 2 * * *", async () => {
         try {
             const reportes = await getReportesDataService();
 
@@ -18,6 +19,7 @@ export function sendEmailCron() {
                 turnos: reportes.turnos,
                 fecha: new Date().toISOString().split("T")[0]
             };
+            console.log(datosEmail);
 
             const resultado = await enviarEmailReporte(datosEmail);
             console.log("Reporte enviado exitosamente");
