@@ -20,15 +20,12 @@ async function setupServer() {
 
     app.disable("x-powered-by");
 
-    const corsOptions = {
-      origin: [
-        "http://146.83.198.35:1296",
-
-      ],
-      credentials: true
-    };
-
-    app.use(cors(corsOptions));
+    app.use(
+      cors({
+        credentials: true,
+        origin: true,
+      }),
+    );
 
     app.use(
       urlencoded({
