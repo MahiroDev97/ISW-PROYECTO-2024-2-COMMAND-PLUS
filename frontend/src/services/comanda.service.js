@@ -58,6 +58,7 @@ export async function getComandasPorMesAno(mes, ano) {
     }
 }
 
+
 export async function cancelComanda(id, data) {
     try {
         const response = await axios.patch(`/comanda/cancel/?id=${id}`, data);

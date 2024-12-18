@@ -84,7 +84,7 @@ export async function updateComandaService(query, body) {
     const comandaRepository = AppDataSource.getRepository(Comanda);
     const productComandaRepository = AppDataSource.getRepository(ProductComanda);
 
-    //Encontrar la comanda
+
     const comandaFound = await comandaRepository.findOne({ 
       where: { id },
       relations: ["productcomandas"]
@@ -240,7 +240,7 @@ export async function getComandasPorMesAnoService(query) {
           new Date(`${ano}-${mesFormateado}-01T00:00:00.000Z`),
           new Date(`${ano}-${mesFormateado}-${ultimoDia}T23:59:59.999Z`)
         ),
-        estado: "cerrada",
+        estado: "Cerrada",
       },
     });
 
