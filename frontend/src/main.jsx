@@ -41,6 +41,7 @@ const router = createBrowserRouter([
     path: "/",
     element: (
       <>
+
         <ToastContainer />
         <Root />
       </>
@@ -51,11 +52,9 @@ const router = createBrowserRouter([
         path: "/home",
         element: (
           <ProtectedRoute>
-            {user?.rol === "administrador" ? (
-              <Navigate to="/adminTables" />
-            ) : (
-              <Home />
-            )}
+
+            <Home />
+
           </ProtectedRoute>
         ),
       },
@@ -78,7 +77,7 @@ const router = createBrowserRouter([
       {
         path: "/cocina",
         element: (
-          <ProtectedRoute allowedRoles={["administrador", "cocinero"]}>
+          <ProtectedRoute allowedRoles={["cocinero", "administrador"]}>
             <VistaCocina />
           </ProtectedRoute>
         ),
@@ -86,7 +85,7 @@ const router = createBrowserRouter([
       {
         path: "/comandas",
         element: (
-          <ProtectedRoute allowedRoles={["administrador", "garzon"]}>
+          <ProtectedRoute allowedRoles={["garzon", "administrador"]}>
             <Comandas />
           </ProtectedRoute>
         ),
