@@ -21,7 +21,7 @@ const Comandas = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, [fetchProducts]);
+  }, []);
 
   const {
     handleClickUpdate,
