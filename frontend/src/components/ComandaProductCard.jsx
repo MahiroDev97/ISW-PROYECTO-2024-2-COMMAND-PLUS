@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Clock } from "lucide-react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { wsService } from '../services/websocket';
 import Modal from 'react-modal';
-import useEditProductComanda from '../hooks/productComanda/useEditProductComanda';
 
 const OrderStatus = {
   PENDING: "pendiente",
@@ -36,26 +35,35 @@ export const ProductCard = ({ productcomandas, comanda, updateComandaStatus, cur
     setNewStatus(null);
   };
 
+  const checkUserRole = () => {
+    const user = JSON.parse(sessionStorage.getItem("usuario"));
+    // Permitir edición a cocineros, garzones y administradores
+    return ["cocinero", "administrador"].includes(user?.rol);
+  };
+
   const handleStatusChange = async () => {
     if (newStatus) {
       try {
+        // Verificar si el usuario tiene permiso
+        if (!checkUserRole()) {
+          toast.error('No tienes permisos para actualizar el estado');
+          return;
+        }
+
         await updateComandaStatus(productcomandas.id, newStatus);
         
         wsService.send({
-          type: 'COMANDA_UPDATE',
+          type: 'PRODUCT_STATUS_UPDATE',
           data: {
             comandaId: comanda.id,
             mesa: comanda.mesa,
             productId: productcomandas.id,
             productName: productcomandas.product.nombre,
             newStatus: newStatus,
+            oldStatus: currentStatus,
+            updatedBy: JSON.parse(sessionStorage.getItem("usuario"))?.rol,
             timestamp: new Date().toISOString()
           }
-        });
-
-        toast.success(`Estado del producto "${productcomandas.product.nombre}" actualizado a ${newStatus}`, {
-          position: "top-right",
-          autoClose: 3000,
         });
 
         closeModal();
@@ -85,8 +93,9 @@ export const ProductCard = ({ productcomandas, comanda, updateComandaStatus, cur
                 onClick={() => openModal(option)}
                 className={`px-2 py-1 rounded text-xs font-bold min-w-[2rem] 
                   ${currentStatus === option ? 'ring-2 ring-current' : ''} 
-                  ${statusColors[option]}`}
-                disabled={loading}
+                  ${statusColors[option]}
+                  ${!checkUserRole() ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={loading || !checkUserRole()}
               >
                 {option === OrderStatus.PENDING ? 'P' : 
                  option === OrderStatus.IN_PREPARATION ? 'EP' :

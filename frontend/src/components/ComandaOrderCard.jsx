@@ -45,10 +45,11 @@ export const OrderCard = ({ comanda, onUpdateComanda }) => {
         }
       );
 
+
       setEstado("listo");
       setIsNotified(true);
     }
-  }, [productStatuses]);
+  }, [productStatuses, estado, isNotified]);
 
   const checkUserRole = () => {
     const user = JSON.parse(sessionStorage.getItem("usuario"));
