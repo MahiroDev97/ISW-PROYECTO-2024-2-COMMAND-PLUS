@@ -254,3 +254,21 @@ export async function getComandasPorMesAnoService(query) {
     return [null, "Error interno del servidor"];
   }
 }
+
+export async function CerrarComanda (comandaId) {
+
+  try {
+    const comandaRepository = AppDataSource.getRepository(Comanda);
+    const comandaFound = await comandaRepository.findOne({ where: { id: comandaId } });
+
+    if (!comandaFound) return [null, "Comanda no encontrada"];
+
+    comandaFound.estado = "cerrada";
+    await comandaRepository.save(comandaFound);
+
+    return [comandaFound, null];
+  } catch (error) {
+    console.error("Error al cerrar la comanda:", error);
+    return [null, "Error interno del servidor"];
+  }
+}

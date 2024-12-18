@@ -58,3 +58,11 @@ export async function getComandasPorMesAno(mes, ano) {
     }
 }
 
+export async function updateEstadoCerradoComanda(id) {
+    try {
+        const response = await axios.patch(`/comanda/cerrada/?id=${id}`);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}

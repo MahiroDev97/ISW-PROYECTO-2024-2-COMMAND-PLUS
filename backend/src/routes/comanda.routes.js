@@ -13,7 +13,8 @@ import {
   getComanda,
   getComandas,
   getComandasPorMesAno,
-  updateComanda
+  updateComanda,
+  updateEstadoCerradoComanda
 } from "../controllers/comanda.controller.js";
 
 const router = Router();
@@ -27,8 +28,9 @@ router
   .get("/mesano/", getComandasPorMesAno)
   .patch("/detail/", updateComanda)
   .patch("/confirm/", confirmComanda)
+  .patch("/cerrada/",isGarzonOrAdmin, updateEstadoCerradoComanda)
   .delete("/delete/",isGarzonOrAdmin, deleteComanda);
-
+  
 
 
 export default router;
