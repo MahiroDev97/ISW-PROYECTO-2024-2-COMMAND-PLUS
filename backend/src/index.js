@@ -11,6 +11,9 @@ import { connectDB } from "./config/configDb.js";
 import { createInitialSetup } from "./config/initialSetup.js";
 import { passportJwtSetup } from "./auth/passport.auth.js";
 import { sendEmailCron } from "./services/cron.service.js";
+import { WebSocketServer } from "ws";
+import WebSocketManager from "./websocket/WebSocketManager.js";
+
 async function setupServer() {
   try {
     const app = express();
@@ -63,9 +66,19 @@ async function setupServer() {
 
     app.use("/api/uploads", express.static("uploads"));
 
-    app.listen(PORT, () => {
+    const server = app.listen(PORT, () => {
       console.log(`=> Servidor corriendo en ${HOST}:${PORT}/api`);
     });
+
+    // Setup WebSocket Server
+    const wss = new WebSocketServer({ server, path: "/ws" });
+    const wsManager = new WebSocketManager();
+
+    wss.on("connection", (ws) => {
+      console.log("New WebSocket connection");
+      wsManager.handleConnection(ws);
+    });
+
   } catch (error) {
     console.log("Error en index.js -> setupServer(), el error es: ", error);
   }
@@ -87,4 +100,4 @@ setupAPI()
   .catch((error) =>
     console.log("Error en index.js -> setupAPI(), el error es: ", error),
   );
-  
+
