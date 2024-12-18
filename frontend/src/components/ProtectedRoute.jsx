@@ -1,24 +1,34 @@
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useUser from "../hooks/auth/useUser";
+import { useEffect } from "react";
 
-const ProtectedRoute = ({ children, allowedRoles }) => {
+const ProtectedRoute = ({ children, allowedRoles = [] }) => {
+    const navigate = useNavigate();
     const user = useUser();
 
-    // Verificar si hay usuario
-    if (!user) {
-        return <Navigate to="/auth" replace />;
-    }
+    useEffect(() => {
+        if (!user) {
+            navigate('/auth');
+            return;
+        }
 
-    // Verificar roles permitidos
-    if (!allowedRoles.includes(user.rol)) {
-        return <Navigate to="/home" replace />;
-    }
+        if (!user.active && user.rol !== 'administrador') {
+            navigate('/activeturno');
+            return;
+        }
 
-    // Verificar si el usuario necesita activar su turno
-    // Excluimos al administrador de esta verificación
-    if (!user.active && user.rol !== "administrador") {
-        return <Navigate to="/activeturno" replace />;
-    }
+        // Solo verificar roles si se especifican
+        if (allowedRoles.length > 0 && !allowedRoles.includes(user.rol)) {
+            // Si es admin y no tiene acceso, redirigir a adminTables
+            if (user.rol === 'administrador') {
+                navigate('/adminTables');
+            } else {
+                // Para otros roles, redirigir según corresponda
+                user.rol === 'garzon' ? navigate('/comandas') : navigate('/cocina');
+            }
+            return;
+        }
+    }, [user, navigate, allowedRoles]);
 
     return children;
 };

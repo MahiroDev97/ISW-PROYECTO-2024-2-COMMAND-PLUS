@@ -10,7 +10,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
 
-  const hideNavbarRoutes = ['/activeturno', '/auth'];
+  const hideNavbarRoutes = ['/auth'];
 
   if (hideNavbarRoutes.includes(location.pathname)) {
     return null;

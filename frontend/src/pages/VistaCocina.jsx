@@ -10,9 +10,6 @@ const VistaCocina = () => {
 
   useEffect(() => { }, [comandas]);
 
-  // if (!user?.active) {
-  //   return <Navigate to="/activeturno" />;
-  // }
 
 
   return (
