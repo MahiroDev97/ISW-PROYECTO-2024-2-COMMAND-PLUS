@@ -142,3 +142,23 @@ export async function getComandasPorMesAno(req, res) {
     handleErrorServer(res, 500, error.message);
   }
 }
+
+
+export async function updateEstadoCerradoComanda(req, res) {
+  try {
+    const { id } = req.query;
+    const { body } = req;
+
+    const { error: queryError } = comandaQueryValidation.validate({ id });
+
+    if (queryError) return handleErrorClient(res, 400, queryError.message);
+
+    const [comanda, errorComanda] = await updateComandaService({ id }, { estado: "cerrada" });
+
+    if (errorComanda) return handleErrorClient(res, 404, errorComanda);
+
+    handleSuccess(res, 200, "Estado de comanda actualizado a cerrado", comanda);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
