@@ -13,6 +13,9 @@ import useGetProducts from "../hooks/products/useGetProducts.jsx";
 import { wsService } from "../services/websocket";
 import { Bell } from "lucide-react";
 import { toast } from "react-toastify";
+import useCancelComanda from "../hooks/comandas/useCancelComanda.jsx";
+import CancelIcon from "../assets/cancelIcon.svg"; 
+import PopupCancelComanda from "../components/PopupCancelComanda.jsx";
 
 const Comandas = () => {
   const { comandas, fetchComandas } = useComandas();
@@ -38,6 +41,14 @@ const Comandas = () => {
     isPopupOpen: isPopupCreateOpen,
     setIsPopupOpen: setIsPopupCreateOpen,
   } = useCreateComanda(fetchComandas);
+
+  const { 
+    handleCancel, 
+    isPopupOpen: isPopupCancelOpen, 
+    setIsPopupOpen: setIsPopupCancelOpen 
+  } = useCancelComanda(fetchComandas);
+
+  const canCancelComanda = dataComanda.length === 1 && dataComanda[0]?.estado === "Abierta";
 
   const handleSelectionChange = useCallback(
     (selectedComandas) => {
@@ -162,6 +173,21 @@ const Comandas = () => {
                       className="w-5 h-5"
                     />
                   </button>
+                  <button
+                    onClick={() => {
+                      if (canCancelComanda) {
+                        setIsPopupCancelOpen(true);
+                      }
+                    }}
+                    disabled={!canCancelComanda}
+                    className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
+                  >
+                    <img
+                      src={CancelIcon}
+                      alt="cancel"
+                      className="w-5 h-5"
+                    />
+                  </button>
                 </div>
               </div>
             </div>
@@ -196,6 +222,11 @@ const Comandas = () => {
         setShow={setIsPopupCreateOpen}
         action={handleCreate}
         products={products}
+      />
+      <PopupCancelComanda
+        show={isPopupCancelOpen}
+        setShow={setIsPopupCancelOpen}
+        onConfirm={(reason) => handleCancel(dataComanda, reason)}
       />
     </>
   );
