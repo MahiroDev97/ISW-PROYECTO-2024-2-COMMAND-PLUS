@@ -34,7 +34,17 @@ class WebSocketManager {
           this.broadcastToRole(["cocinero", "garzon", "administrador"], data);
           break;
         case "COMANDA_READY":
-          this.broadcastToRole(["garzon", "administrador"], data);
+          this.broadcastToRole(["cocinero", "garzon", "administrador"], {
+            type: "COMANDA_READY",
+            data: {
+              ...data.data,
+              notification: {
+                title: "Comanda Lista",
+                message: `¡Comanda de Mesa ${data.data.mesa} lista para servir!`
+              }
+            }
+          }); 
+          
           break;
       }
     } catch (error) {

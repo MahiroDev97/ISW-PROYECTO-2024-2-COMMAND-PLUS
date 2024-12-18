@@ -1,25 +1,37 @@
 import { useState } from "react";
-import { Clock } from "lucide-react";
+import { Clock, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { wsService } from '../services/websocket';
 import Modal from 'react-modal';
 
 const OrderStatus = {
+  RECEIVED: "recibido",
   PENDING: "pendiente",
   IN_PREPARATION: "en preparación",
   READY: "listo",
-  RECEIVED: "recibido",
 };
 
 const statusColors = {
+  [OrderStatus.RECEIVED]: "bg-gray-100 text-gray-800",
   [OrderStatus.PENDING]: "bg-yellow-100 text-yellow-800",
   [OrderStatus.IN_PREPARATION]: "bg-blue-100 text-blue-800",
   [OrderStatus.READY]: "bg-green-100 text-green-800",
-  [OrderStatus.RECEIVED]: "bg-gray-100 text-gray-800",
 };
 
 const statusOptions = Object.values(OrderStatus);
+
+const statusOrder = [
+  OrderStatus.RECEIVED,
+  OrderStatus.PENDING,
+  OrderStatus.IN_PREPARATION,
+  OrderStatus.READY
+];
+
+const getProgressPercentage = (currentStatus) => {
+  const index = statusOrder.indexOf(currentStatus);
+  return ((index + 1) / statusOrder.length) * 100;
+};
 
 export const ProductCard = ({ productcomandas, comanda, updateComandaStatus, currentStatus, loading }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -74,6 +86,33 @@ export const ProductCard = ({ productcomandas, comanda, updateComandaStatus, cur
     }
   };
 
+  const getNextStatus = (currentStatus) => {
+    const currentIndex = statusOrder.indexOf(currentStatus);
+    if (currentIndex === -1 || currentIndex === statusOrder.length - 1) {
+      return statusOrder[0];
+    }
+    return statusOrder[currentIndex + 1];
+  };
+
+  const getPreviousStatus = (currentStatus) => {
+    const currentIndex = statusOrder.indexOf(currentStatus);
+    if (currentIndex <= 0) {
+      return statusOrder[statusOrder.length - 1];
+    }
+    return statusOrder[currentIndex - 1];
+  };
+
+  const handleStatusNavigation = (direction) => {
+    if (!checkUserRole()) {
+      toast.error('No tienes permisos para actualizar el estado');
+      return;
+    }
+    const nextStatus = direction === 'forward' 
+      ? getNextStatus(currentStatus)
+      : getPreviousStatus(currentStatus);
+    openModal(nextStatus);
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-sm p-3 mb-2">
       <div className="flex justify-between items-start">
@@ -85,23 +124,52 @@ export const ProductCard = ({ productcomandas, comanda, updateComandaStatus, cur
             {productcomandas.product.descripcion}
           </p>
         </div>
-        <div>
-          <div className="flex gap-1 flex-wrap">
-            {statusOptions.map((option) => (
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleStatusNavigation('backward')}
+              className={`p-1 rounded-full hover:bg-gray-100
+                ${!checkUserRole() ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={loading || !checkUserRole()}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            <div className="relative">
               <button
-                key={option}
-                onClick={() => openModal(option)}
-                className={`px-2 py-1 rounded text-xs font-bold min-w-[2rem] 
-                  ${currentStatus === option ? 'ring-2 ring-current' : ''} 
-                  ${statusColors[option]}
-                  ${!checkUserRole() ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onClick={() => handleStatusNavigation('forward')}
+                className={`relative w-20 h-20 rounded-lg text-xs font-bold flex items-center justify-center p-2
+                  ${!checkUserRole() ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'}
+                  ${statusColors[currentStatus]}`}
                 disabled={loading || !checkUserRole()}
               >
-                {option === OrderStatus.PENDING ? 'P' : 
-                 option === OrderStatus.IN_PREPARATION ? 'EP' :
-                 option === OrderStatus.READY ? 'L' : 'R'}
+                <span className="text-center leading-tight">
+                  {currentStatus === OrderStatus.RECEIVED ? 'Recibido' :
+                   currentStatus === OrderStatus.PENDING ? 'Pendiente' :
+                   currentStatus === OrderStatus.IN_PREPARATION ? 'En\nPreparación' :
+                   currentStatus === OrderStatus.READY ? 'Listo' : ''}
+                </span>
               </button>
-            ))}
+            </div>
+
+            <button
+              onClick={() => handleStatusNavigation('forward')}
+              className={`p-1 rounded-full hover:bg-gray-100
+                ${!checkUserRole() ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={loading || !checkUserRole()}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="w-full bg-gray-200 h-1 rounded-full overflow-hidden">
+            <div 
+              className={`h-full ${statusColors[currentStatus]}`}
+              style={{ 
+                width: `${getProgressPercentage(currentStatus)}%`,
+                transition: 'width 0.3s ease-in-out'
+              }}
+            />
           </div>
         </div>
       </div>
