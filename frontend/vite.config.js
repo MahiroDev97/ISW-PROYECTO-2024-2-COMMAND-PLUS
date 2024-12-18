@@ -24,14 +24,5 @@ export default defineConfig({
   },
   css: {
     postcss: './postcss.config.js'
-  },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://146.83.198.35:1296',
-        changeOrigin: true,
-        secure: false
-      }
-    }
   }
 });
