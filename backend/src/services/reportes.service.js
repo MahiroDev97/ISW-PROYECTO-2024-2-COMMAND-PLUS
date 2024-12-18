@@ -28,12 +28,14 @@ export async function getReportesDataService() {
     // Configurar fechaInicio (7 AM del día)
     const fechaInicio = new Date(fechaActual);
     fechaInicio.setDate(fechaInicio.getDate() - 1);
-    fechaInicio.setUTCHours(7, 0, 0, 0);
+    fechaInicio.setHours(4, 0, 0, 0);
+    console.log(fechaInicio);
 
     // Configurar fechaFin (2 AM del día actual)
     const fechaFin = new Date(fechaActual);
     fechaFin.setDate(fechaFin.getDate());
-    fechaFin.setUTCHours(2, 0, 0, 0);
+    fechaFin.setHours(0, 0, 0, 0);
+    console.log(fechaFin);
     try {
         const ventas = await productComandaRepository.find({
             where: {
@@ -48,17 +50,18 @@ export async function getReportesDataService() {
             }
         });
         //if (comandas.length === 0) return null;
-        //between 00:01 am and 11:59 pm
+
 
 
         const turnos = await turnoRepository.find({
             where: {
-                datetimeInicio: Between(fechaInicio, fechaFin)
+                datetimeFin: Between(fechaInicio, fechaFin)
             }
         });
+        console.log("turnos", turnos);
         //if (turnos.length === 0) return null;
 
-        return { ventas, comandas, turnos, fecha };
+        return { ventas, comandas, turnos, fecha: fechaActual };
 
     } catch (error) {
         console.error("Error al obtener los reportes:", error);

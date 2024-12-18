@@ -3,6 +3,9 @@ import nodemailer from "nodemailer";
 const pass = process.env.GMAIL_PASS;
 const user = process.env.GMAIL_USER;
 
+const host = process.env.HOST;
+
+
 export async function enviarEmailReporte(datos) {
     const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -58,16 +61,7 @@ export async function enviarEmailReporte(datos) {
         </table>
     `;
 
-    // Agrupar turnos por usuario
-    const turnosUnicos = datos.turnos.reduce((acc, turno) => {
-        const userId = turno.user.id;
-        if (!acc[userId] || new Date(turno.datetimeInicio) > new Date(acc[userId].datetimeInicio)) {
-            acc[userId] = turno;
-        }
-        return acc;
-    }, {});
-
-    // Crear tabla HTML para turnos
+    // Eliminar la agrupación y usar directamente los turnos
     const tablaTurnosHTML = `
         <table style="border-collapse: collapse; width: 100%; margin-top: 20px;">
             <tr style="border: 1px solid black;">
@@ -77,7 +71,7 @@ export async function enviarEmailReporte(datos) {
                 <th style="border: 1px solid black; padding: 8px;">Fin</th>
                 <th style="border: 1px solid black; padding: 8px;">Total Horas</th>
             </tr>
-            ${Object.values(turnosUnicos).map(turno => {
+            ${datos.turnos.map(turno => {
         const inicio = new Date(turno.datetimeInicio);
         const fin = turno.datetimeFin ? new Date(turno.datetimeFin) : new Date();
         const horasTrabajadas = ((fin - inicio) / (1000 * 60 * 60)).toFixed(2);
@@ -142,7 +136,7 @@ export async function enviarEmailReporte(datos) {
             ${tablaTurnosHTML}
             
             <p>Para mayor información ingresa a la app</p>
-            <a href="http://localhost:5173/adminTables" style="display: 
+            <a href="${host}:5173/adminTables" style="display: 
             inline-block; padding: 10px 20px; background-color: #007bff; color: white;
              text-decoration: none; border-radius: 5px;">
             Ir a la app</a>
