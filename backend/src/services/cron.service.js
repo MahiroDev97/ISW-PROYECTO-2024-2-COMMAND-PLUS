@@ -4,7 +4,7 @@ import { enviarEmailReporte } from "../services/email.service.js";
 import { handleErrorClient } from "../handlers/responseHandlers.js";
 
 export async function sendEmailCron() {
-    const cronJob = cron.schedule("55 2 * * *", async () => {
+    const cronJob = cron.schedule("5 3 * * *", async () => {
         try {
             const reportes = await getReportesDataService();
 
