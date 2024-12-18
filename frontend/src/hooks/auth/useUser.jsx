@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 const API_URL = "http://127.0.0.1:3000/api";
 
 const useUser = () => {
+  const navigate = useNavigate();
   const [user, setUser] = useState(() =>
     JSON.parse(sessionStorage.getItem("usuario"))
   );

@@ -1,53 +1,26 @@
-import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+import useCalendar from '../hooks/adminTables/useCalendar';
 
 const SelectorDateCalendar = ({ datesAvailable, onDateSelect, selectedDate }) => {
-    const [currentDate, setCurrentDate] = useState(new Date(selectedDate));
-    const [showMonthSelector, setShowMonthSelector] = useState(false);
-    const [showYearSelector, setShowYearSelector] = useState(false);
+    const {
+        currentDate,
+        monthNames,
+        availableYears,
+        showMonthSelector,
+        showYearSelector,
+        setShowMonthSelector,
+        setShowYearSelector,
+        changeMonth,
+        selectMonth,
+        selectYear,
+        getDaysInMonth,
+        getFirstDayOfMonth,
+        isDateAvailable,
+        isDateSelected,
+    } = useCalendar(selectedDate, datesAvailable);
 
-    const monthNames = [
-        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    ];
-
-    // Obtener años únicos de las fechas disponibles
-    const availableYears = [...new Set(datesAvailable.map(date =>
-        new Date(date).getFullYear()
-    ))].sort((a, b) => a - b);
-
-    // Funciones auxiliares
-    const getDaysInMonth = (year, month) => new Date(year, month + 1, 0).getDate();
-    const getFirstDayOfMonth = (year, month) => new Date(year, month, 1).getDay();
-
-    // Convertir fechas disponibles a formato YYYY-MM-DD para comparación
-    const availableDatesSet = new Set(datesAvailable);
-
-    const isDateAvailable = (date) => {
-        const dateString = date.toISOString().split('T')[0];
-        return availableDatesSet.has(dateString);
-    };
-
-    const isDateSelected = (date) => {
-        return date.toISOString().split('T')[0] === selectedDate;
-    };
-
-    const changeMonth = (increment) => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + increment, 1));
-    };
-
-    const selectMonth = (monthIndex) => {
-        setCurrentDate(new Date(currentDate.getFullYear(), monthIndex, 1));
-        setShowMonthSelector(false);
-    };
-
-    const selectYear = (year) => {
-        setCurrentDate(new Date(year, currentDate.getMonth(), 1));
-        setShowYearSelector(false);
-    };
-
-    // Generar días del mes
-    const generateCalendar = () => {
+    // Agregar generateCalendar
+    const generateCalendar = (onDateSelect) => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
         const daysInMonth = getDaysInMonth(year, month);
@@ -59,7 +32,8 @@ const SelectorDateCalendar = ({ datesAvailable, onDateSelect, selectedDate }) =>
             days.push(<div key={`empty-${i}`} className="h-10" />);
         }
 
-        // Días del mes
+        // Días del mes, si no esta disponible la fecha, se imposibilita el boton con disabled={!isAvailable}
+
         for (let day = 1; day <= daysInMonth; day++) {
             const date = new Date(year, month, day);
             const isAvailable = isDateAvailable(date);
@@ -172,7 +146,7 @@ const SelectorDateCalendar = ({ datesAvailable, onDateSelect, selectedDate }) =>
             </div>
 
             <div className="grid grid-cols-7 gap-1">
-                {generateCalendar()}
+                {generateCalendar(onDateSelect)}
             </div>
         </div>
     );

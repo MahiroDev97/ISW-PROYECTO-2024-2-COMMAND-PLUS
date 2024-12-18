@@ -15,7 +15,7 @@ const FinishTurno = () => {
             console.log('response', response);
             if (response.status === 'Success') {
                 console.log('response.status === Success');
-                navigate('/home');
+                navigate('/activeturno');
             } else if (response.status === 'Client error') {
                 console.log('response.status === Client error');
                 handleError(response.details);

@@ -2,15 +2,10 @@ import { useEffect, useState } from "react";
 import { getTurnosDia, getTurnosMesAno, getTurnosDate } from "../../services/turno.service";
 
 export const useTurnosCharts = () => {
-    // Estados básicos
     const [viewMode, setViewMode] = useState("day"); // "day" o "month"
     const [turnos, setTurnos] = useState([]);
-
-    // Estados para el modo día
     const [datesAvailable, setDatesAvailable] = useState([]);
     const [dateSelected, setDateSelected] = useState(new Date().toISOString().split('T')[0]);
-
-    // Estados para el modo mes
     const [monthsAvailable, setMonthsAvailable] = useState([]);
     const [monthSelected, setMonthSelected] = useState(new Date().getMonth() + 1);
     const [yearSelected, setYearSelected] = useState(new Date().getFullYear());
@@ -86,10 +81,9 @@ export const useTurnosCharts = () => {
 
     // Obtener datos por día
     const fetchDayData = async (date) => {
-        console.log("date", date);
 
         const data = await getTurnosDia(date);
-        console.log("data", data);
+
         setTurnos(data);
     };
 
@@ -97,11 +91,10 @@ export const useTurnosCharts = () => {
     const fetchMonthData = async (month, year) => {
         try {
             const data = await getTurnosMesAno(month, year);
-            console.log("Datos del mes:", data);
             setTurnos(data);
         } catch (error) {
             console.error("Error al obtener datos del mes:", error);
-            setTurnos([]); // Establecer un array vacío en caso de error
+            setTurnos([]);
         }
     };
 
@@ -135,15 +128,13 @@ export const useTurnosCharts = () => {
     }, [viewMode]);
 
     useEffect(() => {
-        console.log("dateSelected", dateSelected);
-        console.log("datesAvailable", datesAvailable);
+
 
         fetchDayData(dateSelected);
 
     }, [dateSelected, datesAvailable]);
 
     return {
-        // Estados
         viewMode,
         turnos,
         dateSelected,
@@ -151,8 +142,6 @@ export const useTurnosCharts = () => {
         yearSelected,
         datesAvailable,
         monthsAvailable,
-
-        // Manejadores
         handleViewModeChange,
         handleDateChange,
         handleMonthYearChange,
