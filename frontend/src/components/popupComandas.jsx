@@ -29,7 +29,7 @@ export default function Popup({ show, setShow, data, action, products }) {
 
       setSelectedProducts(productosIndividuales);
     }
-  }, [ComandaData, products]); // Agregar products como dependencia
+  }, [ComandaData, products]);
 
   const handleAddProduct = () => {
     if (currentProduct.id) {
@@ -44,7 +44,7 @@ export default function Popup({ show, setShow, data, action, products }) {
           uniqueId: Date.now() + Math.random(),
           nombre: productoSeleccionado
             ? productoSeleccionado.nombre
-            : "Producto no encontrado", // Agregar nombre al crear nuevo producto
+            : "Producto no encontrado",
         }));
 
       setSelectedProducts([...selectedProducts, ...newProducts]);
@@ -113,7 +113,7 @@ export default function Popup({ show, setShow, data, action, products }) {
                   fieldType: "select",
                   options: [
                     { value: "Abierta", label: "Abierta" },
-                    { value: "En Proceso", label: "En Proceso" },
+                    { value: "Lista", label: "Lista" },
                     { value: "Cerrada", label: "Cerrada" },
                   ],
                   required: true,

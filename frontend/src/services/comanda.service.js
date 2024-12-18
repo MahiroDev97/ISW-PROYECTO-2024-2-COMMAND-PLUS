@@ -22,7 +22,7 @@ export async function createComanda(data) {
 export async function getComandas() {
     try {
         const response = await axios.get('/comanda/');
-        return response.data.data; // Asegúrate de que los datos incluyen el campo id
+        return response.data.data;
     } catch (error) {
         console.error('Error', error);
     }
@@ -36,7 +36,7 @@ export async function updateComanda(id, data) {
     } catch (error) {
         console.log(error);
         console.error('Error', error);
-        throw error; // Asegúrate de que el error se lanza para ser capturado en la función que llama
+        throw error;
     }
 }
 
@@ -52,6 +52,15 @@ export async function deleteComanda(id) {
 export async function getComandasPorMesAno(mes, ano) {
     try {
         const response = await axios.get(`/comanda/mesano/?mes=${mes}&ano=${ano}`);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}
+
+export async function cancelComanda(id, data) {
+    try {
+        const response = await axios.patch(`/comanda/cancel/?id=${id}`, data);
         return response.data;
     } catch (error) {
         return error.response.data;

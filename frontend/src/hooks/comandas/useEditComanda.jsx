@@ -18,10 +18,10 @@ const useEditComanda = (fetchComandas) => {
           try {
             const { id, productcomandas, productos, ...dataComanda } = updatedComandaData;
             
-            // Incluir los productos en la actualización
+            // se incluyen los productos al actualizar
             const commandaToUpdate = {
               ...dataComanda,
-              productos: productos // Agregar los productos modificados
+              productos: productos 
             };
 
             const updatedComanda = await updateComanda(id, commandaToUpdate);
@@ -30,7 +30,7 @@ const useEditComanda = (fetchComandas) => {
               "La Comanda ha sido actualizada correctamente."
             );
             setIsPopupOpen(false);
-            await fetchComandas(); // Actualiza las comandas después de la edición
+            await fetchComandas();
             setDataComanda([]);
           } catch (error) {
             console.error("Error al intentar actualizar la Comanda:", error);

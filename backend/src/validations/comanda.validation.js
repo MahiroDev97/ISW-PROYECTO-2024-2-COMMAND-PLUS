@@ -50,4 +50,14 @@ export const comandaBodyValidation = Joi.object({
         "array.base": "Los productos deben ser un array.",
         "array.min": "Debe haber al menos un producto.",
     }),
-}); 
+    motivoCancelacion: Joi.string().min(5).max(200).allow(null).messages({
+        "string.base": "El motivo de cancelación debe ser de tipo string.",
+        "string.min": "El motivo de cancelación debe tener como mínimo 5 caracteres.",
+        "string.max": "El motivo de cancelación debe tener como máximo 200 caracteres.",
+    }),
+    comentarios: Joi.string().min(5).max(200).allow(null).messages({
+        "string.base": "El comentario debe ser de tipo string.",
+        "string.min": "El comentario debe tener como mínimo 5 caracteres.",
+        "string.max": "El comentario debe tener como máximo 200 caracteres.",
+    }),
+});

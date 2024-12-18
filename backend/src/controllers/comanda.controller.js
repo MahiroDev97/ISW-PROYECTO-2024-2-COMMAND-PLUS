@@ -11,6 +11,7 @@ import {
   getComandasPorMesAnoService,
   getComandasService,
   updateComandaService,
+  cancelComandaService,
 } from "../services/comanda.service.js";
 import {
   handleErrorClient,
@@ -138,6 +139,22 @@ export async function getComandasPorMesAno(req, res) {
     if (errorComandas) return handleErrorClient(res, 404, errorComandas);
 
     handleSuccess(res, 200, "Comandas encontradas", comandas);
+  } catch (error) {
+    handleErrorServer(res, 500, error.message);
+  }
+}
+
+export async function cancelComanda(req, res) {
+  try {
+    const { id, reason } = req.query;
+
+    const { error: queryError } = comandaQueryValidation.validate({ id });
+    if (queryError) return handleErrorClient(res, 400, queryError.message);
+
+    const [comanda, errorComanda] = await cancelComandaService({ id, reason });
+    if (errorComanda) return handleErrorClient(res, 404, errorComanda);
+
+    handleSuccess(res, 200, "Comanda cancelada", comanda);
   } catch (error) {
     handleErrorServer(res, 500, error.message);
   }

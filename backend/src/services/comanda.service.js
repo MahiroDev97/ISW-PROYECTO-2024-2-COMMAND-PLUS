@@ -9,7 +9,6 @@ export async function createComandaService(body) {
   try {
     const comandaRepository = AppDataSource.getRepository(Comanda);
     const { productos, ...comanda } = body;
-    console.log(productos);
     const newComanda = comandaRepository.create(comanda);
     await comandaRepository.save(newComanda);
     const comandaId = newComanda.id;
@@ -85,7 +84,7 @@ export async function updateComandaService(query, body) {
     const comandaRepository = AppDataSource.getRepository(Comanda);
     const productComandaRepository = AppDataSource.getRepository(ProductComanda);
 
-    // 1. Encontrar la comanda existente
+    //Encontrar la comanda
     const comandaFound = await comandaRepository.findOne({ 
       where: { id },
       relations: ["productcomandas"]
@@ -93,14 +92,13 @@ export async function updateComandaService(query, body) {
 
     if (!comandaFound) return [null, "Comanda no encontrada"];
 
-    // 2. Eliminar todos los productos existentes de la comanda
+    //  elimina los productos de la comanda
     await productComandaRepository.remove(comandaFound.productcomandas);
 
-    // 3. Actualizar los datos básicos de la comanda
+    //los datos básicos de la comanda se gaurdan
     comandaRepository.merge(comandaFound, comandaData);
     await comandaRepository.save(comandaFound);
 
-    // 4. Crear los nuevos productos
     if (productos && productos.length > 0) {
       for (const producto of productos) {
         for (let i = 0; i < producto.cantidad; i++) {
@@ -117,8 +115,6 @@ export async function updateComandaService(query, body) {
         }
       }
     }
-
-    // 5. Obtener la comanda actualizada con sus relaciones
     const comandaActualizada = await comandaRepository.findOne({
       where: { id },
       relations: ["productcomandas"],
@@ -177,7 +173,7 @@ export async function confirmComandaService(query) {
 
     if (!comandaFound) return [null, "Comanda no encontrada"];
 
-    comandaFound.estado = "confirmada"; // Actualizar el estado de la comanda
+    comandaFound.estado = "confirmada";
 
     await comandaRepository.save(comandaFound);
 
@@ -251,6 +247,29 @@ export async function getComandasPorMesAnoService(query) {
     return [comandas, null];
   } catch (error) {
     console.error("Error al obtener las comandas por mes y ano:", error);
+    return [null, "Error interno del servidor"];
+  }
+}
+
+export async function cancelComandaService(query) {
+  try {
+    const { id, reason } = query;
+
+    const comandaRepository = AppDataSource.getRepository(Comanda);
+    const comandaFound = await comandaRepository.findOne({ 
+      where: { id },
+      relations: ["productcomandas"]
+    });
+
+    if (!comandaFound) return [null, "Comanda no encontrada"];
+
+    comandaFound.estado = "Cancelada";
+    comandaFound.comentarios = reason;
+
+    const comandaActualizada = await comandaRepository.save(comandaFound);
+    return [comandaActualizada, null];
+  } catch (error) {
+    console.error("Error al cancelar la comanda:", error);
     return [null, "Error interno del servidor"];
   }
 }

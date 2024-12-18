@@ -23,6 +23,10 @@ const ComandaSchema = new EntitySchema({
       type: "text",
       nullable: false,
     },
+    comentarios: {
+      type: "text",
+      nullable: true,
+    },
   },
   relations: {
     productcomandas: {
