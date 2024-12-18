@@ -1,7 +1,8 @@
 import CloseIcon from "@assets/XIcon.svg";
 import { useState, useEffect } from "react";
 import { Autocomplete, InputAdornment, TextField } from "@mui/material";
-
+const ALLOWED_FILE_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
 export default function Popup({ show, setShow, categories, action, producto }) {
   const [formData, setFormData] = useState({
     categoria: "",
@@ -34,16 +35,6 @@ export default function Popup({ show, setShow, categories, action, producto }) {
     }
   }, [show, producto]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        imagen: file,
-      }));
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!/^\d+$/.test(formData.precio)) {
@@ -53,11 +44,33 @@ export default function Popup({ show, setShow, categories, action, producto }) {
     action(formData);
   };
 
+  const validateFile = (file) => {
+    if (!file) return false;
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      alert("Solo se permiten archivos JPEG, JPG y PNG");
+      return false;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      alert("El archivo debe ser menor a 5MB");
+      return false;
+    }
+    return true;
+  };
+
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
+
+    if (name === "imagen") {
+      const file = files[0];
+      if (!validateFile(file)) {
+        e.target.value = "";
+        return;
+      }
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: files ? files[0] : value,
     }));
   };
 
@@ -204,19 +217,20 @@ export default function Popup({ show, setShow, categories, action, producto }) {
               </div>
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-gray-700">
-                  Imagen del producto
+                  Imagen del producto (JPEG, JPG, PNG)
                 </label>
                 <div className="flex items-center space-x-4">
                   <input
                     type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
+                    name="imagen"
+                    onChange={handleChange}
+                    accept="image/jpeg,image/jpg,image/png"
                     className="hidden"
                     id="image-input"
                   />
                   <label
                     htmlFor="image-input"
-                    className="cursor-pointer bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
+                    className="cursor-pointer bg-white py-2 px-4  border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50"
                   >
                     Seleccionar imagen
                   </label>

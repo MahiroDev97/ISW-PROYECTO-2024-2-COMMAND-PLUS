@@ -25,6 +25,7 @@ import "@styles/index.css";
 import React from "react";
 import { wsService } from "./services/websocket";
 import GlobalNotifications from "./components/GlobalNotifications";
+import { Menu } from "./pages/Menu";
 
 Modal.setAppElement("#root");
 
@@ -116,6 +117,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
+  },
+  {
+    path: "/menu",
+    element: <Menu />,
   },
 ]);
 //renderiza el router en el root del html

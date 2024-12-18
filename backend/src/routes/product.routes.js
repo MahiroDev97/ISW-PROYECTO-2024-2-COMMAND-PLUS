@@ -13,12 +13,12 @@ import {
 
 const router = Router();
 
+router.get("/disponibles/", getAvailableProducts);
 router.use(authenticateJwt);
 
 router
   .post("/", upload, createProduct)
   .get("/", getProducts)
-  .get("/disponibles/", getAvailableProducts)
   .get("/detail/", getProduct)
   .patch("/detail/", upload, updateProduct)
   .delete("/detail/", deleteProduct);
