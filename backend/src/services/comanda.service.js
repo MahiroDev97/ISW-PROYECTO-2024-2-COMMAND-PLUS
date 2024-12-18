@@ -86,7 +86,7 @@ export async function updateComandaService(query, body) {
     const productComandaRepository = AppDataSource.getRepository(ProductComanda);
 
     // 1. Encontrar la comanda existente
-    const comandaFound = await comandaRepository.findOne({ 
+    const comandaFound = await comandaRepository.findOne({
       where: { id },
       relations: ["productcomandas"]
     });
@@ -244,7 +244,7 @@ export async function getComandasPorMesAnoService(query) {
           new Date(`${ano}-${mesFormateado}-01T00:00:00.000Z`),
           new Date(`${ano}-${mesFormateado}-${ultimoDia}T23:59:59.999Z`)
         ),
-        estado: "cerrada",
+        estado: "Cerrada",
       },
     });
 
@@ -255,7 +255,7 @@ export async function getComandasPorMesAnoService(query) {
   }
 }
 
-export async function CerrarComanda (comandaId) {
+export async function CerrarComanda(comandaId) {
 
   try {
     const comandaRepository = AppDataSource.getRepository(Comanda);
@@ -263,7 +263,7 @@ export async function CerrarComanda (comandaId) {
 
     if (!comandaFound) return [null, "Comanda no encontrada"];
 
-    comandaFound.estado = "cerrada";
+    comandaFound.estado = "Cerrada";
     await comandaRepository.save(comandaFound);
 
     return [comandaFound, null];
