@@ -1,29 +1,44 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
 
-
-const API_URL = 'http://127.0.0.1:3000/api';
+const API_URL = "http://127.0.0.1:3000/api";
 
 const useUser = () => {
-    const [user, setUser] = useState(() => JSON.parse(sessionStorage.getItem('usuario')));
-    console.log('user useUser', user);
+  const [user, setUser] = useState(() =>
+    JSON.parse(sessionStorage.getItem("usuario"))
+  );
 
-    const fetchUser = async () => {
-        const userData = JSON.parse(sessionStorage.getItem('usuario'));
-        if (userData) {
-            const response = await axios.get(`${API_URL}/user/detail/?id=${userData.id}`);
-            const updatedUser = response.data.data;
-            setUser(updatedUser);
-            sessionStorage.setItem('usuario', JSON.stringify(updatedUser));
-            console.log('updatedUser useUser', updatedUser);
-        }
-    };
+  const fetchUser = async () => {
+    const userData = JSON.parse(sessionStorage.getItem("usuario"));
 
-    useEffect(() => {
-        fetchUser();
-    }, []);
+    if (userData) {
+      try {
+        const token = Cookies.get("jwt-auth");
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await axios.get(
+          `${API_URL}/user/detail/?id=${userData.id}`,
+          config
+        );
+        const updatedUser = response.data.data;
+        setUser(updatedUser);
+        sessionStorage.setItem("usuario", JSON.stringify(updatedUser));
+        console.log("updatedUser useUser", updatedUser);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    }
+  };
 
-    return user;
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  return user;
 };
 
 export default useUser;
