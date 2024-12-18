@@ -5,7 +5,7 @@ class WebSocketService {
     this.retryCount = 0;
     this.maxRetries = 5;
     // Usar el puerto 3000 por defecto (ajústalo según tu backend)
-    this.wsUrl = import.meta.env.VITE_WS_URL || 'ws://localhost:3000/ws';
+    this.wsUrl = import.meta.env.VITE_WS_URL;
   }
 
   connect() {
