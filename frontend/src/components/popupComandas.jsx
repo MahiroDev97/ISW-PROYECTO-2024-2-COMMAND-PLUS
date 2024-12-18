@@ -2,64 +2,71 @@ import "@styles/popup.css";
 import CloseIcon from "@assets/XIcon.svg";
 import Form from "./Form";
 
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { useState, useEffect } from "react";
-
+import { useState, useEffect, useMemo } from "react";
 
 export default function Popup({ show, setShow, data, action, products }) {
-  const ComandaData = data && data.length > 0 ? data[0] : {};
-  
+  const ComandaData = useMemo(
+    () => (data && data.length > 0 ? data[0] : {}),
+    [data]
+  );
+
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentProduct, setCurrentProduct] = useState({ id: "", cantidad: 1 });
 
   useEffect(() => {
     if (ComandaData.productcomandas) {
-      // Agregar el nombre del producto al mapear los productos existentes
-      const productosIndividuales = ComandaData.productcomandas.map(item => {
-        const producto = products?.find(p => p.id === item.productId);
+      const productosIndividuales = ComandaData.productcomandas.map((item) => {
         return {
-          id: item.productId,
+          id: item.product.id,
           cantidad: 1,
           uniqueId: item.id,
-          nombre: producto ? producto.nombre : 'Producto no encontrado' // Agregar nombre del producto
+          nombre: item.product.nombre,
         };
       });
-      
+
       setSelectedProducts(productosIndividuales);
     }
   }, [ComandaData, products]); // Agregar products como dependencia
 
   const handleAddProduct = () => {
     if (currentProduct.id) {
-      const productoSeleccionado = products?.find(p => p.id === currentProduct.id);
-      const newProducts = Array(currentProduct.cantidad).fill().map(() => ({
-        id: currentProduct.id,
-        cantidad: 1,
-        uniqueId: Date.now() + Math.random(),
-        nombre: productoSeleccionado ? productoSeleccionado.nombre : 'Producto no encontrado' // Agregar nombre al crear nuevo producto
-      }));
-      
+      const productoSeleccionado = products?.find(
+        (p) => p.id === currentProduct.id
+      );
+      const newProducts = Array(currentProduct.cantidad)
+        .fill()
+        .map(() => ({
+          id: currentProduct.id,
+          cantidad: 1,
+          uniqueId: Date.now() + Math.random(),
+          nombre: productoSeleccionado
+            ? productoSeleccionado.nombre
+            : "Producto no encontrado", // Agregar nombre al crear nuevo producto
+        }));
+
       setSelectedProducts([...selectedProducts, ...newProducts]);
       setCurrentProduct({ id: "", cantidad: 1 });
     }
   };
 
   const handleRemoveProduct = (uniqueId) => {
-    setSelectedProducts(selectedProducts.filter(product => product.uniqueId !== uniqueId));
+    setSelectedProducts(
+      selectedProducts.filter((product) => product.uniqueId !== uniqueId)
+    );
   };
 
   const handleSubmit = (formData) => {
-
     action({ ...ComandaData, ...formData });
-    if (formData.estado === 'Cerrada') {
+    if (formData.estado === "Cerrada") {
       toast.success(`Mesa número ${ComandaData.mesa} lista`);
     }
 
     // Convertir los productos individuales al formato esperado por el backend
     const productosAgrupados = selectedProducts.reduce((acc, item) => {
-      const existingProduct = acc.find(p => p.id === item.id);
+      const existingProduct = acc.find((p) => p.id === item.id);
       if (existingProduct) {
         existingProduct.cantidad += 1;
       } else {
@@ -71,14 +78,8 @@ export default function Popup({ show, setShow, data, action, products }) {
     action({
       ...ComandaData,
       ...formData,
-      productos: productosAgrupados
+      productos: productosAgrupados,
     });
-  };
-
-  const getProductName = (productId) => {
-    const product = products?.find(p => p.id === parseInt(productId));
-    return product ? product.nombre : '';
-
   };
 
   return (
@@ -126,10 +127,12 @@ export default function Popup({ show, setShow, data, action, products }) {
                       <div className="producto-selector">
                         <select
                           value={currentProduct.id}
-                          onChange={(e) => setCurrentProduct({
-                            ...currentProduct,
-                            id: parseInt(e.target.value)
-                          })}
+                          onChange={(e) =>
+                            setCurrentProduct({
+                              ...currentProduct,
+                              id: parseInt(e.target.value),
+                            })
+                          }
                         >
                           <option value="">Seleccionar producto</option>
                           {products?.map((product) => (
@@ -142,10 +145,12 @@ export default function Popup({ show, setShow, data, action, products }) {
                           type="number"
                           min="1"
                           value={currentProduct.cantidad}
-                          onChange={(e) => setCurrentProduct({
-                            ...currentProduct,
-                            cantidad: parseInt(e.target.value)
-                          })}
+                          onChange={(e) =>
+                            setCurrentProduct({
+                              ...currentProduct,
+                              cantidad: parseInt(e.target.value),
+                            })
+                          }
                         />
                         <button type="button" onClick={handleAddProduct}>
                           Agregar
@@ -154,10 +159,13 @@ export default function Popup({ show, setShow, data, action, products }) {
                       <div className="productos-seleccionados">
                         {selectedProducts.map((product) => (
                           <div key={product.uniqueId} className="producto-item">
-                            <span>{product.nombre}</span> {/* Usar el nombre guardado directamente */}
-                            <button 
-                              type="button" 
-                              onClick={() => handleRemoveProduct(product.uniqueId)}
+                            <span>{product.nombre}</span>{" "}
+                            {/* Usar el nombre guardado directamente */}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleRemoveProduct(product.uniqueId)
+                              }
                               className="eliminar-producto"
                             >
                               Eliminar
@@ -166,8 +174,8 @@ export default function Popup({ show, setShow, data, action, products }) {
                         ))}
                       </div>
                     </div>
-                  )
-                }
+                  ),
+                },
               ]}
               onSubmit={handleSubmit}
               buttonText="Guardar Cambios"

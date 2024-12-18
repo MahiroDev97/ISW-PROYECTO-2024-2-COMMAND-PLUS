@@ -4,23 +4,24 @@ import PopupCreateComanda from "../components/popupCreateComanda.jsx";
 import UpdateIcon from "../assets/updateIcon.svg";
 import AddIcon from "../assets/AddIcon.svg";
 import UpdateIconDisable from "../assets/updateIconDisabled.svg";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import useComandas from "../hooks/comandas/UseGetComandas.jsx";
 import useCreateComanda from "../hooks/comandas/useCreateComanda.jsx";
 import useEditComanda from "../hooks/comandas/useEditComanda.jsx";
 import Navbar from "../components/Navbar";
 import useGetProducts from "../hooks/products/useGetProducts.jsx";
-import { wsService } from '../services/websocket';
+import { wsService } from "../services/websocket";
 import { Bell } from "lucide-react";
+import { toast } from "react-toastify";
 
 const Comandas = () => {
-  const { comandas, setComandas, fetchComandas } = useComandas();
+  const { comandas, fetchComandas } = useComandas();
 
-  const { products, setProducts, fetchProducts } = useGetProducts();
-  
+  const { products, fetchProducts } = useGetProducts();
+
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   const {
     handleClickUpdate,
@@ -47,19 +48,15 @@ const Comandas = () => {
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("usuario"));
-    console.log('Usuario actual:', user); // Para debug
-    
     const handleComandaUpdate = (data) => {
-      console.log('Notificación recibida:', data); // Para debug
-
       if (user?.role === "garzon" || user?.role === "administrador") {
-        if (data.type === 'COMANDA_UPDATE') {
-          // Notificación de actualización de estado de producto
+        if (data.type === "COMANDA_UPDATE") {
           toast.info(
             <div className="flex items-center">
               <Bell className="mr-2" />
               <span>
-                Mesa #{data.data.mesa}: Producto actualizado a {data.data.newStatus}
+                Mesa #{data.data.mesa}: Producto actualizado a{" "}
+                {data.data.newStatus}
               </span>
             </div>,
             {
@@ -72,43 +69,41 @@ const Comandas = () => {
               className: "bg-blue-100 text-blue-800 font-bold",
             }
           );
-        } else if (data.type === 'COMANDA_READY') {
-          // Notificación de comanda lista
+        } else if (data.type === "COMANDA_READY") {
           toast.success(
             <div className="flex items-center">
               <Bell className="mr-2" />
               <span>
-                ¡ATENCIÓN! Comanda de Mesa #{data.data.mesa} está lista para servir
+                ¡ATENCIÓN! Comanda de Mesa #{data.data.mesa} está lista para
+                servir
               </span>
             </div>,
             {
               position: "top-center",
-              autoClose: false, // No se cierra automáticamente
+              autoClose: false,
               hideProgressBar: false,
-              closeOnClick: false, // No se cierra al hacer click
+              closeOnClick: false,
               pauseOnHover: true,
               draggable: false,
               className: "bg-green-100 text-green-800 font-bold text-lg",
             }
           );
-          // Reproducir sonido de notificación
-          new Audio('/notification.mp3').play().catch(console.error);
+          new Audio("/notification.mp3").play().catch(console.error);
         }
-        fetchComandas(); // Actualizar la lista de comandas
+        fetchComandas();
       }
     };
 
-    wsService.subscribe('COMANDA_UPDATE', handleComandaUpdate);
-    wsService.subscribe('COMANDA_READY', handleComandaUpdate);
+    wsService.subscribe("COMANDA_UPDATE", handleComandaUpdate);
+    wsService.subscribe("COMANDA_READY", handleComandaUpdate);
 
     return () => {
-      wsService.unsubscribe('COMANDA_UPDATE', handleComandaUpdate);
-      wsService.unsubscribe('COMANDA_READY', handleComandaUpdate);
+      wsService.unsubscribe("COMANDA_UPDATE", handleComandaUpdate);
+      wsService.unsubscribe("COMANDA_READY", handleComandaUpdate);
     };
   }, [fetchComandas]);
 
   const columns = [
-    // { title: "id", field: "id", width: 150, responsive: 0 },
     {
       title: "Fecha",
       field: "fecha",
@@ -158,7 +153,11 @@ const Comandas = () => {
                     className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors disabled:opacity-50"
                   >
                     <img
-                      src={dataComanda.length === 0 ? UpdateIconDisable : UpdateIcon}
+                      src={
+                        dataComanda.length === 0
+                          ? UpdateIconDisable
+                          : UpdateIcon
+                      }
                       alt="edit"
                       className="w-5 h-5"
                     />
@@ -190,7 +189,7 @@ const Comandas = () => {
         setShow={setIsPopupOpen}
         data={dataComanda}
         action={handleUpdate}
-        products={products} // Agregar esta línea
+        products={products}
       />
       <PopupCreateComanda
         show={isPopupCreateOpen}
