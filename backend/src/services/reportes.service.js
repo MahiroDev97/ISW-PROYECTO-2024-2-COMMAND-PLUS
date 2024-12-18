@@ -42,14 +42,14 @@ export async function getReportesDataService() {
                 fechahoraentrega: Between(fechaInicio, fechaFin)
             }
         });
-        //if (ventas.length === 0) return null;
+        if (ventas.length === 0) return null;
 
         const comandas = await comandaRepository.find({
             where: {
                 fecha: Between(fechaInicio, fechaFin)
             }
         });
-        //if (comandas.length === 0) return null;
+        if (comandas.length === 0) return null;
 
 
 
@@ -59,7 +59,7 @@ export async function getReportesDataService() {
             }
         });
         console.log("turnos", turnos);
-        //if (turnos.length === 0) return null;
+        if (turnos.length === 0) return null;
 
         return { ventas, comandas, turnos, fecha: fechaActual };
 
