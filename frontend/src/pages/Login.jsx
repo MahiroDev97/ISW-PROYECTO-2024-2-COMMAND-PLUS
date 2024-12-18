@@ -31,49 +31,60 @@ const Login = () => {
     };
 
     return (
-        <main className="container">
-            <Form
-                title="Iniciar sesión"
-                fields={[
-                    {
-                        label: "Correo electrónico",
-                        name: "email",
-                        placeholder: "example@domain.com",
-                        fieldType: 'input',
-                        type: "email",
-                        required: true,
-                        minLength: 5,
-                        maxLength: 50,
-                        errorMessageData: errorEmail,
-                        validate: {
-                            emailFormat: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Ingrese un correo electrónico válido'
+
+        <div className="container">
+
+
+            <main className="container">
+
+
+                <Form
+
+                    title="Iniciar sesión"
+
+
+                    fields={[
+                        {
+                            label: "Correo electrónico",
+                            name: "email",
+                            placeholder: "example@domain.com",
+                            fieldType: 'input',
+                            type: "email",
+                            required: true,
+                            minLength: 5,
+                            maxLength: 50,
+                            errorMessageData: errorEmail,
+                            validate: {
+                                emailFormat: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) || 'Ingrese un correo electrónico válido'
+                            },
+                            onChange: (e) => handleInputChange('email', e.target.value),
                         },
-                        onChange: (e) => handleInputChange('email', e.target.value),
-                    },
-                    {
-                        label: "Contraseña",
-                        name: "password",
-                        placeholder: "**********",
-                        fieldType: 'input',
-                        type: "password",
-                        required: true,
-                        minLength: 8,
-                        maxLength: 26,
-                        pattern: /^[a-zA-Z0-9]+$/,
-                        patternMessage: "Debe contener solo letras y números",
-                        errorMessageData: errorPassword,
-                        onChange: (e) => handleInputChange('password', e.target.value)
-                    },
-                ]}
-                buttonText="Iniciar sesión"
-                onSubmit={loginSubmit}
-                footerContent={
-                    <p>
-                        ¿No tienes cuenta?, <a href="/register">¡Regístrate aquí!</a>
-                    </p>
-                }
-            />
-        </main>
+                        {
+                            label: "Contraseña",
+                            name: "password",
+                            placeholder: "**********",
+                            fieldType: 'input',
+                            type: "password",
+                            required: true,
+                            minLength: 8,
+                            maxLength: 26,
+                            pattern: /^[a-zA-Z0-9]+$/,
+                            patternMessage: "Debe contener solo letras y números",
+                            errorMessageData: errorPassword,
+                            onChange: (e) => handleInputChange('password', e.target.value)
+                        },
+                    ]}
+                    buttonText="Iniciar sesión"
+                    onSubmit={loginSubmit}
+                    footerContent={
+                        <p>
+                            ¿No tienes cuenta?, <a href="/register">¡Regístrate aquí!</a>
+                        </p>
+                    }
+                />
+            </main>
+        </div>
+
     );
 };
 
